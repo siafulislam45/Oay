@@ -180,49 +180,66 @@ def index():
 # ==========================================
 # NEWBIE CHECK PANEL (1st & 2nd Task Only)
 # ==========================================
+# ==========================================
+# NEWBIE CHECK PANEL (FAST LOAD & FALLBACK LOGIC)
+# ==========================================
 @app.route('/aw/newbie-check')
 @login_required
 @fatema_admin_required
 def newbie_check():
-    # ১. সব পেন্ডিং সাবমিশন নিয়ে আসা
     try:
-        pending_subs = supabase.table('submissions').select('*').eq('status', 'pending').order('created_at', desc=True).execute().data
+        # ১. একসাথে মাত্র ২০টি পেন্ডিং সাবমিশন আনা (লোড কমানোর জন্য)
+        pending_subs = supabase.table('submissions').select('*').eq('status', 'pending').order('created_at', desc=True).limit(20).execute().data
         
-        valid_subs =[]
-        
-        # ২. চেক করা কোনটি ১ম বা ২য় সাবমিশন
+        valid_subs = []
+        regular_subs =[]
+
+        # ২. Bulk Fetch User & Task (যাতে বারবার ডাটাবেস কল না হয়)
+        user_ids = list(set([s['user_id'] for s in pending_subs]))
+        task_ids = list(set([s['task_id'] for s in pending_subs]))
+
+        user_map = {}
+        if user_ids:
+            users_data = supabase.table('profiles').select('id, email').in_('id', user_ids).execute().data
+            user_map = {u['id']: u['email'] for u in users_data}
+
+        task_map = {}
+        if task_ids:
+            tasks_data = supabase.table('tasks').select('id, title, reward').in_('id', task_ids).execute().data
+            task_map = {t['id']: t for t in tasks_data}
+
+        # ৩. চেক করা কোনটি ১ম বা ২য় সাবমিশন
         for sub in pending_subs:
-            # এই ইউজারের সব সাবমিশন (পুরনো থেকে নতুন)
-            user_all_subs = supabase.table('submissions').select('id').eq('user_id', sub['user_id']).order('created_at').execute().data
+            uid = sub['user_id']
+            tid = sub['task_id']
             
-            # প্রথম ২ টি সাবমিশনের আইডি নেওয়া
-            first_two_ids = [s['id'] for s in user_all_subs[:2]]
-            
-            # যদি বর্তমান পেন্ডিং আইডিটি প্রথম দুটির মধ্যে থাকে
-            if sub['id'] in first_two_ids:
-                try:
-                    # সাবমিশনটি কত নাম্বার তা বের করা (1 or 2)
-                    attempt_num = first_two_ids.index(sub['id']) + 1
-                    sub['attempt_num'] = attempt_num
-                    
-                    # ইউজার এবং টাস্কের তথ্য যুক্ত করা
-                    user_info = supabase.table('profiles').select('email').eq('id', sub['user_id']).single().execute().data
-                    task_info = supabase.table('tasks').select('title, reward').eq('id', sub['task_id']).single().execute().data
-                    
-                    sub['user_email'] = user_info['email']
-                    sub['task_title'] = task_info['title']
-                    sub['reward'] = task_info['reward']
-                    
-                    valid_subs.append(sub)
-                except:
-                    continue
-                    
+            sub['user_email'] = user_map.get(uid, 'Unknown')
+            t_info = task_map.get(tid, {'title': 'Unknown', 'reward': 0})
+            sub['task_title'] = t_info['title']
+            sub['reward'] = t_info['reward']
+
+            # ইউজারের টোটাল অ্যাপ্রুভড টাস্ক গোনা
+            user_approved = supabase.table('submissions').select('id', count='exact', head=True).eq('user_id', uid).eq('status', 'approved').execute().count
+
+            # যদি ২ টার কম টাস্ক অ্যাপ্রুভ হয়ে থাকে, তবে সে Newbie
+            if user_approved < 2:
+                sub['is_newbie'] = True
+                valid_subs.append(sub)
+            else:
+                sub['is_newbie'] = False
+                regular_subs.append(sub)
+
+        # ৪. ফলব্যাক লজিক: যদি কোনো নতুন ইউজারের টাস্ক না থাকে, তবে সাধারণ ৫টি টাস্ক দাও
+        if len(valid_subs) == 0 and len(regular_subs) > 0:
+            valid_subs = regular_subs[:5] # ৫টি সাধারণ টাস্ক দেওয়া হলো
+            flash("নতুন কোনো টাস্ক নেই, তাই ৫টি সাধারণ টাস্ক দেওয়া হয়েছে।", "info")
+
     except Exception as e:
         print(f"Newbie Check Error: {e}")
         valid_subs =[]
 
     return render_template('newbie_check.html', submissions=valid_subs)
-
+    
 # --- ACTION: APPROVE / REJECT FOR NEWBIE PANEL ---
 @app.route('/aw/newbie-action/<action>/<int:sub_id>')
 @login_required
