@@ -163,7 +163,7 @@ def fatema_admin_required(f):
             
         flash("⛔ আপনার এই পেজে প্রবেশ করার অনুমতি নেই!", "error")
         return redirect(url_for('dashboard'))
-    return decorated_function    
+    return decorated_function
 # -------------------------------------------------------------------
 # 4. ROUTES
 # -------------------------------------------------------------------
