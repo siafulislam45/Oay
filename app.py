@@ -948,34 +948,45 @@ def notice():
         notices = []
 
     return render_template('notice.html', notices=notices, user=g.user)
-# --- ADMIN: VIEW WITHDRAWAL REQUESTS (UPDATED WITH REJECT COUNT & STATUS) ---
+# --- ADMIN: VIEW WITHDRAWAL REQUESTS (FIXED MISSING REQUESTS) ---
 @app.route('/admin/withdrawals')
 @login_required
 @admin_required
 def admin_withdrawals():
-    # ১. পেন্ডিং রিকোয়েস্ট আনা
-    res = supabase.table('withdrawals').select('*').eq('status', 'pending').order('created_at', desc=True).execute()
-    withdrawals = res.data
+    try:
+        # ১. পেন্ডিং রিকোয়েস্ট আনা
+        res = supabase.table('withdrawals').select('*').eq('status', 'pending').order('created_at', desc=True).execute()
+        withdrawals = res.data
+    except Exception as e:
+        print(f"Fetch Error: {e}")
+        withdrawals = []
     
     final_data =[]
     for item in withdrawals:
+        # ২. ইউজার ডাটা আনা (Error Handle করা হয়েছে যাতে স্কিপ না হয়)
         try:
-            # ২. ইউজার ইমেইল এবং এক্টিভেশন স্ট্যাটাস আনা
             user = supabase.table('profiles').select('email, is_active').eq('id', item['user_id']).single().execute().data
-            item['user_email'] = user['email']
-            item['is_active'] = user['is_active']
+            item['user_email'] = user.get('email', 'Unknown User')
+            item['is_active'] = user.get('is_active', False)
+        except:
+            item['user_email'] = 'Deleted/Unknown User'
+            item['is_active'] = False
 
-            # ৩. ইউজারের আগের রিজেক্টেড উইথড্র সংখ্যা বের করা
+        # ৩. রিজেক্ট কাউন্ট আনা
+        try:
             reject_res = supabase.table('withdrawals').select('id', count='exact', head=True).eq('user_id', item['user_id']).eq('status', 'rejected').execute()
             item['rejected_count'] = reject_res.count if reject_res.count else 0
+        except:
+            item['rejected_count'] = 0
+            
+        # ৪. পুরনো ডাটার জন্য wallet_type ফিক্স করা
+        if 'wallet_type' not in item or not item['wallet_type']:
+            item['wallet_type'] = 'main'
 
-            final_data.append(item)
-        except Exception as e:
-            print(f"Withdrawal fetch error: {e}")
-            continue # ইউজার ডিলিট হয়ে গেলে স্কিপ করবে
+        # ৫. লিস্টে যোগ করা (এটি এখন আর কখনোই স্কিপ হবে না)
+        final_data.append(item)
 
     return render_template('admin_withdrawals.html', requests=final_data)
-    
 # --- ADMIN: OFFLINE / INACTIVE USERS (CSV) ---
 @app.route('/admin/offline-users')
 @login_required
