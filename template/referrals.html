@@ -1,0 +1,185 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    .glass-box {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    .gradient-text {
+        background: linear-gradient(to right, #4F46E5, #E2136E);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+
+<div class="max-w-2xl mx-auto space-y-6">
+
+    <!-- 1. CAMPAIGN BANNER (Active Users Target) -->
+    <div class="relative bg-gradient-to-r from-[#0A2540] to-[#1e1b4b] rounded-3xl p-6 text-white overflow-hidden shadow-xl shadow-indigo-200">
+        <!-- Decor -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-[#E2136E] rounded-full blur-3xl opacity-30"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-[#4F46E5] rounded-full blur-3xl opacity-30"></div>
+
+        <div class="relative z-10 text-center">
+            <span class="bg-yellow-400 text-[#0A2540] text-[10px] font-bold px-3 py-1 rounded-full animate-pulse">
+                🔥 SPECIAL OFFER
+            </span>
+            <h2 class="text-2xl font-bold mt-3 mb-1">৫০ জন এক্টিভ রেফার</h2>
+            <p class="text-sm text-indigo-200 mb-4">করলেই পেয়ে যাবেন <span class="text-yellow-400 font-bold text-lg">৳১০০০</span> বোনাস!</p>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-white/10 rounded-full h-4 mb-2 border border-white/10 overflow-hidden">
+                <div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-4 rounded-full transition-all duration-1000 ease-out"
+                     style="width: {{ (active_count / 50) * 100 }}%"></div>
+            </div>
+            
+            <div class="flex justify-between text-xs font-bold text-gray-300 mb-4">
+                <span>{{ active_count }} Active</span>
+                <span>Target: 50</span>
+            </div>
+
+            {% if active_count >= 50 %}
+                <a href="https://t.me/securehx" target="_blank" class="inline-block bg-green-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg animate-bounce">
+                    পুরস্কার দাবি করুন 🎁
+                </a>
+            {% else %}
+                <button disabled class="bg-white/10 text-gray-400 px-6 py-2 rounded-xl text-xs font-bold cursor-not-allowed">
+                    আরও {{ 50 - active_count }} জন প্রয়োজন
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 2. COPY LINK SECTION -->
+    <div class="glass-box p-5 rounded-3xl">
+        <label class="text-xs font-bold text-slate-500 mb-2 block ml-1">আপনার রেফারেল লিংক</label>
+        <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-200">
+            <div class="h-10 w-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-lg">
+                <i class="fa-solid fa-link"></i>
+            </div>
+            <input type="text" id="refLink" value="..." class="bg-transparent text-xs font-bold text-slate-600 w-full outline-none font-mono" readonly>
+            <button onclick="copyRef(this)" class="bg-[#0A2540] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg hover:bg-opacity-90 transition">
+                কপি
+            </button>
+        </div>
+        <p class="text-[10px] text-slate-400 mt-2 text-center">
+            <i class="fa-solid fa-circle-info"></i> প্রতি এক্টিভ রেফারে পাবেন 10 টাকা বোনাস।
+        </p>
+    </div>
+
+    <!-- 3. TOP REFERRERS (Leaderboard) -->
+    <div class="glass-box p-5 rounded-3xl">
+        <h3 class="font-bold text-slate-700 mb-4 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-trophy text-yellow-500"></i> সেরা রেফারার (Top 5)
+        </h3>
+        <div class="space-y-3">
+            {% for top in leaderboard %}
+            <div class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition">
+                <div class="flex items-center gap-3">
+                    <div class="h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-sm
+                        {% if loop.index == 1 %} bg-yellow-100 text-yellow-700
+                        {% elif loop.index == 2 %} bg-gray-200 text-gray-700
+                        {% elif loop.index == 3 %} bg-orange-100 text-orange-700
+                        {% else %} bg-slate-100 text-slate-500 {% endif %}">
+                        #{{ loop.index }}
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-700">{{ top.email.split('@')[0][:3] }}***</p>
+                    </div>
+                </div>
+                <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                    {{ top.count }} Refs
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 4. MY REFERRALS LIST -->
+    <div class="glass-box p-5 rounded-3xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-slate-700 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-users text-[#E2136E]"></i> আমার টিম
+            </h3>
+            <span class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded-lg font-bold">Total: {{ total_count }}</span>
+        </div>
+
+        <div class="space-y-3 max-h-80 overflow-y-auto pr-1 custom-scroll">
+            {% for ref in referrals %}
+            <div class="flex items-center justify-between p-3 rounded-2xl border border-slate-50 hover:bg-white transition shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-full flex items-center justify-center text-lg
+                        {{ 'bg-green-100 text-green-600' if ref.is_active else 'bg-red-50 text-red-400' }}">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-700">{{ ref.email.split('@')[0] }}</p>
+                        <p class="text-[9px] text-slate-400 font-mono">{{ ref.created_at[:10] }}</p>
+                    </div>
+                </div>
+                <!-- Status Badge Logic Update -->
+<div class="text-right">
+    {% if settings.activation_required %}
+        <!-- যদি অ্যাক্টিভেশন সিস্টেম চালু থাকে -->
+        {% if ref.is_active %}
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg bg-green-50 text-green-600 border border-green-100">
+                Active
+            </span>
+        {% else %}
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg bg-red-50 text-red-500 border border-red-100">
+                Unpaid
+            </span>
+        {% endif %}
+    {% else %}
+        <!-- যদি অ্যাক্টিভেশন সিস্টেম বন্ধ থাকে -->
+        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg bg-blue-50 text-blue-600 border border-blue-100">
+            Joined
+        </span>
+    {% endif %}
+</div>
+            </div>
+            {% else %}
+            <div class="text-center py-10">
+                <i class="fa-solid fa-user-group text-3xl text-slate-200 mb-2"></i>
+                <p class="text-xs text-slate-400">কাউকে রেফার করা হয়নি</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const domain = window.location.origin;
+        const uniqueCode = "{{ user.referral_code if user.referral_code else 'GenerateID' }}";
+        const fullLink = `${domain}/register?ref=${uniqueCode}`;
+        
+        const inputField = document.getElementById("refLink");
+        if(inputField) {
+            inputField.value = fullLink;
+        }
+    });
+
+    function copyRef(btnElement) {
+        const copyText = document.getElementById("refLink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); 
+        navigator.clipboard.writeText(copyText.value);
+        
+        const originalText = btnElement.innerText;
+        btnElement.innerText = "কপি হয়েছে!";
+        btnElement.classList.add("bg-green-600");
+        
+        setTimeout(() => {
+            btnElement.innerText = originalText;
+            btnElement.classList.remove("bg-green-600");
+        }, 2000);
+    }
+</script>
+
+{% endblock %}

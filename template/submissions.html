@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm p-5 mb-6 border-b border-gray-200">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+            <h2 class="text-xl font-bold text-[#0A2540]">যাচাইকরণ (Pending)</h2>
+            <p class="text-xs text-gray-500">
+                লোডেড: {{ submissions|length }} | মোট পেন্ডিং: {{ total_pending }} টি
+            </p>
+        </div>
+        
+        <div class="flex gap-3">
+            <a href="/admin" class="text-sm bg-gray-100 text-gray-600 px-4 py-2 rounded-lg font-bold hover:bg-gray-200">Back</a>
+            
+            {% if submissions|length > 0 %}
+            <!-- BULK APPROVE BUTTON -->
+            <a href="/admin/submissions/bulk-approve" onclick="return confirm('সতর্কতা: আপনি কি নিশ্চিত যে এই লিস্টের সব টাস্ক ({{ submissions|length }}টি) একসাথে অ্যাপ্রুভ করবেন? সবার ব্যালেন্স বেড়ে যাবে।')" 
+               class="text-sm bg-green-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:bg-green-700 flex items-center gap-2">
+                <i class="fa-solid fa-check-double"></i> সব অ্যাপ্রুভ করুন ({{ submissions|length }})
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {% for sub in submissions %}
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col relative">
+        
+        <div class="absolute top-2 right-2 z-10 bg-yellow-400 text-[#0A2540] text-[10px] font-bold px-2 py-1 rounded shadow">
+            Pending
+        </div>
+
+        <!-- 1. Screenshot Preview -->
+        <div class="h-48 bg-gray-100 relative group overflow-hidden">
+            <img src="{{ sub.proof_link }}" alt="Proof" class="w-full h-full object-cover transition transform group-hover:scale-110">
+            <a href="{{ sub.proof_link }}" target="_blank" class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-white font-bold">
+                <i class="fa-solid fa-eye"></i> &nbsp; দেখুন
+            </a>
+        </div>
+
+        <!-- 2. Details -->
+        <div class="p-4 flex-grow">
+            <h3 class="font-bold text-[#0A2540] text-sm line-clamp-1" title="{{ sub.task_title }}">{{ sub.task_title }}</h3>
+            <p class="text-xs text-gray-500 mb-2">{{ sub.user_email }}</p>
+            <span class="bg-blue-50 text-[#0057FF] text-xs font-bold px-2 py-1 rounded">
+                রিওওার্ড: ৳ {{ sub.reward }}
+            </span>
+        </div>
+
+        <!-- 3. Actions -->
+        <div class="p-3 bg-gray-50 border-t flex gap-2">
+            <a href="/admin/submission/reject/{{ sub.id }}" onclick="return confirm('রিজেক্ট করবেন?')" 
+               class="flex-1 bg-white border border-red-200 text-red-600 py-2 rounded-lg text-xs font-bold text-center hover:bg-red-50">
+               ❌ রিজেক্ট
+            </a>
+            <a href="/admin/submission/approve/{{ sub.id }}" 
+               class="flex-1 bg-[#0057FF] text-white py-2 rounded-lg text-xs font-bold text-center hover:bg-blue-700 shadow-md">
+               ✅ অ্যাপ্রুভ
+            </a>
+        </div>
+
+    </div>
+    {% else %}
+    <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-gray-300">
+        <div class="text-4xl mb-3 text-gray-300"><i class="fa-solid fa-clipboard-check"></i></div>
+        <p class="text-gray-500">কোনো পেন্ডিং কাজ নেই।</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
