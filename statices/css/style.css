@@ -1,0 +1,28 @@
+/* Google Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Hind Siliguri', sans-serif;
+    -webkit-tap-highlight-color: transparent; /* মোবাইল ট্যাপ হাইলাইট রিমুভ */
+}
+
+/* ব্যালেন্স এনিমেশন স্মুথ করার জন্য */
+#balanceText {
+    transition: filter 0.3s ease, transform 0.3s ease;
+    display: inline-block;
+}
+
+/* কাস্টম স্ক্রলবার (সুন্দর লুকের জন্য) */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #E2136E; /* bKash Pink hover */
+}
