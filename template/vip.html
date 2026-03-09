@@ -1,38 +1,107 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="space-y-6 pb-32 pt-4 fade-up">
+<style>
+    /* VIP Specific Animations & Styles */
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    .vip-card {
+        background: linear-gradient(145deg, #1E293B 0%, #0F172A 100%);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .vip-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -10px rgba(234, 179, 8, 0.2);
+        border-color: rgba(234, 179, 8, 0.4);
+    }
+    
+    .gold-gradient {
+        background: linear-gradient(to right, #FDE047, #F59E0B);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 rounded-[30px] text-white text-center shadow-lg relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
-        <h2 class="text-2xl font-bold mb-1">VIP মেম্বারশিপ</h2>
-        <p class="text-xs text-indigo-100">লেভেল কিনুন এবং প্রতিদিন অটো প্রফিট নিন</p>
+    .shimmer-effect::after {
+        content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+        transform: skewX(-20deg); animation: shimmer 4s infinite;
+    }
+    @keyframes shimmer { 100% { left: 200%; } }
+</style>
+
+<div class="space-y-8 pb-32 pt-4 fade-up">
+
+    <!-- 1. VIP HERO BANNER -->
+    <div class="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 p-8 rounded-[35px] text-white text-center shadow-2xl relative overflow-hidden">
+        <!-- Abstract Decor -->
+        <div class="absolute top-[-50%] right-[-10%] w-48 h-48 bg-white opacity-20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-[-20%] left-[-10%] w-40 h-40 bg-yellow-200 opacity-30 rounded-full blur-2xl"></div>
         
-        <div class="mt-4 bg-white/20 backdrop-blur-md inline-block px-6 py-2 rounded-full border border-white/20">
-            <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-100 mb-0.5">VIP Balance</p>
-            <p class="text-2xl font-bold text-yellow-300 font-mono">৳ {{ user.vip_balance or 0 }}</p>
+        <div class="relative z-10">
+            <div class="inline-block bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full mb-4 border border-white/30 text-xs font-bold tracking-widest uppercase">
+                👑 Elite Membership
+            </div>
+            <h2 class="text-3xl font-black mb-2 leading-tight">আপনার ইনকাম দ্বিগুণ করুন</h2>
+            <p class="text-sm text-yellow-50 max-w-sm mx-auto">রেফারেল ছাড়া কাজ করুন এবং প্রতিদিন অটো প্রফিট নিন।</p>
+            
+            <div class="mt-6 inline-block bg-[#0A2540] px-6 py-2.5 rounded-2xl shadow-lg border border-white/10">
+                <p class="text-[10px] font-bold uppercase text-slate-400 mb-0.5">VIP Balance</p>
+                <p class="text-2xl font-bold text-yellow-400 font-mono">৳ {{ user.vip_balance or 0 }}</p>
+            </div>
         </div>
     </div>
 
-    <!-- ================= 1. MY ACTIVE PACKAGES (CLAIM SECTION) ================= -->
-    {% if my_vips and my_vips|length > 0 %}
-    <div>
-        <h3 class="font-bold text-slate-700 text-sm mb-3 px-2 flex items-center gap-2">
-            <i class="fa-solid fa-layer-group text-[#4F46E5]"></i> আমার চালু থাকা প্যাকেজ
+    <!-- 2. WHY CHOOSE VIP? (Exclusive Benefits) -->
+    <div class="bg-white p-6 rounded-[30px] shadow-sm border border-slate-50">
+        <h3 class="font-bold text-slate-800 mb-5 text-center flex items-center justify-center gap-2">
+            <i class="fa-solid fa-gem text-blue-500"></i> VIP মেম্বারদের বিশেষ সুবিধাসমূহ
         </h3>
         
-        <div class="space-y-3">
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100/50">
+                <div class="text-indigo-600 mb-2"><i class="fa-solid fa-money-bill-wave text-xl"></i></div>
+                <h4 class="font-bold text-xs text-slate-700">No Referral Needed</h4>
+                <p class="text-[10px] text-slate-500 mt-1">টাকা তুলতে কোনো রেফার লাগবে না।</p>
+            </div>
+            <div class="bg-purple-50/50 p-4 rounded-2xl border border-purple-100/50">
+                <div class="text-purple-600 mb-2"><i class="fa-solid fa-bolt text-xl"></i></div>
+                <h4 class="font-bold text-xs text-slate-700">Fast Withdraw</h4>
+                <p class="text-[10px] text-slate-500 mt-1">মাত্র ৫০ টাকা হলেই রিকোয়েস্ট দিন।</p>
+            </div>
+            <div class="bg-rose-50/50 p-4 rounded-2xl border border-rose-100/50">
+                <div class="text-rose-600 mb-2"><i class="fa-solid fa-star text-xl"></i></div>
+                <h4 class="font-bold text-xs text-slate-700">Premium Tasks</h4>
+                <p class="text-[10px] text-slate-500 mt-1">হাই-রেট এবং সহজ টাস্কের স্পেশাল এক্সেস।</p>
+            </div>
+            <div class="bg-green-50/50 p-4 rounded-2xl border border-green-100/50">
+                <div class="text-green-600 mb-2"><i class="fa-solid fa-shield-halved text-xl"></i></div>
+                <h4 class="font-bold text-xs text-slate-700">Lifetime Unban</h4>
+                <p class="text-[10px] text-slate-500 mt-1">একাউন্ট কখনোই সাসপেন্ড বা ব্যান হবে না।</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MY ACTIVE VIP PACKAGES (CLAIM SECTION) -->
+    {% if my_vips and my_vips|length > 0 %}
+    <div>
+        <h3 class="font-bold text-slate-700 text-sm mb-4 px-2 flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-green-500"></i> আমার চালু থাকা প্যাকেজ
+        </h3>
+        
+        <div class="space-y-4">
             {% for vip in my_vips %}
-            <div class="bg-white p-5 rounded-[24px] shadow-sm border border-indigo-50 flex items-center justify-between group">
+            <div class="bg-white p-5 rounded-[24px] shadow-md border border-green-100 flex items-center justify-between group">
                 <div class="flex items-center gap-4">
-                    <!-- Icon -->
-                    <div class="h-12 w-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex items-center justify-center text-xl shadow-md">
+                    <div class="h-12 w-12 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-white flex items-center justify-center text-xl shadow-lg">
                         {{ vip.level_id }}
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-800 text-sm">Level {{ vip.level_id }}</h4>
-                        <p class="text-[10px] text-slate-400 font-mono mt-0.5">
+                        <p class="text-[10px] text-slate-500 mt-0.5">
                             <i class="fa-regular fa-clock"></i> Exp: {{ vip.expires_at[:10] }}
                         </p>
                     </div>
@@ -41,17 +110,16 @@
                 <div class="text-right">
                     <p class="text-sm font-bold text-green-600 font-mono mb-2">+৳{{ vip.profit }}</p>
                     
-                    <!-- Claim Logic -->
                     {% if vip.last_claim == today_date %}
-                        <button disabled class="bg-slate-100 text-slate-400 px-4 py-1.5 rounded-xl text-[10px] font-bold cursor-not-allowed border border-slate-200">
-                            <i class="fa-solid fa-check"></i> Claimed
+                        <button disabled class="bg-slate-50 text-slate-400 px-4 py-2 rounded-xl text-[10px] font-bold cursor-not-allowed border border-slate-200">
+                            <i class="fa-solid fa-check"></i> Claimed Today
                         </button>
                     {% else %}
                         <form method="POST" action="/vip">
                             <input type="hidden" name="action" value="claim">
                             <input type="hidden" name="vip_id" value="{{ vip.id }}">
-                            <button type="submit" class="bg-[#4F46E5] text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-md hover:bg-indigo-700 active:scale-95 transition animate-pulse">
-                                Claim Now
+                            <button type="submit" class="bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white px-5 py-2 rounded-xl text-[10px] font-bold shadow-lg hover:shadow-indigo-300 transition animate-pulse">
+                                Claim Profit
                             </button>
                         </form>
                     {% endif %}
@@ -63,54 +131,67 @@
     {% endif %}
 
 
-    <!-- ================= 2. VIP PLANS STORE ================= -->
-    <h3 class="font-bold text-slate-700 text-sm mb-3 px-2 mt-8 flex items-center gap-2">
-        <i class="fa-solid fa-store text-[#E2136E]"></i> প্যাকেজ কিনুন
-    </h3>
-    
-    <div class="grid gap-5">
-        {% for id, plan in plans.items() %}
-        <div class="bg-white p-6 rounded-[30px] shadow-sm border border-slate-50 relative overflow-hidden group hover:shadow-lg hover:border-indigo-100 transition">
-            
-            {% if id == 2 %}
-            <div class="absolute top-0 right-0 bg-yellow-400 text-[10px] font-bold px-4 py-1 rounded-bl-xl text-[#0A2540]">
-                POPULAR
-            </div>
-            {% endif %}
+    <!-- 4. VIP PLANS STORE (Premium Cards) -->
+    <div>
+        <h3 class="font-bold text-slate-700 text-sm mb-4 px-2 mt-4 flex items-center gap-2">
+            <i class="fa-solid fa-store text-[#E2136E]"></i> প্যাকেজ কিনুন
+        </h3>
+        
+        <div class="grid gap-6">
+            {% for id, plan in plans.items() %}
+            <div class="vip-card rounded-[30px] p-1 group shimmer-effect">
+                <div class="bg-[#1E293B] rounded-[28px] p-6 relative z-10 h-full flex flex-col justify-between">
+                    
+                    {% if id == 2 or id == 3 %}
+                    <div class="absolute top-0 right-6 bg-gradient-to-b from-yellow-400 to-orange-500 text-white text-[9px] font-bold px-3 py-1.5 rounded-b-lg shadow-lg">
+                        MOST POPULAR
+                    </div>
+                    {% endif %}
 
-            <div class="flex justify-between items-center mb-5">
-                <div>
-                    <span class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded font-bold">Level {{ id }}</span>
-                    <h3 class="text-xl font-bold text-[#0A2540] mt-1">{{ plan.name }}</h3>
-                </div>
-                <div class="text-right">
-                    <h2 class="text-2xl font-bold text-[#4F46E5] font-mono">৳{{ plan.price }}</h2>
+                    <!-- Card Header -->
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <span class="text-[10px] bg-white/10 text-slate-300 px-2.5 py-1 rounded-md font-bold mb-2 inline-block border border-white/5">
+                                LEVEL {{ id }}
+                            </span>
+                            <h3 class="text-2xl font-black text-white tracking-wide">{{ plan.name }}</h3>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Price</p>
+                            <h2 class="text-3xl font-black gold-gradient font-mono">৳{{ plan.price }}</h2>
+                        </div>
+                    </div>
+
+                    <!-- Features List -->
+                    <div class="space-y-3 mb-8">
+                        <div class="flex items-center gap-3 text-sm text-slate-300">
+                            <i class="fa-solid fa-bolt text-yellow-400 w-4"></i>
+                            <span>Daily Income: <b class="text-white font-mono">৳{{ plan.daily_profit }}</b></span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-slate-300">
+                            <i class="fa-regular fa-calendar-check text-blue-400 w-4"></i>
+                            <span>Validity: <b class="text-white">{{ plan.days }} Days</b></span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-slate-300">
+                            <i class="fa-solid fa-sack-dollar text-green-400 w-4"></i>
+                            <span>Total Return: <b class="text-white font-mono">৳{{ plan.daily_profit * plan.days }}</b></span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-slate-300">
+                            <i class="fa-solid fa-star text-pink-400 w-4"></i>
+                            <span>Priority Live Support</span>
+                        </div>
+                    </div>
+
+                    <!-- Buy Action -->
+                    <a href="/vip/buy/{{ id }}" class="block w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-[#0A2540] text-center py-4 rounded-2xl font-black text-sm uppercase tracking-wider hover:scale-[1.02] transition shadow-[0_0_15px_rgba(234,179,8,0.4)]">
+                        Upgrade to Level {{ id }}
+                    </a>
                 </div>
             </div>
-
-            <!-- Features -->
-            <div class="space-y-2 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                <div class="flex justify-between text-xs text-slate-600">
-                    <span><i class="fa-solid fa-bolt text-yellow-500 w-4"></i> দৈনিক আয়</span>
-                    <span class="font-bold text-green-600">৳{{ plan.daily_profit }}</span>
-                </div>
-                <div class="flex justify-between text-xs text-slate-600">
-                    <span><i class="fa-regular fa-clock text-blue-500 w-4"></i> মেয়াদ</span>
-                    <span class="font-bold">{{ plan.days }} দিন</span>
-                </div>
-                <div class="flex justify-between text-xs text-slate-600 border-t border-slate-200 pt-2 mt-2">
-                    <span><i class="fa-solid fa-sack-dollar text-purple-500 w-4"></i> মোট লাভ</span>
-                    <span class="font-bold text-[#0A2540]">৳{{ plan.daily_profit * plan.days }}</span>
-                </div>
-            </div>
-
-            <!-- Buy Button -->
-            <a href="/vip/buy/{{ id }}" class="block w-full bg-[#0A2540] text-white text-center py-3 rounded-xl font-bold hover:bg-[#4F46E5] transition shadow-md">
-                প্যাকেজ কিনুন
-            </a>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
 
 </div>
+
 {% endblock %}
