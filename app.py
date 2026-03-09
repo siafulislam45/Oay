@@ -1236,7 +1236,6 @@ def admin_submissions():
 # --- ADMIN: BULK APPROVE (FIXED & STRICT) ---
 @app.route('/admin/submissions/bulk-approve')
 @login_required
-@admin_required
 @fatema_admin_required
 def bulk_approve():
     try:
@@ -1325,7 +1324,6 @@ def admin_user_check():
     return render_template('user_check.html', csv_data=csv_data, count=count)# --- ADMIN: APPROVE / REJECT ACTION (FIXED) ---
 @app.route('/admin/submission/<action>/<int:sub_id>')
 @login_required
-@admin_required
 @fatema_admin_required
 def submission_action(action, sub_id):
     try:
