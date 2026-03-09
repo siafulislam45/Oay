@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="max-w-md mx-auto space-y-6 pb-24 pt-4">
+    
+    <div class="bg-white p-6 rounded-[30px] shadow-lg border border-slate-50 text-center">
+        <p class="text-xs font-bold text-slate-400 uppercase">You are buying</p>
+        <h2 class="text-2xl font-bold text-[#4F46E5] mb-1">{{ plan.name }} Plan</h2>
+        <p class="text-sm font-bold text-slate-700">মূল্য: ৳ {{ plan.price }}</p>
+    </div>
+
+    <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 text-xs text-orange-800">
+        <p class="font-bold mb-1">সেন্ড মানি করুন: 01912107604</p>
+        <p>টাকা পাঠিয়ে নিচের ফর্মে ট্রানজেকশন আইডি দিন।</p>
+    </div>
+
+    <form method="POST" class="bg-white p-6 rounded-[30px] shadow-sm space-y-4">
+        <div>
+            <label class="block text-xs font-bold text-slate-500 mb-1">পেমেন্ট মেথড</label>
+            <select name="method" class="w-full p-3 border rounded-xl bg-slate-50">
+                <option>bKash</option><option>Nagad</option><option>Rocket</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-xs font-bold text-slate-500 mb-1">সেন্ডার নম্বর</label>
+            <input type="text" name="sender" required class="w-full p-3 border rounded-xl bg-slate-50">
+        </div>
+        <div>
+            <label class="block text-xs font-bold text-slate-500 mb-1">TrxID</label>
+            <input type="text" name="trx_id" required class="w-full p-3 border rounded-xl bg-slate-50">
+        </div>
+        <button type="submit" class="w-full bg-[#4F46E5] text-white py-3.5 rounded-xl font-bold">কনফার্ম করুন</button>
+    </form>
+</div>
+{% endblock %}
