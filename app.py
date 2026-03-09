@@ -163,8 +163,7 @@ def fatema_admin_required(f):
             
         flash("⛔ আপনার এই পেজে প্রবেশ করার অনুমতি নেই!", "error")
         return redirect(url_for('dashboard'))
-    return decorated_function
-    
+    return decorated_function    
 # -------------------------------------------------------------------
 # 4. ROUTES
 # -------------------------------------------------------------------
@@ -1202,6 +1201,7 @@ def delete_task(id):
 @app.route('/admin/submissions')
 @login_required
 @admin_required
+@fatema_admin_required
 def admin_submissions():
     # ১. মাত্র ২০টি পেন্ডিং ডাটা আনা (Performance এর জন্য)
     # .limit(20) যোগ করা হয়েছে
@@ -1237,6 +1237,7 @@ def admin_submissions():
 @app.route('/admin/submissions/bulk-approve')
 @login_required
 @admin_required
+@fatema_admin_required
 def bulk_approve():
     try:
         # ১. ২০টি পেন্ডিং সাবমিশন আনা
@@ -1325,6 +1326,7 @@ def admin_user_check():
 @app.route('/admin/submission/<action>/<int:sub_id>')
 @login_required
 @admin_required
+@fatema_admin_required
 def submission_action(action, sub_id):
     try:
         # ১. সাবমিশন ডিটেইলস খুঁজে বের করা
