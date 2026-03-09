@@ -949,6 +949,7 @@ def notice():
 
     return render_template('notice.html', notices=notices, user=g.user)
 # --- ADMIN: VIEW WITHDRAWAL REQUESTS (FIXED MISSING REQUESTS) ---
+# --- ADMIN: VIEW WITHDRAWAL REQUESTS (WITH REJECT COUNT) ---
 @app.route('/admin/withdrawals')
 @login_required
 @admin_required
@@ -963,7 +964,7 @@ def admin_withdrawals():
     
     final_data =[]
     for item in withdrawals:
-        # ২. ইউজার ডাটা আনা (Error Handle করা হয়েছে যাতে স্কিপ না হয়)
+        # ২. ইউজার ডাটা আনা
         try:
             user = supabase.table('profiles').select('email, is_active').eq('id', item['user_id']).single().execute().data
             item['user_email'] = user.get('email', 'Unknown User')
@@ -972,18 +973,23 @@ def admin_withdrawals():
             item['user_email'] = 'Deleted/Unknown User'
             item['is_active'] = False
 
-        # ৩. রিজেক্ট কাউন্ট আনা
+        # ৩. [NEW] ইউজারের আগের রিজেক্ট কাউন্ট বের করা
         try:
-            reject_res = supabase.table('withdrawals').select('id', count='exact', head=True).eq('user_id', item['user_id']).eq('status', 'rejected').execute()
+            reject_res = supabase.table('withdrawals') \
+                .select('id', count='exact', head=True) \
+                .eq('user_id', item['user_id']) \
+                .eq('status', 'rejected') \
+                .execute()
+            
+            # রিজেক্ট সংখ্যা ভেরিয়েবলে রাখা
             item['rejected_count'] = reject_res.count if reject_res.count else 0
         except:
             item['rejected_count'] = 0
             
-        # ৪. পুরনো ডাটার জন্য wallet_type ফিক্স করা
+        # ৪. ওয়ালেট টাইপ ফিক্স করা
         if 'wallet_type' not in item or not item['wallet_type']:
             item['wallet_type'] = 'main'
 
-        # ৫. লিস্টে যোগ করা (এটি এখন আর কখনোই স্কিপ হবে না)
         final_data.append(item)
 
     return render_template('admin_withdrawals.html', requests=final_data)
