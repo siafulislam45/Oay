@@ -25,20 +25,16 @@
         {% for req in requests %}
         <div class="bg-white rounded-[24px] shadow-sm border border-slate-100 p-5 relative overflow-hidden group hover:shadow-xl hover:border-indigo-100 transition duration-300 flex flex-col">
             
-            <!-- Type Badge (Main/VIP) -->
             <div class="absolute top-3 right-3 text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider
                 {% if req.wallet_type == 'vip' %} bg-yellow-100 text-yellow-700 border border-yellow-200 
                 {% else %} bg-indigo-50 text-indigo-600 border border-indigo-100 {% endif %}">
                 {{ req.wallet_type }} Wallet
             </div>
 
-            <!-- User Info & Trust Badges -->
             <div class="mb-4 pr-16">
                 <h3 class="font-bold text-slate-800 text-base truncate" title="{{ req.user_email }}">{{ req.user_email }}</h3>
                 
-                <!-- NEW: Trust & Status Badges -->
                 <div class="flex flex-wrap items-center gap-2 mt-2">
-                    <!-- Active Status -->
                     {% if req.is_active %}
                         <span class="bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1">
                             <i class="fa-solid fa-check-circle"></i> Active ID
@@ -49,9 +45,8 @@
                         </span>
                     {% endif %}
 
-                    <!-- Reject Count -->
                     {% if req.rejected_count > 0 %}
-                        <span class="bg-orange-50 text-orange-600 border border-orange-200 px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1 animate-pulse" title="আগে {{ req.rejected_count }} বার পেমেন্ট রিজেক্ট হয়েছে">
+                        <span class="bg-orange-50 text-orange-600 border border-orange-200 px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1 animate-pulse">
                             <i class="fa-solid fa-triangle-exclamation"></i> {{ req.rejected_count }} Rejects
                         </span>
                     {% else %}
@@ -62,7 +57,6 @@
                 </div>
             </div>
 
-            <!-- Payment Info Box -->
             <div class="bg-slate-50 rounded-xl p-4 mb-5 space-y-2.5 text-sm border border-slate-100 flex-grow">
                 <div class="flex justify-between items-center">
                     <span class="text-slate-500 text-xs font-bold">Method</span>
@@ -81,13 +75,30 @@
                     <span class="font-bold text-slate-700">Amount</span>
                     <span class="font-bold text-xl text-[#E2136E] font-mono">৳ {{ req.amount }}</span>
                 </div>
-                <p class="text-[9px] text-slate-400 text-right mt-1 font-mono"><i class="fa-regular fa-clock"></i> {{ req.created_at[:16].replace('T', ' ') }}</p>
             </div>
 
-            <!-- Actions -->
             <div class="flex gap-3">
                 <a href="/admin/withdraw/reject/{{ req.id }}" onclick="return confirm('রিজেক্ট করলে টাকা ইউজারের ব্যালেন্সে ফেরত যাবে। নিশ্চিত?')" 
                    class="flex-1 bg-white border-2 border-red-100 text-red-500 py-3 rounded-xl text-xs font-bold text-center hover:bg-red-500 hover:text-white transition shadow-sm">
                    <i class="fa-solid fa-xmark"></i> রিজেক্ট (Refund)
                 </a>
-                <a href="/admin/withdraw/approve/{{ req.id }}" onclick="return confirm('আপনি কি টাকা পাঠিয়েছেন? এটি অ্যাপ্রুভ মার্ক করা হবে।')"
+                <a href="/admin/withdraw/approve/{{ req.id }}" onclick="return confirm('আপনি কি টাকা পাঠিয়েছেন? এটি অ্যাপ্রুভ মার্ক করা হবে।')" 
+                   class="flex-1 bg-green-500 text-white py-3 rounded-xl text-xs font-bold text-center hover:bg-green-600 shadow-lg shadow-green-200 transition">
+                   <i class="fa-solid fa-check-double"></i> পেমেন্ট ডান
+                </a>
+            </div>
+
+        </div>
+        {% else %}
+        <div class="col-span-full text-center py-24 bg-white rounded-[32px] border-2 border-dashed border-slate-200 shadow-sm">
+            <div class="h-20 w-20 bg-indigo-50 text-indigo-300 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-700">কোনো রিকোয়েস্ট নেই</h3>
+            <p class="text-xs text-slate-400 mt-1">সব পেমেন্ট ক্লিয়ার করা হয়েছে!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
