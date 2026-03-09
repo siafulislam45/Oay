@@ -1,0 +1,183 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+    .fade-up { animation: fadeUp 0.6s ease-out; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .admin-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .admin-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+</style>
+
+<div class="space-y-8 pb-32 fade-up">
+
+    <!-- 1. ADMIN HEADER -->
+    <div class="bg-gradient-to-r from-[#0A2540] to-[#4F46E5] p-6 rounded-[30px] text-white shadow-xl shadow-indigo-200 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+        
+        <div class="relative z-10 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="h-14 w-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl shadow-inner border border-white/20">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold">এডমিন প্যানেল</h1>
+                    <p class="text-indigo-200 text-xs mt-1">ফুল কন্ট্রোল সেন্টার</p>
+                </div>
+            </div>
+            <div class="bg-white/20 px-4 py-2 rounded-xl text-sm font-bold border border-white/10 backdrop-blur-md">
+                <i class="fa-solid fa-users"></i> {{ user_count }} Users
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. FINANCIAL MANAGEMENT (Priority) -->
+    <div>
+        <h3 class="font-bold text-slate-700 px-2 text-sm mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-sack-dollar text-green-600"></i> পেমেন্ট ম্যানেজমেন্ট
+        </h3>
+        <div class="grid grid-cols-2 gap-4">
+            <!-- Activations -->
+            <a href="/admin/activations" class="admin-card bg-white p-5 rounded-3xl shadow-sm border border-green-50 relative overflow-hidden group">
+                <div class="absolute right-0 top-0 p-3 opacity-10 text-6xl text-green-500 group-hover:scale-110 transition"><i class="fa-solid fa-check-double"></i></div>
+                <div class="relative z-10">
+                    <div class="h-10 w-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-xl mb-3">
+                        <i class="fa-solid fa-money-check-dollar"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-700">পেমেন্ট চেক</h4>
+                    <p class="text-[10px] text-slate-400">একাউন্ট অ্যাক্টিভেশন</p>
+                </div>
+            </a>
+
+            <!-- Withdrawals -->
+            <a href="/admin/withdrawals" class="admin-card bg-white p-5 rounded-3xl shadow-sm border border-orange-50 relative overflow-hidden group">
+                <div class="absolute right-0 top-0 p-3 opacity-10 text-6xl text-orange-500 group-hover:scale-110 transition"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <div class="relative z-10">
+                    <div class="h-10 w-10 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-xl mb-3">
+                        <i class="fa-solid fa-money-bill-transfer"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-700">উত্তোলন</h4>
+                    <p class="text-[10px] text-slate-400">উইথড্র রিকোয়েস্ট</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 3. DRIVE & TASKS -->
+    <div>
+        <h3 class="font-bold text-slate-700 px-2 text-sm mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-briefcase text-indigo-600"></i> ড্রাইভ ও টাস্ক
+        </h3>
+        <div class="grid grid-cols-3 gap-3">
+            <!-- Manage Drive -->
+            <a href="/admin/drive/manage" class="admin-card bg-white p-4 rounded-2xl shadow-sm border border-slate-50 flex flex-col items-center gap-2 text-center">
+                <div class="h-10 w-10 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-wifi"></i></div>
+                <span class="text-xs font-bold text-slate-600">ড্রাইভ প্যাক</span>
+            </a>
+            
+            <!-- Create Task -->
+            <a href="/adtask" class="admin-card bg-white p-4 rounded-2xl shadow-sm border border-slate-50 flex flex-col items-center gap-2 text-center">
+                <div class="h-10 w-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-plus"></i></div>
+                <span class="text-xs font-bold text-slate-600">নতুন টাস্ক</span>
+            </a>
+
+            <!-- Check Proofs -->
+            <a href="/admin/submissions" class="admin-card bg-white p-4 rounded-2xl shadow-sm border border-slate-50 flex flex-col items-center gap-2 text-center">
+                <div class="h-10 w-10 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-clipboard-check"></i></div>
+                <span class="text-xs font-bold text-slate-600">টাস্ক প্রুফ</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 4. USER & DATA -->
+    <div>
+        <h3 class="font-bold text-slate-700 px-2 text-sm mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-users-gear text-slate-600"></i> ইউজার ডাটাবেস
+        </h3>
+        <div class="grid grid-cols-2 gap-3">
+            <a href="/admin/users" class="bg-white p-3 rounded-xl border border-slate-100 flex items-center gap-3 hover:bg-slate-50 transition">
+                <div class="h-8 w-8 bg-slate-100 text-slate-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-list"></i></div>
+                <span class="text-xs font-bold text-slate-600">সকল ইউজার</span>
+            </a>
+            
+            <a href="/admin/ref-check" class="bg-white p-3 rounded-xl border border-slate-100 flex items-center gap-3 hover:bg-slate-50 transition">
+                <div class="h-8 w-8 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                <span class="text-xs font-bold text-slate-600">রেফার চেক</span>
+            </a>
+
+            <a href="/admin/offline-users" class="bg-white p-3 rounded-xl border border-slate-100 flex items-center gap-3 hover:bg-slate-50 transition">
+                <div class="h-8 w-8 bg-red-100 text-red-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-user-slash"></i></div>
+                <span class="text-xs font-bold text-slate-600">ইনএক্টিভ ইউজার</span>
+            </a>
+
+            <a href="/admin/custom-filter" class="bg-white p-3 rounded-xl border border-slate-100 flex items-center gap-3 hover:bg-slate-50 transition">
+                <div class="h-8 w-8 bg-sky-100 text-sky-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-filter"></i></div>
+                <span class="text-xs font-bold text-slate-600">অ্যাডভান্স ফিল্টার</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 5. UPLOAD PROOF (For Public Gallery) -->
+    <a href="/proofs" class="block bg-pink-50 border border-pink-100 p-4 rounded-3xl flex items-center justify-between group hover:bg-pink-100 transition">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 bg-pink-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-pink-200">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-slate-700 text-sm">পেমেন্ট প্রুফ আপলোড</h4>
+                <p class="text-[10px] text-slate-500">গ্যালারিতে ছবি যোগ করুন</p>
+            </div>
+        </div>
+        <i class="fa-solid fa-chevron-right text-pink-400"></i>
+    </a>
+
+    <!-- 6. SETTINGS FORM -->
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-50">
+        <h3 class="font-bold text-slate-700 mb-5 pb-2 border-b border-gray-100 flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-[#0057FF]"></i> সাইট কন্ট্রোল
+        </h3>
+
+        <form method="POST" action="/admin" class="space-y-6">
+            
+            <!-- Toggles -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-700">Maintenance Mode</h4>
+                        <p class="text-[10px] text-slate-400">সাইট বন্ধ থাকবে</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="maintenance" class="sr-only peer" {{ 'checked' if settings.maintenance_mode }}>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                    </label>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-700">Activation Required</h4>
+                        <p class="text-[10px] text-slate-400">টাকা দিয়ে একাউন্ট খুলতে হবে</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="activation" class="sr-only peer" {{ 'checked' if settings.activation_required }}>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Notice Input -->
+            <div>
+                <label class="block text-xs font-bold text-slate-500 mb-2">হোমপেজ নোটিশ</label>
+                <textarea name="notice" rows="3" class="w-full p-3 border border-gray-200 rounded-xl focus:outline-[#4F46E5] text-sm bg-slate-50 focus:bg-white transition">{{ settings.notice_text }}</textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-[#0A2540] text-white py-4 rounded-xl font-bold hover:bg-opacity-90 transition shadow-lg flex items-center justify-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i> সেটিংস সেভ করুন
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
