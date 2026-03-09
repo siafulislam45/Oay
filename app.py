@@ -956,7 +956,7 @@ def notice():
 def admin_withdrawals():
     try:
         # ১. পেন্ডিং রিকোয়েস্ট আনা
-        res = supabase.table('withdrawals').select('*').eq('status', 'pending').order('created_at', desc=True).execute()
+        res = supabase.table('withdrawals').select('*').eq('status', 'pending').order('created_at', desc=False).execute()
         withdrawals = res.data
     except Exception as e:
         print(f"Fetch Error: {e}")
