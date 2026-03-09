@@ -949,7 +949,7 @@ def notice():
 
     return render_template('notice.html', notices=notices, user=g.user)
 # --- ADMIN: VIEW WITHDRAWAL REQUESTS (FIXED MISSING REQUESTS) ---
-# --- ADMIN: VIEW WITHDRAWAL REQUESTS (WITH REJECT COUNT) ---
+# --- ADMIN: VIEW WITHDRAWAL REQUESTS (WITH REJECT COUNT) ---# --- ADMIN: VIEW WITHDRAWAL REQUESTS (FIXED REJECT COUNT) ---
 @app.route('/admin/withdrawals')
 @login_required
 @admin_required
@@ -973,17 +973,16 @@ def admin_withdrawals():
             item['user_email'] = 'Deleted/Unknown User'
             item['is_active'] = False
 
-        # ৩. [NEW] ইউজারের আগের রিজেক্ট কাউন্ট বের করা
+        # ৩. [FIXED] ইউজারের আগের রিজেক্ট কাউন্ট বের করা (১০০% কাজ করবে)
         try:
-            reject_res = supabase.table('withdrawals') \
-                .select('id', count='exact', head=True) \
-                .eq('user_id', item['user_id']) \
-                .eq('status', 'rejected') \
-                .execute()
+            # সরাসরি রিজেক্ট হওয়া আইডিগুলো আনছি এবং সেগুলোর দৈর্ঘ্য (length) গুনছি
+            reject_res = supabase.table('withdrawals').select('id').eq('user_id', item['user_id']).eq('status', 'rejected').execute()
             
-            # রিজেক্ট সংখ্যা ভেরিয়েবলে রাখা
-            item['rejected_count'] = reject_res.count if reject_res.count else 0
-        except:
+            # লিস্টের দৈর্ঘ্যই হলো রিজেক্ট কাউন্ট
+            item['rejected_count'] = len(reject_res.data)
+            
+        except Exception as e:
+            print(f"Reject Count Error: {e}") # কোনো সমস্যা হলে Vercel logs-এ দেখাবে
             item['rejected_count'] = 0
             
         # ৪. ওয়ালেট টাইপ ফিক্স করা
