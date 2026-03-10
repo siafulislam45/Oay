@@ -1,10 +1,12 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<!-- 🚀 ThumbmarkJS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@thumbmarkjs/thumbmarkjs/dist/thumbmark.umd.js"></script>
+
 <div class="flex items-center justify-center min-h-[85vh] py-6 fade-in">
     <div class="bg-white p-8 rounded-[32px] shadow-2xl shadow-indigo-200 w-full max-w-sm border border-white/50 relative overflow-hidden">
         
-        <!-- Background Decor -->
         <div class="absolute top-0 right-0 w-32 h-32 bg-[#4F46E5] rounded-bl-full opacity-10 -mr-8 -mt-8"></div>
         <div class="absolute bottom-0 left-0 w-24 h-24 bg-[#7C3AED] rounded-tr-full opacity-10 -ml-8 -mb-8"></div>
 
@@ -14,103 +16,103 @@
                 <i class="fa-solid fa-user-plus"></i>
             </div>
             <h2 class="text-2xl font-bold text-slate-800">নতুন একাউন্ট</h2>
-            <p class="text-xs text-slate-500 mt-1">Pay-R এ জয়েন করুন এবং আয় শুরু করুন</p>
+            <p class="text-xs text-slate-500 mt-1">Pay-R এ জয়েন করুন</p>
         </div>
 
-        <!-- Warning Alert -->
         <div class="bg-orange-50 border border-orange-100 p-3 mb-6 rounded-xl relative z-10">
             <div class="flex gap-2 items-start">
                 <i class="fa-solid fa-circle-info text-orange-500 mt-0.5 text-xs"></i>
                 <div class="text-[10px] text-orange-800 leading-relaxed">
-                    অবশ্যই আপনার <b>আসল জিমেইল</b> এবং <b>সচল মোবাইল নম্বর</b> ব্যবহার করুন। পেমেন্টের সময় এটি প্রয়োজন হবে।
+                    অবশ্যই আপনার <b>আসল জিমেইল</b> এবং <b>সচল নম্বর</b> ব্যবহার করুন। এক ডিভাইসে একটির বেশি একাউন্ট খোলা নিষেধ।
                 </div>
             </div>
         </div>
 
-        <!-- Register Form -->
-        <form method="POST" action="/register" class="space-y-4 relative z-10">
+        <!-- Register Form (Added ID) -->
+        <form id="registerForm" method="POST" action="/register" class="space-y-4 relative z-10">
             
-            <!-- Hidden Referral Code -->
             <input type="hidden" name="ref_code" value="{{ ref_code if ref_code else '' }}">
+            
+            <!-- Hidden Device ID Field -->
+            <input type="hidden" name="device_id" id="deviceIdInput" value="">
 
-            <!-- Name Input -->
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">আপনার নাম</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <i class="fa-regular fa-user text-slate-400"></i>
                     </div>
-                    <input type="text" name="name" required 
-                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" 
-                           placeholder="পুরো নাম লিখুন">
+                    <input type="text" name="name" required class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" placeholder="পুরো নাম">
                 </div>
             </div>
 
-            <!-- Phone Input -->
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">মোবাইল নাম্বার</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <i class="fa-solid fa-phone text-slate-400 text-xs"></i>
                     </div>
-                    <input type="number" name="phone" required 
-                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" 
-                           placeholder="017xxxxxxxx">
+                    <input type="number" name="phone" required class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" placeholder="017xxxxxxxx">
                 </div>
             </div>
 
-            <!-- Email Input -->
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">ইমেইল এড্রেস</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <i class="fa-regular fa-envelope text-slate-400"></i>
                     </div>
-                    <input type="email" name="email" required 
-                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" 
-                           placeholder="real.email@gmail.com">
+                    <input type="email" name="email" required class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" placeholder="user@gmail.com">
                 </div>
             </div>
             
-            <!-- Password Input -->
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">পাসওয়ার্ড</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <i class="fa-solid fa-lock text-slate-400"></i>
                     </div>
-                    <input type="password" name="password" required 
-                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" 
-                           placeholder="••••••••">
+                    <input type="password" name="password" required class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" placeholder="••••••••">
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="w-full bg-[#4F46E5] text-white py-3.5 rounded-xl font-bold hover:bg-indigo-700 active:scale-95 transition shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 mt-2">
+            <button type="submit" id="submitBtn" class="w-full bg-[#4F46E5] text-white py-3.5 rounded-xl font-bold hover:bg-indigo-700 active:scale-95 transition shadow-lg flex items-center justify-center gap-2 mt-2">
                 <span>একাউন্ট খুলুন</span>
                 <i class="fa-solid fa-arrow-right"></i>
             </button>
         </form>
 
-        <!-- Extra Links -->
-        <div class="grid grid-cols-2 gap-3 mt-6 relative z-10">
-            <a href="/proofs" class="flex items-center justify-center gap-2 bg-pink-50 text-pink-600 py-2.5 rounded-xl text-[10px] font-bold border border-pink-100 hover:bg-pink-100 transition">
-                <i class="fa-solid fa-receipt"></i> পেমেন্ট প্রুফ
-            </a>
-            <a href="/tutorial" class="flex items-center justify-center gap-2 bg-purple-50 text-purple-600 py-2.5 rounded-xl text-[10px] font-bold border border-purple-100 hover:bg-purple-100 transition">
-                <i class="fa-brands fa-youtube"></i> কাজের ভিডিও
-            </a>
-        </div>
-        
-        <!-- Login Link -->
         <div class="mt-6 text-center border-t border-slate-100 pt-4 relative z-10">
             <p class="text-sm text-slate-500">
                 আগেই একাউন্ট আছে? 
-                <a href="/login" class="text-[#4F46E5] font-bold hover:underline ml-1">
-                    লগিন করুন
-                </a>
+                <a href="/login" class="text-[#4F46E5] font-bold hover:underline ml-1">লগিন করুন</a>
             </p>
         </div>
     </div>
 </div>
+
+<!-- 🛡️ ThumbmarkJS Logic -->
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // ফর্ম সাবমিট হতে বাধা দাও
+        
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> ডিভাইস চেক হচ্ছে...';
+        btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+        // ThumbmarkJS দিয়ে ফিঙ্গারপ্রিন্ট তৈরি
+        ThumbmarkJS.getFingerprint().then(function(fp) {
+            // হিডেন ইনপুটে ফিঙ্গারপ্রিন্ট বসানো
+            document.getElementById('deviceIdInput').value = fp;
+            // এবার ফর্ম সাবমিট করা
+            document.getElementById('registerForm').submit();
+        }).catch(function(err) {
+            console.error("Fingerprint failed: ", err);
+            // ফেইল করলেও সাবমিট করে দিবে (যাতে রিয়েল ইউজার না আটকায়)
+            document.getElementById('registerForm').submit();
+        });
+    });
+</script>
+
 {% endblock %}
