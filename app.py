@@ -372,6 +372,68 @@ def special_task():
 
     return render_template('special_task.html', task=SPECIAL_TASK_INFO, user=g.user)
 # --- SPECIAL VIDEO PAGE (/st) ---
+
+# --- ADMIN: VIP ACTION (APPROVE / REJECT) ---
+@app.route('/admin/vip/action/<action>/<int:req_id>')
+@login_required
+@admin_required
+def vip_action(action, req_id):
+    from datetime import datetime, timedelta
+    try:
+        # ১. রিকোয়েস্ট ডাটাবেস থেকে আনা
+        req_res = supabase.table('vip_requests').select('*').eq('id', req_id).single().execute()
+        req = req_res.data
+        
+        if not req: 
+            flash("রিকোয়েস্ট পাওয়া যায়নি!", "error")
+            return redirect(url_for('admin_vip'))
+
+        if action == 'approve':
+            plan = VIP_PLANS.get(req['level_id'])
+            
+            # ২. মেয়াদ (Expiry Date) তৈরি করা
+            expiry_date = (datetime.utcnow() + timedelta(days=plan['days'])).isoformat()
+            
+            # ৩. ইউজারের প্রোফাইলে লেভেল ব্যাজ আপডেট
+            supabase.table('profiles').update({
+                'current_level': req['level_id']
+            }).eq('id', req['user_id']).execute()
+            
+            # ৪. ইউজারের জন্য নতুন প্যাকেজ চালু করা (user_vips টেবিলে)
+            supabase.table('user_vips').insert({
+                'user_id': req['user_id'],
+                'level_id': req['level_id'],
+                'profit': plan['daily_profit'],
+                'expires_at': expiry_date,
+                'status': 'active'
+            }).execute()
+            
+            # ৫. রেফারেল কমিশন দেওয়া (৫%)
+            user_info = supabase.table('profiles').select('referred_by').eq('id', req['user_id']).single().execute().data
+            referrer_id = user_info.get('referred_by')
+            
+            if referrer_id:
+                commission = (float(plan['price']) * 5) / 100
+                ref_user = supabase.table('profiles').select('balance').eq('id', referrer_id).single().execute().data
+                if ref_user:
+                    new_ref_bal = float(ref_user['balance']) + commission
+                    supabase.table('profiles').update({'balance': new_ref_bal}).eq('id', referrer_id).execute()
+            
+            # ৬. রিকোয়েস্ট স্ট্যাটাস 'Approved' করা
+            supabase.table('vip_requests').update({'status': 'approved'}).eq('id', req_id).execute()
+            flash("✅ VIP প্যাকেজ সফলভাবে চালু করা হয়েছে এবং কমিশন দেওয়া হয়েছে!", "success")
+            
+        elif action == 'reject':
+            # রিজেক্ট করলে শুধু স্ট্যাটাস পরিবর্তন হবে
+            supabase.table('vip_requests').update({'status': 'rejected'}).eq('id', req_id).execute()
+            flash("❌ রিকোয়েস্টটি বাতিল করা হয়েছে।", "warning")
+            
+    except Exception as e:
+        print(f"VIP Action Error: {e}")
+        flash(f"System Error: {str(e)}", "error")
+
+    return redirect(url_for('admin_vip'))
+    
 @app.route('/st')
 def special_video_page():
     # লগিন ছাড়াও দেখা যাবে, তবে লগিন থাকলে মেনু ঠিক থাকবে
