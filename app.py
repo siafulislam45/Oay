@@ -1233,7 +1233,6 @@ def delete_task(id):
 # --- ADMIN: VIEW PENDING SUBMISSIONS (LIMIT 20) ---
 @app.route('/admin/submissions')
 @login_required
-@admin_required
 @fatema_admin_required
 def admin_submissions():
     # ১. মাত্র ২০টি পেন্ডিং ডাটা আনা (Performance এর জন্য)
