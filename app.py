@@ -1623,67 +1623,73 @@ def login():
             
     return render_template('login.html')
     # --- REGISTER ROUTE (BLOCK IF COOKIE EXISTS) ---
+# --- REGISTER ROUTE (WITH THUMBMARK JS PROTECTION) ---
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    # ১. [NEW] চেক করা ব্রাউজারে আগে কোনো একাউন্ট লগিন ছিল কিনা
+    # কুকি চেক (আগের লেয়ার)
     existing_email = request.cookies.get('saved_email')
-    
     if existing_email:
-        flash(f"⚠️ এই ডিভাইসে ইতিমধ্যে একটি একাউন্ট আছে: ({existing_email})। দয়া করে লগিন করুন।", "warning")
+        flash(f"⚠️ এই ডিভাইসে ইতিমধ্যে একটি একাউন্ট আছে: ({existing_email})।", "warning")
         return redirect(url_for('login'))
 
-    # বাকি কোড আগের মতোই...
-    if request.method == 'GET':
-        ref_code = request.args.get('ref')
-        return render_template('register.html', ref_code=ref_code)
-
+    ref_code = request.args.get('ref')
+    
     if request.method == 'POST':
         full_name = request.form.get('name')
         mobile_number = request.form.get('phone')
         email = request.form.get('email')
         password = request.form.get('password')
         used_ref_code = request.form.get('ref_code')
+        device_id = request.form.get('device_id') # <--- ThumbmarkJS Fingerprint
         
         try:
+            # 🛡️ [NEW] ThumbmarkJS Device Check
+            if device_id:
+                # চেক করো এই ডিভাইস আইডি ডাটাবেসে আগে থেকে আছে কিনা
+                device_check = supabase.table('profiles').select('email').eq('device_id', device_id).execute()
+                if device_check.data and len(device_check.data) > 0:
+                    flash("⛔ এই ডিভাইস থেকে ইতিমধ্যে একটি একাউন্ট খোলা হয়েছে! এক ডিভাইসে একাধিক একাউন্ট করা নিষেধ।", "error")
+                    return redirect(url_for('login'))
+
+            # ১. সাইন আপ (Supabase Auth)
             res = supabase.auth.sign_up({
                 "email": email, "password": password,
                 "options": {"email_redirect_to": "https://taskking.vercel.app/login"}
             })
             new_user_id = res.user.id
             
-            # Generate Unique Code
-            import random, string
-            chars = string.ascii_uppercase + string.digits
-            my_unique_code = 'TK' + ''.join(random.choices(chars, k=4))
+            # ২. ইউনিক কোড
+            my_unique_code = generate_ref_code()
             
+            # ৩. প্রোফাইল আপডেট (Device ID সহ)
             supabase.table('profiles').update({
                 'full_name': full_name,
                 'mobile_number': mobile_number,
                 'referral_code': my_unique_code,
-                'balance': 0.00
+                'balance': 0.00,
+                'device_id': device_id # <--- ডিভাইস আইডি সেভ করা হলো
             }).eq('id', new_user_id).execute()
 
-            # Referral Bonus Logic
+            # ৪. Referral Bonus Logic (10 Taka Both)
             if used_ref_code:
                 try:
-                    referrer_res = supabase.table('profiles').select('*').eq('referral_code', used_ref_code).single().execute()
-                    referrer = referrer_res.data
+                    referrer = supabase.table('profiles').select('*').eq('referral_code', used_ref_code).single().execute().data
                     if referrer:
                         supabase.table('profiles').update({'referred_by': referrer['id']}).eq('id', new_user_id).execute()
-                        # Bonus
-                        supabase.table('profiles').update({'balance': float(referrer['balance']) + 10.00}).eq('id', referrer['id']).execute()
-                        supabase.table('profiles').update({'balance': 10.00}).eq('id', new_user_id).execute()
+                        supabase.table('profiles').update({'balance': float(referrer['balance']) + 10.0}).eq('id', referrer['id']).execute()
+                        supabase.table('profiles').update({'balance': 10.0}).eq('id', new_user_id).execute()
                 except: pass
 
-            flash("✅ একাউন্ট তৈরি হয়েছে! ইমেইল ভেরিফাই করে লগিন করুন।", "info")
+            flash("✅ একাউন্ট তৈরি হয়েছে! ইমেইল ভেরিফাই করে লগিন করুন।", "success")
             return redirect(url_for('login'))
             
         except Exception as e:
-            flash("❌ রেজিস্ট্রেশন ব্যর্থ হয়েছে।", "error")
+            flash("❌ রেজিস্ট্রেশন ব্যর্থ হয়েছে বা ইমেইলটি আগেই ব্যবহৃত।", "error")
+            print(f"Reg Error: {e}")
             return redirect(url_for('register'))
             
-    return render_template('register.html')
-
+    return render_template('register.html', ref_code=ref_code)
+    
 @app.route('/logout')
 def logout():
     session.clear() # শুধু লগআউট হবে, কিন্তু কুকি থেকে যাবে
