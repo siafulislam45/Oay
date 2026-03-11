@@ -27,7 +27,16 @@ if not url or not key:
 
 supabase: Client = create_client(url, key)
 
-
+# ==========================================
+# SPECIAL TASK CONFIGURATION
+# ==========================================
+SPECIAL_TASK_INFO = {
+    'title': '🔥 Airdrop Transfer & Registration',
+    'reward': 50.00,
+    'link': 'https://t.me/TelasterBot?start=23212', 
+    'tutorial': 'https://payr.site/st', 
+    'description': 'ভিডিও দেখে নিয়ম মেনে Bot Start করে, রেফারেল লিংক কপি করুন এবং এয়ারড্রপ ট্রান্সফার করে প্রুফ দিন।'
+}
 # --- VIP LEVEL CONFIGURATION ---
 VIP_PLANS = {
     1: {'name': 'Starter', 'price': 100, 'daily_profit': 10, 'days': 14, 'min_withdraw': 200},
