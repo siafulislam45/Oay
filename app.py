@@ -28,15 +28,6 @@ if not url or not key:
 supabase: Client = create_client(url, key)
 
 
-# --- SPECIAL TASK CONFIG ---
-SPECIAL_TASK_INFO = {
-    'title': '🔥 Airdrop Transfer & Registration',
-    'reward': 50.00,
-    'link': 'https://t.me/TelasterBot?start=23212', 
-    'tutorial': 'https://payr.site/st', 
-    'description': 'ভিডিও দেখে নিয়ম মেনে Bot  Start করে, রেপারাল লিংক কপি করুন এবং এয়ারড্রপ ট্রান্সফার করুন এবং প্রুফ জমা দিন।'
-}
-
 # --- VIP LEVEL CONFIGURATION ---
 VIP_PLANS = {
     1: {'name': 'Starter', 'price': 100, 'daily_profit': 10, 'days': 14, 'min_withdraw': 200},
@@ -121,7 +112,50 @@ def generate_ref_code():
     chars = string.ascii_uppercase + string.digits
     code = 'PR' + ''.join(random.choices(chars, k=4))
     return code
-    
+
+# --- HELPER: SMART IMGBB UPLOAD (AUTO ROTATION) ---
+def smart_imgbb_upload(image_file):
+    try:
+        # ছবি একবার রিড করে Base64 করা হচ্ছে (যাতে লুপের ভেতর বারবার রিড করতে না হয়)
+        image_string = base64.b64encode(image_file.read()).decode('utf-8')
+        
+        # ডাটাবেস থেকে সব অ্যাক্টিভ API Key নিয়ে আসা
+        keys_res = supabase.table('imgbb_keys').select('*').eq('is_active', True).execute()
+        active_keys = keys_res.data
+        
+        if not active_keys:
+            return None, "সিস্টেমে কোনো অ্যাক্টিভ ImgBB API Key নেই! এডমিনকে জানান।"
+
+        # লুপ চালিয়ে একটার পর একটা Key ট্রাই করা
+        for key_data in active_keys:
+            api_key = key_data['api_key']
+            key_id = key_data['id']
+            
+            try:
+                payload = {"key": api_key, "image": image_string}
+                response = requests.post("https://api.imgbb.com/1/upload", data=payload)
+                result = response.json()
+                
+                # যদি আপলোড সফল হয়, ইউআরএল রিটার্ন করবে
+                if response.status_code == 200 and result.get('success'):
+                    return result['data']['url'], None
+                else:
+                    # যদি Key ফেইল করে (লিমিট শেষ/ভুল), তবে ডাটাবেস থেকে ডিজেবল করে দাও
+                    print(f"Key Failed: {api_key} -> Auto Disabling")
+                    supabase.table('imgbb_keys').update({'is_active': False}).eq('id', key_id).execute()
+                    continue # পরের Key দিয়ে ট্রাই করো
+                    
+            except Exception as req_e:
+                print(f"ImgBB Request Error: {req_e}")
+                # নেটওয়ার্ক এরর হলেও Key ডিজেবল করে পরেরটায় যাবে
+                supabase.table('imgbb_keys').update({'is_active': False}).eq('id', key_id).execute()
+                continue
+                
+        return None, "সবগুলো API Key এর লিমিট শেষ হয়ে গেছে!"
+
+    except Exception as e:
+        return None, f"Upload processing error: {str(e)}"
+        
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -1562,52 +1596,52 @@ def adm_settings():
             flash("Error updating settings", "error")
 
     return render_template('adm.html', user=g.user)
-    
+    # --- USER: SUBMIT TASK (WITH SMART UPLOAD & DUPLICATE CHECK) ---
 @app.route('/task/submit/<int:task_id>', methods=['GET', 'POST'])
 @login_required
 def submit_task(task_id):
-    # টাস্ক ডিটেইলস আনা
+    # ১. টাস্ক ডিটেইলস আনা
     try:
         task_res = supabase.table('tasks').select('*').eq('id', task_id).single().execute()
         task = task_res.data
-    except:
-        flash("টাস্ক পাওয়া যায়নি।", "error")
+    except Exception as e:
+        print(f"Task Fetch Error: {e}")
+        flash("❌ টাস্ক পাওয়া যায়নি।", "error")
         return redirect(url_for('tasks'))
 
-    # ১. [NEW] চেক করা: ইউজার কি আগেই এই টাস্ক সাবমিট করেছে?
-    existing_sub = supabase.table('submissions').select('id').eq('user_id', session['user_id']).eq('task_id', task_id).execute()
-    
-    if len(existing_sub.data) > 0:
-        flash("⚠️ আপনি ইতিমধ্যে এই কাজটি জমা দিয়েছেন!", "warning")
-        return redirect(url_for('tasks'))
+    # ২. চেক করা: ইউজার কি আগেই এই টাস্ক সাবমিট করেছে?
+    try:
+        existing_sub = supabase.table('submissions').select('id, status').eq('user_id', session['user_id']).eq('task_id', task_id).execute()
+        
+        if existing_sub.data:
+            # যদি রিজেক্টেড হয়, তবে আবার করতে দিবে। পেন্ডিং বা অ্যাপ্রুভ হলে আটকাবে।
+            for sub in existing_sub.data:
+                if sub['status'] in ['pending', 'approved']:
+                    flash(f"⚠️ আপনার টাস্কটি ইতিমধ্যে {sub['status']} অবস্থায় আছে!", "warning")
+                    return redirect(url_for('tasks'))
+    except Exception as e:
+        print(f"Duplicate Check Error: {e}")
 
+    # ৩. ফর্ম সাবমিট (POST Request)
     if request.method == 'POST':
+        
+        # ফাইল আছে কিনা চেক
         if 'screenshot' not in request.files:
-            flash("ছবি আপলোড করুন!", "error")
+            flash("❌ ছবি আপলোড করুন!", "error")
             return redirect(request.url)
             
         file = request.files['screenshot']
         if file.filename == '':
-            flash("কোনো ছবি সিলেক্ট করা হয়নি", "error")
+            flash("❌ কোনো ছবি সিলেক্ট করা হয়নি", "error")
             return redirect(request.url)
 
         try:
-            # ২. ImgBB তে আপলোড করা
-            api_key = "ee9eb88bc986dde5a8595f3829e4da27" 
-            image_string = base64.b64encode(file.read())
+            # --- 🚀 NEW: SMART UPLOAD LOGIC ---
+            # smart_imgbb_upload ফাংশনটি ২টা জিনিস রিটার্ন করবে: URL এবং Error Message
+            img_url, error_msg = smart_imgbb_upload(file)
             
-            payload = {
-                "key": api_key,
-                "image": image_string,
-            }
-            
-            response = requests.post("https://api.imgbb.com/1/upload", data=payload)
-            data = response.json()
-            
-            if data['success']:
-                img_url = data['data']['url']
-                
-                # ৩. ডাটাবেসে সেভ করা
+            if img_url:
+                # 🟢 আপলোড সফল হলে ডাটাবেসে সেভ করো
                 supabase.table('submissions').insert({
                     'user_id': session['user_id'],
                     'task_id': task_id,
@@ -1615,15 +1649,58 @@ def submit_task(task_id):
                     'status': 'pending'
                 }).execute()
                 
-                flash("✅ সফলভাবে জমা হয়েছে! এডমিন চেক করে পেমেন্ট দিবে।", "success")
+                flash("✅ কাজ সফলভাবে জমা হয়েছে! এডমিন চেক করে পেমেন্ট দিবে।", "success")
                 return redirect(url_for('tasks'))
             else:
-                flash("❌ ছবি আপলোড ব্যর্থ হয়েছে।", "error")
+                # 🔴 আপলোড ফেইল হলে
+                flash(f"❌ {error_msg}", "error")
+                return redirect(request.url)
                 
         except Exception as e:
-            flash(f"Error: {str(e)}", "error")
+            print(f"Submission Error: {e}")
+            flash(f"সিস্টেম এরর: {str(e)}", "error")
 
-    return render_template('submit_task.html', task=task, user=g.user)# --- ACCOUNT PAGE ROUTE (WITH REFERRAL COUNT) ---
+    # ৪. পেজ রেন্ডার (GET Request)
+    return render_template('submit_task.html', task=task, user=g.user)
+    # --- ADMIN: MANAGE IMGBB API KEYS ---
+@app.route('/admin/api-keys', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_api_keys():
+    if request.method == 'POST':
+        # টেক্সট এরিয়া থেকে একসাথে অনেকগুলো Key নেওয়া
+        bulk_keys = request.form.get('bulk_keys', '')
+        
+        # কমা, স্পেস বা নতুন লাইন দিয়ে আলাদা করা
+        import re
+        keys_list = re.split(r'[,\s\n]+', bulk_keys)
+        
+        success_count = 0
+        for k in keys_list:
+            k = k.strip()
+            if len(k) > 10: # Key সাইজ ভ্যালিডেশন
+                try:
+                    supabase.table('imgbb_keys').insert({'api_key': k, 'is_active': True}).execute()
+                    success_count += 1
+                except:
+                    pass # ডুপ্লিকেট Key হলে ইগনোর করবে
+                    
+        flash(f"✅ সফলভাবে {success_count} টি নতুন API Key যুক্ত করা হয়েছে!", "success")
+        return redirect(url_for('admin_api_keys'))
+
+    # সব Key লোড করা
+    all_keys = supabase.table('imgbb_keys').select('*').order('created_at', desc=True).execute().data
+    return render_template('admin_api_keys.html', keys=all_keys)
+
+# --- ADMIN: DELETE API KEY ---
+@app.route('/admin/api-keys/delete/<int:key_id>')
+@login_required
+@admin_required
+def delete_api_key(key_id):
+    supabase.table('imgbb_keys').delete().eq('id', key_id).execute()
+    flash("🗑️ API Key মুছে ফেলা হয়েছে।", "success")
+    return redirect(url_for('admin_api_keys'))
+    
 @app.route('/account')
 @login_required
 def account():
