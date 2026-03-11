@@ -1,5 +1,4 @@
 {% extends "layout.html" %}
-
 {% block content %}
 <!-- 🚀 ThumbmarkJS Library -->
 <script src="https://cdn.jsdelivr.net/npm/@thumbmarkjs/thumbmarkjs/dist/thumbmark.umd.js"></script>
@@ -10,73 +9,82 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-[#4F46E5] rounded-bl-full opacity-10 -mr-8 -mt-8"></div>
         <div class="absolute bottom-0 left-0 w-24 h-24 bg-[#7C3AED] rounded-tr-full opacity-10 -ml-8 -mb-8"></div>
 
-        <!-- Header -->
         <div class="text-center mb-6 relative z-10">
             <div class="h-14 w-14 bg-indigo-50 text-[#4F46E5] rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-sm transform -rotate-3">
-                <i class="fa-solid fa-user-plus"></i>
+                <i class="fa-solid fa-user-shield"></i>
             </div>
             <h2 class="text-2xl font-bold text-slate-800">নতুন একাউন্ট</h2>
             <p class="text-xs text-slate-500 mt-1">Pay-R এ জয়েন করুন</p>
         </div>
 
-        <div class="bg-orange-50 border border-orange-100 p-3 mb-6 rounded-xl relative z-10">
+        <div class="bg-blue-50 border border-blue-100 p-3 mb-6 rounded-xl relative z-10">
             <div class="flex gap-2 items-start">
-                <i class="fa-solid fa-circle-info text-orange-500 mt-0.5 text-xs"></i>
-                <div class="text-[10px] text-orange-800 leading-relaxed">
-                    অবশ্যই আপনার <b>আসল জিমেইল</b> এবং <b>সচল নম্বর</b> ব্যবহার করুন। এক ডিভাইসে একটির বেশি একাউন্ট খোলা নিষেধ।
+                <i class="fa-solid fa-circle-info text-blue-600 mt-0.5 text-xs"></i>
+                <div class="text-[10px] text-blue-800 leading-relaxed font-medium">
+                    অবশ্যই আপনার <b>আসল @gmail.com</b> এবং <b>সচল ১১-ডিজিটের মোবাইল নম্বর</b> ব্যবহার করুন। ফেইক ডাটা দিলে একাউন্ট সাসপেন্ড হবে।
                 </div>
             </div>
         </div>
 
-        <!-- Register Form (Added ID) -->
         <form id="registerForm" method="POST" action="/register" class="space-y-4 relative z-10">
-            
             <input type="hidden" name="ref_code" value="{{ ref_code if ref_code else '' }}">
-            
-            <!-- Hidden Device ID Field -->
             <input type="hidden" name="device_id" id="deviceIdInput" value="">
 
+            <!-- Name Input -->
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">আপনার নাম</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <i class="fa-regular fa-user text-slate-400"></i>
                     </div>
-                    <input type="text" name="name" required class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" placeholder="পুরো নাম">
+                    <input type="text" name="name" required minlength="3"
+                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" 
+                           placeholder="পুরো নাম">
                 </div>
             </div>
 
+            <!-- Phone Input -->
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">মোবাইল নাম্বার</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <i class="fa-solid fa-phone text-slate-400 text-xs"></i>
                     </div>
-                    <input type="number" name="phone" required class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" placeholder="017xxxxxxxx">
+                    <input type="tel" name="phone" id="phoneInput" required pattern="01[3-9][0-9]{8}"
+                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] invalid:focus:border-red-500 bg-slate-50 focus:bg-white transition text-sm font-mono" 
+                           placeholder="017xxxxxxxx">
                 </div>
+                <p class="text-[9px] text-red-500 mt-1 hidden" id="phoneError">সঠিক ১১ ডিজিটের মোবাইল নাম্বার দিন (Ex: 017...)</p>
             </div>
 
+            <!-- Email Input -->
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">ইমেইল এড্রেস</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <i class="fa-regular fa-envelope text-slate-400"></i>
+                        <i class="fa-brands fa-google text-slate-400"></i>
                     </div>
-                    <input type="email" name="email" required class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" placeholder="user@gmail.com">
+                    <input type="email" name="email" id="emailInput" required pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
+                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] invalid:focus:border-red-500 bg-slate-50 focus:bg-white transition text-sm font-mono" 
+                           placeholder="yourname@gmail.com">
                 </div>
+                <p class="text-[9px] text-red-500 mt-1 hidden" id="emailError">শুধুমাত্র @gmail.com গ্রহণযোগ্য!</p>
             </div>
             
+            <!-- Password Input -->
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">পাসওয়ার্ড</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <i class="fa-solid fa-lock text-slate-400"></i>
                     </div>
-                    <input type="password" name="password" required class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm" placeholder="••••••••">
+                    <input type="password" name="password" id="passwordInput" required minlength="6"
+                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] invalid:focus:border-red-500 bg-slate-50 focus:bg-white transition text-sm" 
+                           placeholder="কমপক্ষে ৬ অক্ষর">
                 </div>
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-[#4F46E5] text-white py-3.5 rounded-xl font-bold hover:bg-indigo-700 active:scale-95 transition shadow-lg flex items-center justify-center gap-2 mt-2">
+            <button type="submit" id="submitBtn" class="w-full bg-[#4F46E5] text-white py-3.5 rounded-xl font-bold hover:bg-indigo-700 active:scale-95 transition shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 mt-4">
                 <span>একাউন্ট খুলুন</span>
                 <i class="fa-solid fa-arrow-right"></i>
             </button>
@@ -91,25 +99,44 @@
     </div>
 </div>
 
-<!-- 🛡️ ThumbmarkJS Logic -->
 <script>
+    // Live Input Validation Feedback
+    const emailInput = document.getElementById('emailInput');
+    const emailError = document.getElementById('emailError');
+    
+    emailInput.addEventListener('input', function() {
+        if(this.value.length > 0 && !this.value.endsWith('@gmail.com')) {
+            emailError.classList.remove('hidden');
+        } else {
+            emailError.classList.add('hidden');
+        }
+    });
+
+    const phoneInput = document.getElementById('phoneInput');
+    const phoneError = document.getElementById('phoneError');
+    
+    phoneInput.addEventListener('input', function() {
+        const regex = /^01[3-9][0-9]{8}$/;
+        if(this.value.length > 0 && !regex.test(this.value)) {
+            phoneError.classList.remove('hidden');
+        } else {
+            phoneError.classList.add('hidden');
+        }
+    });
+
+    // Device Check on Submit
     document.getElementById('registerForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // ফর্ম সাবমিট হতে বাধা দাও
+        e.preventDefault(); 
         
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> ডিভাইস চেক হচ্ছে...';
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> যাচাই করা হচ্ছে...';
         btn.classList.add('opacity-80', 'cursor-not-allowed');
 
-        // ThumbmarkJS দিয়ে ফিঙ্গারপ্রিন্ট তৈরি
         ThumbmarkJS.getFingerprint().then(function(fp) {
-            // হিডেন ইনপুটে ফিঙ্গারপ্রিন্ট বসানো
             document.getElementById('deviceIdInput').value = fp;
-            // এবার ফর্ম সাবমিট করা
             document.getElementById('registerForm').submit();
         }).catch(function(err) {
-            console.error("Fingerprint failed: ", err);
-            // ফেইল করলেও সাবমিট করে দিবে (যাতে রিয়েল ইউজার না আটকায়)
             document.getElementById('registerForm').submit();
         });
     });
