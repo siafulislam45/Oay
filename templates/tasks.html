@@ -28,46 +28,7 @@
         </div>
     </div>
 
-    <!-- 2. SPECIAL PINNED TASK (Conditionally Shown) -->
-    {% if show_special %}
-    <div class="bg-gradient-to-r from-[#0A2540] to-[#4F46E5] p-1 rounded-3xl shadow-xl relative overflow-hidden group">
-        <!-- Shine Animation -->
-        <div class="absolute top-0 left-[-100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 animate-[shimmer_3s_infinite]"></div>
-        
-        <div class="absolute top-0 right-0 bg-yellow-400 text-[#0A2540] text-[10px] font-bold px-4 py-1 rounded-bl-xl z-10 flex items-center gap-1 shadow-sm">
-            <i class="fa-solid fa-star"></i> PINNED
-        </div>
-        
-        <div class="bg-white rounded-[24px] p-5 relative z-10">
-            <div class="flex items-start justify-between gap-3">
-                <div class="flex items-center gap-4">
-                    <div class="h-14 w-14 bg-gradient-to-br from-purple-100 to-indigo-100 text-[#4F46E5] rounded-2xl flex items-center justify-center text-2xl shadow-inner border border-indigo-50">
-                        <i class="fa-solid fa-gift"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-base leading-tight">{{ special_task.title }}</h3>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                                ৳ {{ special_task.reward }}
-                            </span>
-                            
-                            <!-- Rejected Badge -->
-                            {% if special_rejected %}
-                            <span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 animate-pulse">
-                                <i class="fa-solid fa-xmark"></i> Rejected, Try Again!
-                            </span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <a href="/special-task" class="mt-4 block w-full bg-[#0A2540] text-white text-center px-6 py-3 rounded-xl text-sm font-bold hover:bg-[#4F46E5] transition shadow-lg">
-                {{ 'আবার জমা দিন' if special_rejected else 'এখনই করুন' }} <i class="fa-solid fa-arrow-right ml-1"></i>
-            </a>
-        </div>
-    </div>
-    {% endif %}
+
 
     <!-- 3. NORMAL TASK LIST -->
     <div class="space-y-4 relative">
