@@ -1769,10 +1769,11 @@ def login():
                 flash("❌ ইমেইল বা পাসওয়ার্ড ভুল হয়েছে।", "error")
             
     return render_template('login.html')
-    # --- REGISTER ROUTE (BLOCK IF COOKIE EXISTS) ---
-# --- REGISTER ROUTE (WITH THUMBMARK JS PROTECTION) ---
+   # --- REGISTER ROUTE (WITH STRICT VALIDATION & THUMBMARK JS) ---
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    import re # Validation এর জন্য
+
     # কুকি চেক (আগের লেয়ার)
     existing_email = request.cookies.get('saved_email')
     if existing_email:
@@ -1782,42 +1783,62 @@ def register():
     ref_code = request.args.get('ref')
     
     if request.method == 'POST':
-        full_name = request.form.get('name')
-        mobile_number = request.form.get('phone')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        used_ref_code = request.form.get('ref_code')
-        device_id = request.form.get('device_id') # <--- ThumbmarkJS Fingerprint
+        full_name = request.form.get('name', '').strip()
+        mobile_number = request.form.get('phone', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        used_ref_code = request.form.get('ref_code', '').strip()
+        device_id = request.form.get('device_id')
         
-        try:
-            # 🛡️ [NEW] ThumbmarkJS Device Check
-            if device_id:
-                # চেক করো এই ডিভাইস আইডি ডাটাবেসে আগে থেকে আছে কিনা
+        # ==========================================
+        # 🛡️ STRICT DATA VALIDATION
+        # ==========================================
+        
+        # ১. Email Validation (Only Gmail allowed & format check)
+        if not re.match(r'^[a-z0-9._%+-]+@gmail\.com$', email):
+            flash("❌ শুধুমাত্র সঠিক @gmail.com একাউন্ট ব্যবহার করতে পারবেন!", "error")
+            return redirect(url_for('register', ref=used_ref_code))
+
+        # ২. Phone Validation (BD 11 Digits)
+        if not re.match(r'^01[3-9]\d{8}$', mobile_number):
+            flash("❌ মোবাইল নাম্বারটি সঠিক নয়। সঠিক ১১ ডিজিটের নাম্বার দিন।", "error")
+            return redirect(url_for('register', ref=used_ref_code))
+
+        # ৩. Password Validation
+        if len(password) < 6:
+            flash("❌ পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।", "error")
+            return redirect(url_for('register', ref=used_ref_code))
+
+        # ৪. Device ID Check (ThumbmarkJS)
+        if device_id:
+            try:
                 device_check = supabase.table('profiles').select('email').eq('device_id', device_id).execute()
                 if device_check.data and len(device_check.data) > 0:
-                    flash("⛔ এই ডিভাইস থেকে ইতিমধ্যে একটি একাউন্ট খোলা হয়েছে! এক ডিভাইসে একাধিক একাউন্ট করা নিষেধ।", "error")
+                    flash("⛔ এই ডিভাইস থেকে ইতিমধ্যে একটি একাউন্ট খোলা হয়েছে!", "error")
                     return redirect(url_for('login'))
+            except: pass
 
-            # ১. সাইন আপ (Supabase Auth)
+        # ==========================================
+        # 🟢 PROCEED TO REGISTRATION
+        # ==========================================
+        try:
             res = supabase.auth.sign_up({
                 "email": email, "password": password,
                 "options": {"email_redirect_to": "https://taskking.vercel.app/login"}
             })
             new_user_id = res.user.id
             
-            # ২. ইউনিক কোড
             my_unique_code = generate_ref_code()
             
-            # ৩. প্রোফাইল আপডেট (Device ID সহ)
             supabase.table('profiles').update({
                 'full_name': full_name,
                 'mobile_number': mobile_number,
                 'referral_code': my_unique_code,
                 'balance': 0.00,
-                'device_id': device_id # <--- ডিভাইস আইডি সেভ করা হলো
+                'device_id': device_id
             }).eq('id', new_user_id).execute()
 
-            # ৪. Referral Bonus Logic (10 Taka Both)
+            # Referral Bonus Logic (10 Taka Both)
             if used_ref_code:
                 try:
                     referrer = supabase.table('profiles').select('*').eq('referral_code', used_ref_code).single().execute().data
@@ -1833,7 +1854,7 @@ def register():
         except Exception as e:
             flash("❌ রেজিস্ট্রেশন ব্যর্থ হয়েছে বা ইমেইলটি আগেই ব্যবহৃত।", "error")
             print(f"Reg Error: {e}")
-            return redirect(url_for('register'))
+            return redirect(url_for('register', ref=used_ref_code))
             
     return render_template('register.html', ref_code=ref_code)
     
