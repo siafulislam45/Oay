@@ -2,7 +2,7 @@
 {% block content %}
 
 <style>
-    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    .fade-up { animation: fadeUp 0.6s ease-out; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     
     .glass-card {
@@ -16,7 +16,7 @@
 <div class="max-w-2xl mx-auto space-y-8 fade-up pb-32 pt-4">
 
     <!-- 1. HEADER SUMMARY -->
-    <div class="bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] rounded-[32px] p-6 text-white shadow-xl shadow-indigo-200 relative overflow-hidden">
+    <div class="bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] rounded-[32px] p-6 text-white shadow-xl shadow-indigo-200 relative overflow-hidden">
         <!-- Decor -->
         <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
         <div class="absolute bottom-0 left-0 w-24 h-24 bg-pink-500 opacity-20 rounded-full blur-2xl"></div>
@@ -83,7 +83,7 @@
                             <i class="fa-solid fa-xmark"></i> Failed
                         </span>
                     {% else %}
-                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-0.5 rounded-full mt-1 animate-pulse">
+                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-yellow-600 bg-yellow-50 border border-yellow-200 px-2.5 py-0.5 rounded-full mt-1 animate-pulse">
                             <i class="fa-regular fa-clock"></i> Pending
                         </span>
                     {% endif %}
@@ -96,12 +96,12 @@
         <!-- Empty State -->
         <div class="text-center py-12 bg-white rounded-[32px] border border-dashed border-slate-200 shadow-sm">
             <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 text-3xl">
-                <i class="fa-solid fa-money-bill-transfer"></i>
+                <i class="fa-solid fa-money-bill-1-wave"></i>
             </div>
             <h3 class="text-sm font-bold text-slate-600">কোনো উত্তোলনের রেকর্ড নেই</h3>
             <p class="text-xs text-slate-400 mt-1">টাকা তুললে এখানে দেখতে পাবেন</p>
         </div>
-        {% endfor %}
+        {% endif %}
     </div>
 
     <!-- 3. TASK HISTORY -->
