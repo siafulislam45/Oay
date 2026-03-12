@@ -2,31 +2,32 @@
 {% block content %}
 
 <style>
-    .fade-up { animation: fadeUp 0.6s ease-out; }
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     
     .glass-card {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.6);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
 </style>
 
-<div class="max-w-2xl mx-auto space-y-8 fade-up pb-24">
+<div class="max-w-2xl mx-auto space-y-8 fade-up pb-32 pt-4">
 
     <!-- 1. HEADER SUMMARY -->
-    <div class="bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] rounded-3xl p-6 text-white shadow-xl shadow-indigo-200 relative overflow-hidden">
+    <div class="bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] rounded-[32px] p-6 text-white shadow-xl shadow-indigo-200 relative overflow-hidden">
         <!-- Decor -->
         <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-pink-500 opacity-20 rounded-full blur-2xl"></div>
         
         <div class="relative z-10 flex justify-between items-center">
             <div>
-                <h2 class="text-2xl font-bold">ট্রানজেকশন</h2>
-                <p class="text-indigo-100 text-xs mt-1">আপনার সকল আয় ও ব্যয়ের হিসাব</p>
+                <p class="text-[10px] text-indigo-200 uppercase tracking-widest font-bold mb-1">Account History</p>
+                <h2 class="text-3xl font-black">ট্রানজেকশন</h2>
             </div>
-            <div class="h-12 w-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md">
-                <i class="fa-solid fa-receipt text-xl"></i>
+            <div class="h-14 w-14 bg-white/20 rounded-[18px] flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner">
+                <i class="fa-solid fa-clock-rotate-left text-2xl"></i>
             </div>
         </div>
     </div>
@@ -34,50 +35,55 @@
     <!-- 2. WITHDRAWAL HISTORY -->
     <div>
         <div class="flex items-center justify-between px-2 mb-4">
-            <h3 class="font-bold text-slate-700 text-sm flex items-center gap-2">
-                <i class="fa-solid fa-money-bill-transfer text-orange-500"></i> পেমেন্ট হিস্টোরি
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <div class="bg-red-100 text-red-600 h-8 w-8 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-arrow-up-right-dots"></i>
+                </div>
+                উত্তোলনের হিস্টোরি (Cash Out)
             </h3>
-            <span class="text-[10px] bg-orange-50 text-orange-600 px-2 py-1 rounded-lg font-bold">Total: {{ withdrawals|length }}</span>
+            <span class="text-[10px] bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-bold border border-slate-200">
+                Total: {{ withdrawals|length }}
+            </span>
         </div>
 
         {% if withdrawals %}
         <div class="space-y-3">
             {% for item in withdrawals %}
-            <div class="glass-card p-4 rounded-2xl flex items-center justify-between group hover:border-indigo-100 transition">
+            <div class="glass-card p-4 rounded-3xl flex items-center justify-between group hover:shadow-lg hover:border-indigo-100 transition duration-300">
                 
                 <div class="flex items-center gap-4">
                     <!-- Method Icon -->
                     <div class="h-12 w-12 rounded-2xl flex items-center justify-center text-xl shadow-sm
-                        {% if item.method == 'Rocket' %} bg-purple-100 text-purple-600 
-                        {% elif item.method == 'Nagad' %} bg-orange-100 text-orange-600 
-                        {% else %} bg-pink-100 text-pink-600 {% endif %}">
+                        {% if item.method == 'Rocket' %} bg-purple-50 text-purple-600 border border-purple-100
+                        {% elif item.method == 'Nagad' %} bg-orange-50 text-orange-600 border border-orange-100
+                        {% else %} bg-pink-50 text-pink-600 border border-pink-100 {% endif %}">
                         <i class="fa-solid fa-wallet"></i>
                     </div>
                     
                     <div>
-                        <h4 class="font-bold text-slate-700 text-sm">{{ item.method }} Withdraw</h4>
-                        <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1">
-                            <span class="font-mono bg-slate-100 px-1.5 py-0.5 rounded">{{ item.created_at[:10] }}</span>
+                        <h4 class="font-bold text-slate-800 text-sm">{{ item.method }} Transfer</h4>
+                        <div class="flex items-center gap-2 text-[10px] text-slate-500 mt-1">
+                            <span class="font-mono bg-slate-50 px-2 py-0.5 rounded border border-slate-100">{{ item.created_at[:10] }}</span>
                             <span>•</span>
-                            <span>{{ item.number }}</span>
+                            <span class="font-mono">{{ item.number }}</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="text-right">
-                    <p class="font-bold text-slate-800 text-sm">-৳{{ item.amount }}</p>
+                    <p class="font-bold text-[#E2136E] text-lg font-mono tracking-tight">-৳{{ item.amount }}</p>
                     
                     <!-- Status Badge -->
                     {% if item.status == 'approved' %}
-                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full mt-1">
+                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 bg-green-100 border border-green-200 px-2.5 py-0.5 rounded-full mt-1">
                             <i class="fa-solid fa-check"></i> Success
                         </span>
                     {% elif item.status == 'rejected' %}
-                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full mt-1">
+                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-red-600 bg-red-50 border border-red-200 px-2.5 py-0.5 rounded-full mt-1">
                             <i class="fa-solid fa-xmark"></i> Failed
                         </span>
                     {% else %}
-                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full mt-1 animate-pulse">
+                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-0.5 rounded-full mt-1 animate-pulse">
                             <i class="fa-regular fa-clock"></i> Pending
                         </span>
                     {% endif %}
@@ -88,51 +94,71 @@
         </div>
         {% else %}
         <!-- Empty State -->
-        <div class="text-center py-10 bg-white rounded-3xl border border-dashed border-slate-200">
-            <div class="h-14 w-14 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 text-2xl">
-                <i class="fa-solid fa-money-bill-1-wave"></i>
+        <div class="text-center py-12 bg-white rounded-[32px] border border-dashed border-slate-200 shadow-sm">
+            <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 text-3xl">
+                <i class="fa-solid fa-money-bill-transfer"></i>
             </div>
-            <p class="text-xs text-slate-400">কোনো উত্তোলনের রেকর্ড নেই</p>
+            <h3 class="text-sm font-bold text-slate-600">কোনো উত্তোলনের রেকর্ড নেই</h3>
+            <p class="text-xs text-slate-400 mt-1">টাকা তুললে এখানে দেখতে পাবেন</p>
         </div>
-        {% endif %}
+        {% endfor %}
     </div>
 
     <!-- 3. TASK HISTORY -->
-    <div>
+    <div class="pt-4">
         <div class="flex items-center justify-between px-2 mb-4">
-            <h3 class="font-bold text-slate-700 text-sm flex items-center gap-2">
-                <i class="fa-solid fa-list-check text-indigo-500"></i> কাজের হিস্টোরি
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <div class="bg-green-100 text-green-600 h-8 w-8 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-arrow-down-long"></i>
+                </div>
+                কাজের হিস্টোরি (Income)
             </h3>
-            <span class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded-lg font-bold">Total: {{ tasks|length }}</span>
+            <span class="text-[10px] bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-bold border border-slate-200">
+                Total: {{ tasks|length }}
+            </span>
         </div>
 
         {% if tasks %}
         <div class="space-y-3">
             {% for task in tasks %}
-            <div class="glass-card p-4 rounded-2xl flex items-center justify-between hover:bg-white transition">
+            <div class="glass-card p-4 rounded-3xl flex items-center justify-between hover:bg-white transition group">
                 
                 <div class="flex items-center gap-4">
-                    <!-- Task Icon -->
-                    <div class="h-10 w-10 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-lg shadow-sm border border-indigo-100">
-                        <i class="fa-brands fa-youtube"></i>
+                    <!-- Task Type Icon -->
+                    <div class="h-12 w-12 rounded-2xl flex items-center justify-center text-xl shadow-sm border
+                        {% if task.type == 'Special' %} bg-yellow-50 text-yellow-600 border-yellow-100
+                        {% else %} bg-blue-50 text-blue-600 border-blue-100 {% endif %}">
+                        {% if task.type == 'Special' %}
+                            <i class="fa-solid fa-gift"></i>
+                        {% else %}
+                            <i class="fa-brands fa-youtube"></i>
+                        {% endif %}
                     </div>
                     
-                    <div class="max-w-[150px] md:max-w-xs">
-                        <h4 class="font-bold text-slate-700 text-xs truncate">{{ task.title }}</h4>
-                        <p class="text-[9px] text-slate-400 mt-0.5 font-mono">ID: #{{ task.id }}</p>
+                    <div class="max-w-[140px] sm:max-w-xs">
+                        <h4 class="font-bold text-slate-800 text-sm truncate">{{ task.title }}</h4>
+                        <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1">
+                            <span class="font-mono bg-slate-50 px-2 py-0.5 rounded border border-slate-100">{{ task.created_at[:10] }}</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="text-right">
-                    <p class="font-bold text-green-600 text-sm">+৳{{ task.reward }}</p>
+                    <p class="font-bold text-green-600 text-lg font-mono tracking-tight">+৳{{ task.reward }}</p>
                     
                     <!-- Status Badge -->
                     {% if task.status == 'approved' %}
-                        <span class="text-[9px] font-bold text-green-500">Paid</span>
+                        <span class="text-[9px] font-bold text-green-600 bg-green-50 px-2.5 py-0.5 rounded-full mt-1 inline-block border border-green-100">
+                            Paid
+                        </span>
                     {% elif task.status == 'rejected' %}
-                        <span class="text-[9px] font-bold text-red-500">Rejected</span>
+                        <span class="text-[9px] font-bold text-red-600 bg-red-50 px-2.5 py-0.5 rounded-full mt-1 inline-block border border-red-100">
+                            Rejected
+                        </span>
                     {% else %}
-                        <span class="text-[9px] font-bold text-orange-400">Checking...</span>
+                        <span class="text-[9px] font-bold text-orange-500 bg-orange-50 px-2.5 py-0.5 rounded-full mt-1 inline-block border border-orange-100">
+                            Reviewing...
+                        </span>
                     {% endif %}
                 </div>
 
@@ -141,12 +167,15 @@
         </div>
         {% else %}
         <!-- Empty State -->
-        <div class="text-center py-10 bg-white rounded-3xl border border-dashed border-slate-200">
-            <div class="h-14 w-14 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 text-2xl">
+        <div class="text-center py-12 bg-white rounded-[32px] border border-dashed border-slate-200 shadow-sm">
+            <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 text-3xl">
                 <i class="fa-solid fa-clipboard-question"></i>
             </div>
-            <p class="text-xs text-slate-400">কোনো কাজের রেকর্ড নেই</p>
-            <a href="/tasks" class="text-[10px] text-indigo-600 font-bold mt-2 inline-block hover:underline">কাজ শুরু করুন</a>
+            <h3 class="text-sm font-bold text-slate-600">কোনো কাজের রেকর্ড নেই</h3>
+            <p class="text-xs text-slate-400 mt-1">টাস্ক কমপ্লিট করলে এখানে দেখতে পাবেন</p>
+            <a href="/tasks" class="mt-4 inline-block bg-[#4F46E5] text-white px-6 py-2 rounded-full text-xs font-bold shadow-md hover:bg-indigo-600 transition">
+                কাজ শুরু করুন
+            </a>
         </div>
         {% endif %}
     </div>
