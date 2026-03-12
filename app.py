@@ -164,6 +164,61 @@ def smart_imgbb_upload(image_file):
 
     except Exception as e:
         return None, f"Upload processing error: {str(e)}"
+# ==========================================
+# 🤖 AI AUTO-BOT (SMART & SECURE SYSTEM)
+# ==========================================
+def auto_review_user_tasks(user_id):
+    import random
+    from datetime import datetime, timezone
+    
+    try:
+        # ১. শুধুমাত্র "pending" টাস্কগুলো আনা (তাই ডাবল টাকা যাওয়ার সুযোগ নেই)
+        pending_subs = supabase.table('submissions').select('*').eq('user_id', user_id).eq('status', 'pending').execute().data
+        
+        for sub in pending_subs:
+            sub_id = sub['id']
+            task_id = sub['task_id']
+            
+            # ২. কতক্ষণ আগে সাবমিট করেছে তা বের করা
+            created_at = datetime.fromisoformat(sub['created_at'].replace('Z', '+00:00'))
+            minutes_passed = (datetime.now(timezone.utc) - created_at).total_seconds() / 60
+            
+            # ৩. ১ থেকে ৩ ঘণ্টার (৬০-১৮০ মিনিট) মধ্যে যেকোনো একটি ফিক্সড সময়
+            target_mins = 60 + (sub_id % 121) 
+            
+            if minutes_passed >= target_mins:
+                
+                # ৪. Random Reject Logic (৬, ৭ বা ৮ টার মধ্যে ১ টা রিজেক্ট হবে)
+                # 1 থেকে 8 এর মধ্যে র‍্যান্ডম সংখ্যা নিবে। যদি 1 হয়, তবে রিজেক্ট। 
+                # (এতে গড়ে ১২.৫% রিজেক্ট রেশিও থাকবে, যা একদম মানুষের চেকিংয়ের মতো মনে হবে)
+                is_reject = (random.randint(1, 8) == 1)
+                
+                if is_reject:
+                    # 🔴 REJECT (শুধুমাত্র পেন্ডিং থাকলেই আপডেট হবে)
+                    supabase.table('submissions').update({'status': 'rejected'}).eq('id', sub_id).eq('status', 'pending').execute()
+                else:
+                    # 🟢 APPROVE & PAY
+                    
+                    #[SECURITY] ডাবল পেমেন্ট ঠেকাতে আগে স্ট্যাটাস আপডেট করা হচ্ছে
+                    update_req = supabase.table('submissions').update({'status': 'approved'}).eq('id', sub_id).eq('status', 'pending').execute()
+                    
+                    # যদি স্ট্যাটাস সফলভাবে 'approved' হয়, তবেই টাকা যোগ হবে
+                    if update_req.data and len(update_req.data) > 0:
+                        
+                        # টাস্কের রিওওার্ড কত ছিল তা বের করা
+                        task = supabase.table('tasks').select('reward').eq('id', task_id).single().execute().data
+                        if task:
+                            reward = float(task['reward'])
+                            
+                            # ইউজারের বর্তমান ব্যালেন্স আনা এবং যোগ করা
+                            user_data = supabase.table('profiles').select('balance').eq('id', user_id).single().execute().data
+                            new_bal = float(user_data['balance']) + reward
+                            
+                            # ব্যালেন্স আপডেট
+                            supabase.table('profiles').update({'balance': new_bal}).eq('id', user_id).execute()
+
+    except Exception as e:
+        print(f"Auto-Bot Error: {e}")
         
 def admin_required(f):
     @wraps(f)
@@ -2143,6 +2198,9 @@ def tasks():
 @app.route('/history')
 @login_required
 def history():
+
+    auto_review_user_tasks(session['user_id'])
+    
     # A. কাজের হিস্টোরি (Task Submissions)
     try:
         subs_res = supabase.table('submissions').select('*').eq('user_id', session['user_id']).order('created_at', desc=True).execute()
