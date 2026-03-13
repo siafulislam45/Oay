@@ -1,34 +1,101 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="max-w-md mx-auto space-y-6 pb-24 pt-4">
+
+<style>
+    .fade-up { animation: fadeUp 0.5s ease-out; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="max-w-md mx-auto space-y-6 pb-24 pt-4 fade-up">
     
-    <div class="bg-white p-6 rounded-[30px] shadow-lg border border-slate-50 text-center">
-        <p class="text-xs font-bold text-slate-400 uppercase">You are buying</p>
-        <h2 class="text-2xl font-bold text-[#4F46E5] mb-1">{{ plan.name }} Plan</h2>
-        <p class="text-sm font-bold text-slate-700">মূল্য: ৳ {{ plan.price }}</p>
+    <!-- 1. Header (Plan Summary) -->
+    <div class="bg-gradient-to-r from-[#0A2540] to-[#1E1B4B] p-6 rounded-[30px] text-white shadow-xl relative overflow-hidden text-center">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl"></div>
+        <div class="relative z-10">
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">You are buying</p>
+            <h2 class="text-3xl font-black text-yellow-400 mb-1 tracking-wide">{{ plan.name }}</h2>
+            <div class="inline-block bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mt-2">
+                <span class="text-xs font-bold text-white">Price: <span class="text-lg font-mono">৳{{ plan.price }}</span></span>
+            </div>
+        </div>
     </div>
 
-    <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 text-xs text-orange-800">
-        <p class="font-bold mb-1">সেন্ড মানি করুন: 01912107604</p>
-        <p>টাকা পাঠিয়ে নিচের ফর্মে ট্রানজেকশন আইডি দিন।</p>
+    <!-- 2. Payment Instruction -->
+    <div class="bg-orange-50 p-5 rounded-[24px] border border-orange-100 shadow-sm relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 text-orange-200 text-6xl opacity-50"><i class="fa-solid fa-money-bill-transfer"></i></div>
+        <div class="relative z-10">
+            <p class="text-xs font-bold text-orange-800 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-circle-info"></i> পেমেন্ট নির্দেশনা
+            </p>
+            <div class="bg-white p-3 rounded-xl border border-orange-100 text-center mb-3 shadow-sm">
+                <p class="text-[10px] text-slate-500 mb-0.5">Send Money To:</p>
+                <p class="text-2xl font-bold font-mono text-[#0A2540]" id="adminNumber">01912107604</p>
+            </div>
+            <button type="button" onclick="copyAdminNumber()" class="w-full bg-orange-500 text-white py-2 rounded-xl text-xs font-bold hover:bg-orange-600 transition shadow-md">
+                নম্বরটি কপি করুন <i class="fa-regular fa-copy ml-1"></i>
+            </button>
+            <p class="text-[10px] text-orange-600 mt-3 text-center font-medium leading-relaxed">
+                উপরের নম্বরে টাকা পাঠিয়ে নিচের ফর্মে সঠিক ট্রানজেকশন আইডি (TrxID) দিন।
+            </p>
+        </div>
     </div>
 
-    <form method="POST" class="bg-white p-6 rounded-[30px] shadow-sm space-y-4">
+    <!-- 3. Payment Form -->
+    <form id="vipBuyForm" method="POST" class="bg-white p-6 rounded-[30px] shadow-lg border border-slate-50 space-y-5" onsubmit="return preventDoubleSubmit()">
+        
         <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1">পেমেন্ট মেথড</label>
-            <select name="method" class="w-full p-3 border rounded-xl bg-slate-50">
-                <option>bKash</option><option>Nagad</option><option>Rocket</option>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">পেমেন্ট মেথড</label>
+            <select name="method" required class="w-full p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-700 appearance-none">
+                <option value="bKash">bKash</option>
+                <option value="Nagad">Nagad</option>
+                <option value="Rocket">Rocket</option>
             </select>
         </div>
+        
         <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1">সেন্ডার নম্বর</label>
-            <input type="text" name="sender" required class="w-full p-3 border rounded-xl bg-slate-50">
+            <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">আপনার সেন্ডার নম্বর</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fa-solid fa-phone"></i></div>
+                <input type="number" name="sender" required placeholder="যে নম্বর থেকে টাকা পাঠিয়েছেন" 
+                       class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-700">
+            </div>
         </div>
+        
         <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1">TrxID</label>
-            <input type="text" name="trx_id" required class="w-full p-3 border rounded-xl bg-slate-50">
+            <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">TrxID (ট্রানজেকশন আইডি)</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fa-solid fa-hashtag"></i></div>
+                <input type="text" name="trx_id" required placeholder="Example: 9A5K..." 
+                       class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-700 uppercase tracking-widest">
+            </div>
+            <p class="text-[9px] text-red-500 mt-1.5 ml-1 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> একই TrxID দুইবার ব্যবহার করলে একাউন্ট ব্যান হবে।</p>
         </div>
-        <button type="submit" class="w-full bg-[#4F46E5] text-white py-3.5 rounded-xl font-bold">কনফার্ম করুন</button>
+
+        <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white py-4 rounded-2xl font-bold shadow-xl shadow-indigo-200 hover:scale-[1.02] transition active:scale-95 flex items-center justify-center gap-2 mt-4">
+            <span>কনফার্ম করুন</span>
+            <i class="fa-solid fa-circle-check"></i>
+        </button>
     </form>
+
 </div>
+
+<script>
+    // Copy Number
+    function copyAdminNumber() {
+        const num = document.getElementById("adminNumber").innerText;
+        navigator.clipboard.writeText(num).then(() => {
+            alert("✅ নম্বরটি কপি করা হয়েছে: " + num);
+        });
+    }
+
+    // Prevent Double Click Submission
+    function preventDoubleSubmit() {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> প্রসেস হচ্ছে...';
+        btn.classList.add('opacity-80', 'cursor-not-allowed');
+        return true;
+    }
+</script>
+
 {% endblock %}
