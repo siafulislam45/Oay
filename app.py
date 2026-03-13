@@ -727,16 +727,32 @@ def vip_page():
 
     return render_template('vip.html', user=g.user, plans=VIP_PLANS, my_vips=my_vips, today_date=today_str)
 # --- BUY VIP (SUBMIT PROOF) ---
+# --- BUY VIP (SUBMIT PROOF WITH TRX ID CHECK) ---
 @app.route('/vip/buy/<int:level_id>', methods=['GET', 'POST'])
 @login_required
 def vip_buy(level_id):
     plan = VIP_PLANS.get(level_id)
+    if not plan:
+        flash("ভুল প্যাকেজ আইডি!", "error")
+        return redirect(url_for('vip_page'))
     
     if request.method == 'POST':
         method = request.form.get('method')
         number = request.form.get('sender')
-        trx_id = request.form.get('trx_id')
+        trx_id = request.form.get('trx_id', '').strip() # Space রিমুভ করা
         
+        # ১. [NEW] TrxID ডুপ্লিকেট চেক করা
+        try:
+            # চেক করো এই TrxID দিয়ে আগে কোনো রিকোয়েস্ট আছে কিনা (যেকোনো ইউজারের)
+            existing_trx = supabase.table('vip_requests').select('id').eq('trx_id', trx_id).execute()
+            
+            if existing_trx.data and len(existing_trx.data) > 0:
+                flash("❌ এই TrxID টি ইতিমধ্যে ব্যবহার করা হয়েছে! ভুয়া তথ্য দিলে একাউন্ট ব্যান করা হবে।", "error")
+                return redirect(request.url)
+        except Exception as e:
+            print(f"Trx Check Error: {e}")
+
+        # ২. নতুন রিকোয়েস্ট সেভ করা
         try:
             supabase.table('vip_requests').insert({
                 'user_id': session['user_id'],
@@ -751,11 +767,10 @@ def vip_buy(level_id):
             flash("✅ রিকোয়েস্ট জমা হয়েছে! এডমিন চেক করে আপগ্রেড করে দিবে।", "success")
             return redirect(url_for('vip_page'))
         except Exception as e:
-            flash(f"Error: {e}", "error")
+            flash(f"Error submitting request: {e}", "error")
 
     return render_template('vip_buy.html', plan=plan)
-
-# --- ADMIN: VIP REQUESTS ---
+    # --- ADMIN: VIP REQUESTS ---
 @app.route('/admin/vip')
 @login_required
 @admin_required
