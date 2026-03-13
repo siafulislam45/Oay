@@ -372,7 +372,63 @@ def newbie_action(action, sub_id):
         flash(f"Error: {str(e)}", "error")
 
     return redirect(url_for('newbie_check'))
-    
+    # --- ADMIN: DANGER ZONE (MASS CLEANUP) ---
+@app.route('/admin/danger-zone', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def danger_zone():
+    from datetime import datetime, timedelta
+    users_to_delete =[]
+
+    try:
+        # ১৫ দিন আগের তারিখ বের করা
+        fifteen_days_ago = (datetime.utcnow() - timedelta(days=15)).isoformat()
+
+        # কুয়েরি: is_active=False, balance<15, created_at<=15_days_ago
+        query = supabase.table('profiles').select('id, email, created_at, balance') \
+                .eq('is_active', False) \
+                .lt('balance', 15) \
+                .lte('created_at', fifteen_days_ago)
+                
+        res = query.execute()
+        users_to_delete = res.data
+
+    except Exception as e:
+        print(f"Danger Zone Error: {e}")
+        flash(f"Error fetching data: {str(e)}", "error")
+
+    # যদি POST রিকোয়েস্ট হয় (মানে ডিলিট বাটনে ক্লিক করেছে)
+    if request.method == 'POST':
+        action = request.form.get('action')
+        
+        if action == 'delete_all' and users_to_delete:
+            deleted_count = 0
+            try:
+                for u in users_to_delete:
+                    uid = u['id']
+                    
+                    # 1. Unlink referrals (Foreign key fix)
+                    supabase.table('profiles').update({'referred_by': None}).eq('referred_by', uid).execute()
+                    
+                    # 2. Delete all related data
+                    supabase.table('withdrawals').delete().eq('user_id', uid).execute()
+                    supabase.table('submissions').delete().eq('user_id', uid).execute()
+                    supabase.table('special_submissions').delete().eq('user_id', uid).execute()
+                    supabase.table('activation_requests').delete().eq('user_id', uid).execute()
+                    supabase.table('user_vips').delete().eq('user_id', uid).execute()
+                    
+                    # 3. Delete Profile
+                    supabase.table('profiles').delete().eq('id', uid).execute()
+                    deleted_count += 1
+                    
+                flash(f"⚠️ Warning: {deleted_count} টি ইনএক্টিভ একাউন্ট চিরতরে মুছে ফেলা হয়েছে!", "success")
+                return redirect(url_for('danger_zone'))
+                
+            except Exception as e:
+                print(f"Mass Delete Error: {e}")
+                flash("ডিলিট করার সময় এরর হয়েছে।", "error")
+
+    return render_template('danger_zone.html', users=users_to_delete)
 @app.route('/admin/drive/manage', methods=['GET', 'POST'])
 @login_required
 @admin_required
