@@ -1400,22 +1400,27 @@ def delete_notice(id):
         
     return redirect(url_for('notice'))
 
-# --- ADMIN: ADD TASK & VIEW LIST ---
 @app.route('/adtask', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def add_task():
-    # ১. নতুন টাস্ক যোগ করা (POST)
     if request.method == 'POST':
         title = request.form.get('title')
         description = request.form.get('description')
-        link = request.form.get('link')
-        try:
-            reward = float(request.form.get('reward'))
-        except:
-            reward = 0.0
+        link = request.form.get('link') or '#'
+        reward = float(request.form.get('reward', 0))
         category = request.form.get('category')
         task_type = request.form.get('task_type')
+        caption = request.form.get('caption')
+        
+        image_url = None
+        # যদি FB Post টাস্ক হয় এবং ছবি আপলোড করে
+        if task_type == 'fb_post' and 'task_image' in request.files:
+            file = request.files['task_image']
+            if file.filename != '':
+                # Smart ImgBB Upload (আপনার আগের ফাংশনটি ব্যবহার করা হচ্ছে)
+                img_url, err = smart_imgbb_upload(file)
+                if img_url: image_url = img_url
         
         try:
             supabase.table('tasks').insert({
@@ -1425,6 +1430,8 @@ def add_task():
                 'reward': reward,
                 'category': category,
                 'task_type': task_type,
+                'image_url': image_url,
+                'caption': caption,
                 'is_active': True
             }).execute()
             flash("✅ টাস্ক সফলভাবে যোগ করা হয়েছে!", "success")
@@ -1433,17 +1440,46 @@ def add_task():
             
         return redirect(url_for('add_task'))
 
-    # ২. সব টাস্কের লিস্ট আনা (GET)
     try:
-        # নতুন টাস্ক আগে দেখাবে
-        res = supabase.table('tasks').select('*').order('id', desc=True).execute()
-        all_tasks = res.data
-    except:
-        all_tasks = []
+        all_tasks = supabase.table('tasks').select('*').order('id', desc=True).execute().data
+    except: all_tasks =[]
         
     return render_template('adtask.html', user=g.user, tasks=all_tasks)
 
+@app.route('/spin', methods=['GET', 'POST'])
+@login_required
+def lucky_spin():
+    from datetime import datetime
+    today = datetime.utcnow().date()
+    
+    last_spin_str = g.user.get('last_spin')
+    last_spin = datetime.strptime(last_spin_str, '%Y-%m-%d').date() if last_spin_str else None
+    
+    can_spin = (last_spin != today)
 
+    if request.method == 'POST':
+        if not can_spin:
+            return jsonify({'success': False, 'message': 'আপনি আজকের স্পিন ইতিমধ্যে করে ফেলেছেন!'})
+        
+        import random
+        # স্পিনের পুরস্কার (০ মানে Better Luck Next Time)
+        rewards =[0, 1, 2, 3, 5, 10]
+        # ০ পাওয়ার চান্স একটু বেশি রাখা হয়েছে (ব্যাবসায়িক লজিক)
+        weights =[40, 20, 15, 10, 10, 5] 
+        
+        won_amount = random.choices(rewards, weights=weights, k=1)[0]
+        
+        # ডাটাবেস আপডেট
+        new_balance = float(g.user.get('balance', 0)) + won_amount
+        supabase.table('profiles').update({
+            'balance': new_balance,
+            'last_spin': str(today)
+        }).eq('id', session['user_id']).execute()
+        
+        return jsonify({'success': True, 'reward': won_amount})
+
+    return render_template('spin.html', user=g.user, can_spin=can_spin)
+    
 # --- ADMIN: DELETE TASK ---
 @app.route('/admin/task/delete/<int:id>')
 @login_required
@@ -2506,6 +2542,32 @@ def admin_panel():
         user_count = 0
 
     return render_template('admin.html', user=g.user, settings=g.settings, user_count=user_count)
+
+
+@app.route('/manifest.json')
+def manifest():
+    return jsonify({
+        "name": "Pay-R Earning App",
+        "short_name": "Pay-R",
+        "start_url": "/",
+        "display": "standalone",
+        "background_color": "#F3F4F6",
+        "theme_color": "#4F46E5",
+        "icons":[{
+            "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png", # Default App Icon
+            "sizes": "512x512",
+            "type": "image/png"
+        }]
+    })
+
+@app.route('/sw.js')
+def service_worker():
+    js_code = """
+    self.addEventListener('install', (e) => { console.log('PWA Service Worker Installed'); });
+    self.addEventListener('fetch', (e) => { });
+    """
+    return Response(js_code, mimetype='application/javascript')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
