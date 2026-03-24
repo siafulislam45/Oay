@@ -3,161 +3,148 @@
 
 <style>
     /* AI Reveal Animation */
-    .setup-reveal { animation: revealIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .setup-reveal { animation: revealIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+    @keyframes revealIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* AI Panel Styling */
+    /* AI Config Panel */
     .ai-config-panel {
         background: rgba(15, 23, 42, 0.7);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(139, 92, 246, 0.2);
-        border-radius: 32px;
-        padding: 30px;
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        border-radius: 35px;
     }
 
     /* Cyber Input Styling */
     .node-input {
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.4);
         border: 1px solid rgba(255, 255, 255, 0.08);
         color: #f1f5f9;
-        border-radius: 18px;
-        transition: all 0.3s ease;
+        border-radius: 20px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .node-input:focus {
         border-color: #8B5CF6;
         background: rgba(139, 92, 246, 0.05);
-        box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
         outline: none;
     }
 
-    /* Gateway Selection */
-    .gateway-card {
+    /* Gateway Nodes */
+    .gateway-node {
         cursor: pointer;
         border: 1px solid rgba(255, 255, 255, 0.05);
         background: rgba(255, 255, 255, 0.02);
-        border-radius: 16px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 18px;
+        transition: all 0.3s ease;
         text-align: center;
-        padding: 12px 0;
+        padding: 14px 0;
+        position: relative;
+        overflow: hidden;
     }
 
-    /* bKash Active State */
-    .radio-bkash:checked + .gateway-card {
-        border-color: #E2136E;
-        background: rgba(226, 19, 110, 0.1);
-        color: #f472b6;
-        box-shadow: 0 0 15px rgba(226, 19, 110, 0.2);
-    }
+    /* active states */
+    .radio-bkash:checked + .gateway-node { border-color: #E2136E; background: rgba(226, 19, 110, 0.1); color: #f472b6; }
+    .radio-nagad:checked + .gateway-node { border-color: #F7931A; background: rgba(247, 147, 26, 0.1); color: #fbbf24; }
+    .radio-rocket:checked + .gateway-node { border-color: #8C3494; background: rgba(140, 52, 148, 0.1); color: #d946ef; }
 
-    /* Nagad Active State */
-    .radio-nagad:checked + .gateway-card {
-        border-color: #F7931A;
-        background: rgba(247, 147, 26, 0.1);
-        color: #fbbf24;
-        box-shadow: 0 0 15px rgba(247, 147, 26, 0.2);
-    }
-
-    /* Rocket Active State */
-    .radio-rocket:checked + .gateway-card {
-        border-color: #8C3494;
-        background: rgba(140, 52, 148, 0.1);
-        color: #d946ef;
-        box-shadow: 0 0 15px rgba(140, 52, 148, 0.2);
-    }
-
-    .btn-save {
+    .btn-save-node {
         background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
-        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        transition: all 0.3s ease;
     }
-    .btn-save:active { transform: scale(0.96); }
+    .btn-save-node:active { transform: scale(0.95); }
 
-    .warning-box {
-        background: rgba(245, 158, 11, 0.05);
+    .warning-glow {
+        background: rgba(245, 158, 11, 0.03);
         border: 1px solid rgba(245, 158, 11, 0.1);
-        border-radius: 16px;
-        padding: 12px;
+        border-radius: 20px;
     }
 </style>
 
-<div class="max-w-md mx-auto space-y-8 setup-reveal pb-32 pt-6 px-2">
+<div class="max-w-md mx-auto space-y-8 setup-reveal pb-32 pt-4 px-2">
 
-    <!-- হেডার সেকশন -->
-    <div class="text-center relative">
-        <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-violet-600/10 rounded-full blur-3xl"></div>
-        
-        <div class="relative inline-flex items-center justify-center h-20 w-20 rounded-3xl bg-violet-500/10 border border-violet-500/20 text-violet-400 text-3xl shadow-2xl mb-4">
-            <i class="fa-solid fa-gears animate-pulse"></i>
+    <!-- ১. হেডার ও নেভিগেশন -->
+    <div class="flex items-center justify-between px-2">
+        <div class="flex items-center gap-4">
+            <a href="/account" class="h-11 w-11 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2 class="text-xl font-black text-white tracking-tight uppercase">পেমেন্ট সেটআপ</h2>
+                <p class="text-[10px] font-black text-violet-500 uppercase tracking-[2px]">Configuration Node</p>
+            </div>
         </div>
-        <h2 class="text-2xl font-black ai-gradient-text uppercase tracking-[2px]">পেমেন্ট গেটওয়ে সেটআপ</h2>
-        <p class="text-[11px] text-slate-500 font-bold tracking-widest uppercase mt-1">Configuring Your Financial Node</p>
+        <div class="h-11 w-11 bg-violet-600/10 text-violet-400 rounded-2xl flex items-center justify-center border border-violet-600/20">
+            <i class="fa-solid fa-sliders text-lg"></i>
+        </div>
     </div>
 
-    <!-- সেটআপ ফর্ম প্যানেল -->
-    <div class="ai-config-panel shadow-2xl">
+    <!-- ২. মেইন কনফিগ প্যানেল -->
+    <div class="ai-config-panel p-8 shadow-2xl">
         
         <form method="POST" action="/adm" class="space-y-8">
             
-            <!-- গেটওয়ে সিলেকশন -->
+            <!-- মেথড সিলেকশন -->
             <div>
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[2px] mb-4 ml-1">
-                    <i class="fa-solid fa-satellite-dish mr-2 text-violet-500"></i> ১. পেমেন্ট গেটওয়ে বেছে নিন
+                    <i class="fa-solid fa-satellite-dish mr-2 text-violet-500"></i> ১. পেমেন্ট মেথড বেছে নিন
                 </label>
                 <div class="grid grid-cols-3 gap-3">
-                    <!-- bKash -->
                     <label class="relative block">
                         <input type="radio" name="method" value="bKash" class="radio-bkash sr-only" {{ 'checked' if user.wallet_method == 'bKash' }}>
-                        <div class="gateway-card">
-                            <span class="text-xs font-black uppercase tracking-tighter">bKash</span>
+                        <div class="gateway-node">
+                            <span class="text-[11px] font-black uppercase tracking-tighter">bKash</span>
                         </div>
                     </label>
-                    <!-- Nagad -->
                     <label class="relative block">
                         <input type="radio" name="method" value="Nagad" class="radio-nagad sr-only" {{ 'checked' if user.wallet_method == 'Nagad' }}>
-                        <div class="gateway-card">
-                            <span class="text-xs font-black uppercase tracking-tighter">Nagad</span>
+                        <div class="gateway-node">
+                            <span class="text-[11px] font-black uppercase tracking-tighter">Nagad</span>
                         </div>
                     </label>
-                    <!-- Rocket -->
                     <label class="relative block">
                         <input type="radio" name="method" value="Rocket" class="radio-rocket sr-only" {{ 'checked' if user.wallet_method == 'Rocket' }}>
-                        <div class="gateway-card">
-                            <span class="text-xs font-black uppercase tracking-tighter">Rocket</span>
+                        <div class="gateway-node">
+                            <span class="text-[11px] font-black uppercase tracking-tighter">Rocket</span>
                         </div>
                     </label>
                 </div>
             </div>
 
-            <!-- ওয়ালেট নম্বর ইনপুট -->
+            <!-- নম্বর ইনপুট -->
             <div>
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[2px] mb-3 ml-1">
-                    <i class="fa-solid fa-address-card mr-2 text-violet-500"></i> ২. আপনার ওয়ালেট নম্বর দিন
+                    <i class="fa-solid fa-address-card mr-2 text-violet-500"></i> ২. আপনার ওয়ালেট নম্বর
                 </label>
-                <div class="relative">
-                    <span class="absolute left-4 top-4.5 text-slate-500"><i class="fa-solid fa-hashtag text-sm"></i></span>
+                <div class="relative group">
+                    <span class="absolute left-4 top-4.5 text-slate-500 group-focus-within:text-violet-400 transition-colors">
+                        <i class="fa-solid fa-hashtag text-sm"></i>
+                    </span>
                     <input type="number" name="number" required placeholder="01XXXXXXXXX" value="{{ user.wallet_number or '' }}"
-                           class="node-input w-full pl-12 p-4 text-sm font-bold tracking-[2px]">
+                           class="node-input w-full pl-12 p-4.5 text-sm font-bold tracking-[2px]">
                 </div>
                 
-                <!-- সতর্কবার্তা বক্স -->
-                <div class="warning-box mt-5 flex items-start gap-3">
+                <!-- সতর্কবার্তা -->
+                <div class="warning-glow mt-6 p-4 flex items-start gap-4">
                     <div class="text-amber-500 mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <p class="text-[10px] text-amber-500/80 font-bold leading-relaxed uppercase tracking-tight">
-                        সতর্কতা: আপনার নম্বরটি পুনরায় যাচাই করুন। ভুল নম্বরে পেমেন্ট রিকোয়েস্ট পাঠালে সিস্টেম তা রিকভার করতে পারবে না।
+                    <p class="text-[10px] text-slate-400 font-bold leading-relaxed uppercase tracking-tight">
+                        <span class="text-amber-500">সতর্কতা:</span> আপনার নম্বরটি নির্ভুলভাবে দিন। ভুল নম্বরে পেমেন্ট রিকোয়েস্ট চলে গেলে তা পুনরায় উদ্ধার করা সম্ভব নয়।
                     </p>
                 </div>
             </div>
 
-            <!-- সেভ বাটন -->
-            <button type="submit" class="btn-save w-full py-5 rounded-2xl text-white font-black text-sm uppercase tracking-[3px] flex items-center justify-center gap-3">
-                <i class="fa-solid fa-shield-halved"></i> কনফিগারেশন সেভ করুন
+            <!-- সাবমিট বাটন -->
+            <button type="submit" class="btn-save-node w-full py-5 rounded-2xl text-white font-black text-xs uppercase tracking-[3px] flex items-center justify-center gap-3">
+                <i class="fa-solid fa-shield-halved"></i> ডাটা সেভ করুন
             </button>
 
         </form>
     </div>
 
-    <!-- নিচের টেক্সট -->
-    <div class="text-center opacity-40">
-        <p class="text-[9px] font-mono text-slate-500 tracking-tighter">Secure P2P Encryption Active • Pay-R Network</p>
+    <!-- ৩. ফুটার ইনফো -->
+    <div class="text-center space-y-2 opacity-40">
+        <p class="text-[9px] font-mono text-slate-500 tracking-[2px] uppercase">End-to-End Encryption Mode</p>
+        <p class="text-[8px] font-mono text-slate-600 tracking-tighter uppercase">Payment Gateway Provider: Pay-R Network v3.1</p>
     </div>
 
 </div>
