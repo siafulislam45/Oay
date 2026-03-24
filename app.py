@@ -2555,7 +2555,7 @@ def manifest():
         "background_color": "#F3F4F6",
         "theme_color": "#4F46E5",
         "icons":[{
-            "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png", # Default App Icon
+            "src": "https://i.ibb.co.com/yFKtMkgg/images.png", # Default App Icon
             "sizes": "512x512",
             "type": "image/png"
         }]
