@@ -143,6 +143,28 @@
             </div>
         </div>
     </div>
+    <!-- ================= APP INSTALL BANNER (Hidden by Default) ================= -->
+    <div id="installAppCard" class="hidden bg-gradient-to-r from-[#4F46E5] to-[#E2136E] rounded-3xl p-5 shadow-lg shadow-indigo-200 mb-6 relative overflow-hidden group fade-up border border-indigo-400/50">
+        <!-- Background Icon -->
+        <div class="absolute right-0 top-0 opacity-10 text-6xl transform translate-x-4 -translate-y-2 group-hover:scale-110 transition duration-500">
+            <i class="fa-brands fa-google-play"></i>
+        </div>
+        
+        <div class="flex items-center justify-between relative z-10">
+            <div class="flex items-center gap-4">
+                <div class="h-12 w-12 bg-white text-[#4F46E5] rounded-2xl flex items-center justify-center text-2xl shadow-md animate-bounce">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-sm">Pay-R অ্যাপ ইনস্টল করুন</h3>
+                    <p class="text-[10px] text-indigo-100 mt-1">দ্রুত এবং সহজে কাজ করতে অ্যাপ নামিয়ে নিন</p>
+                </div>
+            </div>
+            <button id="installAppBtn" class="bg-white text-[#E2136E] px-5 py-2.5 rounded-xl text-xs font-black shadow-xl hover:bg-slate-50 active:scale-95 transition flex items-center gap-1">
+                <i class="fa-solid fa-download"></i> Install
+            </button>
+        </div>
+    </div>
 
     <!-- 3. NOTICE BOARD (Modern Live Ticker) -->
     {% if settings.notice_text %}
