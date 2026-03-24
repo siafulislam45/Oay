@@ -1,58 +1,141 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="max-w-md mx-auto">
-    <!-- Pack Summary -->
-    <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-50 text-center mb-6">
-        <p class="text-xs text-slate-500 font-bold uppercase">You are buying</p>
-        <h2 class="text-xl font-bold text-[#0A2540] mt-1">{{ pack.title }}</h2>
-        <p class="text-sm text-gray-500">{{ pack.operator }} | {{ pack.validity }}</p>
-        <div class="mt-3 inline-block bg-indigo-50 text-indigo-600 px-4 py-1 rounded-full text-lg font-bold">
-            ৳ {{ pack.offer_price }}
+<style>
+    /* AI Page Reveal */
+    .buy-reveal { animation: revealIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes revealIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    /* Summary Card */
+    .summary-card {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 32px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Cyber Input Styling */
+    .cyber-input {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f1f5f9;
+        border-radius: 18px;
+        padding: 14px 18px;
+        transition: all 0.3s ease;
+    }
+    .cyber-input:focus {
+        border-color: #8B5CF6;
+        background: rgba(139, 92, 246, 0.05);
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+        outline: none;
+    }
+
+    /* Instruction Box */
+    .instruction-node {
+        background: rgba(139, 92, 246, 0.05);
+        border: 1px dashed rgba(139, 92, 246, 0.3);
+        border-radius: 20px;
+    }
+
+    .btn-confirm {
+        background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+        box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        transition: all 0.3s ease;
+    }
+    .btn-confirm:active { transform: scale(0.96); }
+
+    select.cyber-input option {
+        background: #0f172a;
+        color: white;
+    }
+</style>
+
+<div class="max-w-md mx-auto buy-reveal pb-32 pt-4 px-2">
+
+    <!-- ১. প্যাক সামারি কার্ড -->
+    <div class="summary-card p-6 text-center mb-6 shadow-2xl">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-violet-600/10 rounded-full blur-3xl"></div>
+        
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-[3px] mb-2">Order Summary</p>
+        <h2 class="text-xl font-bold text-white leading-tight mb-1">{{ pack.title }}</h2>
+        <div class="flex items-center justify-center gap-3 text-xs text-slate-400 font-medium">
+            <span class="px-2 py-0.5 bg-white/5 rounded-md border border-white/5">{{ pack.operator }}</span>
+            <span class="h-1 w-1 bg-slate-700 rounded-full"></span>
+            <span>মেয়াদ: {{ pack.validity }}</span>
+        </div>
+        
+        <div class="mt-5 inline-flex items-center gap-2 bg-violet-600/20 text-violet-400 px-6 py-2 rounded-2xl border border-violet-500/20 shadow-inner">
+            <span class="text-[10px] font-bold uppercase opacity-60">Pay:</span>
+            <span class="text-2xl font-black tracking-tighter">৳{{ pack.offer_price }}</span>
         </div>
     </div>
 
-    <!-- Payment Form -->
-    <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-50">
-        <h3 class="font-bold text-slate-700 mb-4 text-sm">পেমেন্ট এবং নাম্বার দিন</h3>
+    <!-- ২. পেমেন্ট ফর্ম প্যানেল -->
+    <div class="summary-card p-8 border-t-2 border-t-violet-500/30">
+        <h3 class="font-bold text-slate-200 mb-6 text-sm uppercase tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-file-invoice-dollar text-violet-500"></i> পেমেন্ট এবং ডাটা এন্ট্রি
+        </h3>
         
-        <!-- Admin Number Display -->
-        <div class="bg-yellow-50 p-3 rounded-xl border border-yellow-100 mb-4 text-xs text-yellow-800">
-            <p class="font-bold mb-1">Send Money to: 01912107604</p>
-            <p>টাকা পাঠিয়ে নিচের ফর্মে ট্রানজেকশন আইডি দিন।</p>
+        <!-- পেমেন্ট ইন্সট্রাকশন -->
+        <div class="instruction-node p-4 mb-8 text-center">
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Send Money To (Admin)</p>
+            <div class="text-lg font-black text-violet-400 font-mono tracking-widest mb-1">01912107604</div>
+            <p class="text-[9px] text-slate-400 italic">টাকা পাঠিয়ে নিচের ফর্মে তথ্য দিন।</p>
         </div>
 
-        <form method="POST" class="space-y-4">
+        <form method="POST" class="space-y-6">
             
+            <!-- Receiver Mobile -->
             <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">অফারটি যে নাম্বারে নিবেন</label>
-                <input type="number" name="mobile" required placeholder="017xxxxxxxx" class="w-full p-3 border rounded-xl focus:outline-indigo-500 bg-slate-50">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">পেমেন্ট মেথড</label>
-                <select name="method" class="w-full p-3 border rounded-xl bg-slate-50">
-                    <option value="bKash">bKash</option>
-                    <option value="Nagad">Nagad</option>
-                    <option value="Rocket">Rocket</option>
-                </select>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">আপনার নাম্বার</label>
-                    <input type="text" name="sender" required placeholder="Sender No" class="w-full p-3 border rounded-xl bg-slate-50">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">TrxID</label>
-                    <input type="text" name="trx_id" required placeholder="TrxID" class="w-full p-3 border rounded-xl bg-slate-50">
+                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">১. অফারটি যে নাম্বারে যাবে</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-4 text-slate-500"><i class="fa-solid fa-phone-volume"></i></span>
+                    <input type="number" name="mobile" required placeholder="01XXXXXXXXX" 
+                           class="cyber-input w-full pl-12 text-sm font-bold tracking-[2px]">
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-[#0A2540] text-white py-3.5 rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg">
-                কনফার্ম অর্ডার
+            <!-- Payment Method -->
+            <div>
+                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">২. পেমেন্ট মেথড</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-4 text-slate-500"><i class="fa-solid fa-building-columns"></i></span>
+                    <select name="method" class="cyber-input w-full pl-12 text-sm font-bold appearance-none">
+                        <option value="bKash">bKash</option>
+                        <option value="Nagad">Nagad</option>
+                        <option value="Rocket">Rocket</option>
+                    </select>
+                    <span class="absolute right-4 top-4 text-slate-500 pointer-events-none"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+                </div>
+            </div>
+
+            <!-- Sender & TrxID Row -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">৩. আপনার নাম্বার</label>
+                    <input type="number" name="sender" required placeholder="Sender No" 
+                           class="cyber-input w-full text-xs font-bold px-4">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">৪. TrxID</label>
+                    <input type="text" name="trx_id" required placeholder="8X7H9..." 
+                           class="cyber-input w-full text-xs font-bold px-4 font-mono uppercase">
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-confirm w-full py-5 rounded-2xl text-white font-black text-sm uppercase tracking-[3px] shadow-2xl flex items-center justify-center gap-3 mt-4">
+                ইনিশিয়েট অর্ডার <i class="fa-solid fa-arrow-right-long"></i>
             </button>
         </form>
     </div>
+
+    <!-- Security Footer -->
+    <div class="text-center mt-8 opacity-40">
+        <p class="text-[9px] font-mono text-slate-500 tracking-tighter uppercase">End-to-End Encrypted Transaction Node</p>
+    </div>
 </div>
+
 {% endblock %}
