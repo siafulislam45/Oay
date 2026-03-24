@@ -1,139 +1,211 @@
 {% extends "layout.html" %}
-
 {% block content %}
 
-<!-- ১. হেডার সেকশন -->
-<div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6 flex items-center justify-between">
-    <div>
-        <h2 class="text-lg font-bold text-[#0A2540]">একাউন্ট অ্যাক্টিভেশন</h2>
-        <p class="text-xs text-[#E2136E] font-bold">এককালীন ফি: ৪০৳</p>
-    </div>
-    <a href="/dashboard" class="text-xs bg-gray-100 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition flex items-center gap-1">
-        <i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ড
-    </a>
-</div>
+<style>
+    /* AI Reveal Animation */
+    .reveal-ui { animation: revealUI 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes revealUI { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-<!-- ২. তথ্যের সেকশন -->
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-    <div class="flex items-center gap-2 mb-4 border-b pb-2">
-        <i class="fa-solid fa-circle-info text-[#0057FF]"></i>
-        <h3 class="font-bold text-[#0A2540]">অ্যাক্টিভেশন সংক্রান্ত তথ্য</h3>
-    </div>
-    
-    <p class="text-sm text-gray-600 mb-4 leading-relaxed">
-        আপনার একাউন্টটি সম্পূর্ণভাবে চালু করতে এবং সকল কাজ শুরু করতে, অনুগ্রহ করে নিচের নির্দেশনা অনুযায়ী <span class="font-bold text-[#0A2540]">এককালীন অ্যাক্টিভেশন ফি</span> প্রদান করুন।
-    </p>
+    /* Premium AI Cards */
+    .ai-panel {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 28px;
+        overflow: hidden;
+    }
 
-    <div class="bg-blue-50 rounded-xl p-4 mb-4">
-        <h4 class="font-bold text-[#0057FF] text-xs mb-3 uppercase tracking-wider">কেন এই ফি প্রয়োজন?</h4>
-        <ul class="space-y-3 text-sm text-gray-700">
-            <li class="flex gap-3 items-start">
-                <i class="fa-solid fa-shield-halved text-green-600 mt-1"></i>
-                <span><span class="font-bold">স্প্যাম প্রতিরোধ:</span> এটি স্বয়ংক্রিয় বট এবং অ-serious ব্যবহারকারীদের রেজিস্টার করা থেকে বিরত রাখে।</span>
-            </li>
-            <li class="flex gap-3 items-start">
-                <i class="fa-solid fa-server text-blue-600 mt-1"></i>
-                <span><span class="font-bold">উন্নত পরিষেবা:</span> এই ফি আমাদের সার্ভার রক্ষণাবেক্ষণ এবং আপনাকে আরও ভালো পরিষেবা প্রদানে সাহায্য করে।</span>
-            </li>
-            <li class="flex gap-3 items-start">
-                <i class="fa-solid fa-gem text-[#E2136E] mt-1"></i>
-                <span><span class="font-bold">এক্সক্লুসিভ অ্যাক্সেস:</span> সফল অ্যাক্টিভেশনের পর আপনি আমাদের সকল প্রিমিয়াম কাজ এবং ফিচার ব্যবহার করার সুযোগ পাবেন।</span>
-            </li>
-        </ul>
-    </div>
+    .status-badge {
+        background: rgba(226, 19, 110, 0.1);
+        border: 1px solid rgba(226, 19, 110, 0.3);
+        color: #f472b6;
+        padding: 4px 12px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
 
-    <div class="flex items-center gap-2 text-xs text-gray-600 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-        <i class="fa-solid fa-check-double text-yellow-600"></i>
-        <p><strong>এককালীন পেমেন্ট:</strong> মনে রাখবেন, এটি শুধুমাত্র একবারই প্রদান করতে হবে। এরপর আর কোনো ফি নেই।</p>
-    </div>
-</div>
+    /* Cyber Inputs */
+    .cyber-input {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f1f5f9;
+        transition: all 0.3s ease;
+    }
+    .cyber-input:focus {
+        border-color: #8B5CF6;
+        background: rgba(139, 92, 246, 0.05);
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
+        outline: none;
+    }
 
-<!-- ৩. পেমেন্ট নির্দেশনা (আপডেটেড ফি ৪০ টাকা) -->
-<div class="bg-gradient-to-r from-[#E2136E] to-[#b00e53] text-white rounded-2xl shadow-lg p-6 mb-8 relative overflow-hidden">
-    <!-- Decor -->
-    <div class="absolute -right-6 -top-6 bg-white/20 h-32 w-32 rounded-full blur-2xl"></div>
+    /* Method Selection */
+    .method-card {
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.02);
+        transition: all 0.3s ease;
+    }
+    .method-radio:checked + .method-card {
+        border-color: #8B5CF6;
+        background: rgba(139, 92, 246, 0.1);
+        transform: translateY(-2px);
+    }
 
-    <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-        <i class="fa-solid fa-paper-plane"></i> পেমেন্ট নির্দেশনা
-    </h3>
-    <p class="text-sm text-white/90 mb-4">
-        নিচের নম্বরে <span class="font-bold text-yellow-300">৪০ টাকা সেন্ড মানি (Send Money)</span> করুন এবং তারপর আপনার পেমেন্টের তথ্য নিচের ফর্মে সঠিকভাবে জমা দিন।
-    </p>
+    .btn-initialize {
+        background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+        box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
+        transition: all 0.3s ease;
+    }
+    .btn-initialize:active { transform: scale(0.96); }
 
-    <!-- Number Box -->
-    <div class="bg-white text-[#0A2540] rounded-xl p-4 flex items-center justify-between shadow-sm">
+    .glow-line {
+        height: 1px;
+        width: 100%;
+        background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+        margin: 20px 0;
+    }
+</style>
+
+<div class="max-w-2xl mx-auto space-y-6 reveal-ui pb-32 pt-2 px-1">
+
+    <!-- ১. হেডার সেকশন -->
+    <div class="ai-panel p-5 flex items-center justify-between border-b-2 border-b-violet-500/20">
         <div>
-            <p class="text-xs text-gray-500 mb-1">সেন্ড মানি নম্বর</p>
-            <p class="text-2xl font-bold font-mono tracking-wider" id="payNumber">01912107604</p>
+            <h2 class="text-xl font-bold text-white tracking-tight">সিস্টেম অ্যাক্টিভেশন</h2>
+            <div class="flex items-center gap-2 mt-1">
+                <span class="status-badge">অ্যাক্টিভেশন ফি: ৪০৳</span>
+            </div>
         </div>
-        <button onclick="copyNumber()" class="bg-[#E2136E] text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-95 transition">
-            কপি করুন
-        </button>
+        <a href="/dashboard" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-slate-400 hover:text-white transition-all">
+            <i class="fa-solid fa-xmark"></i>
+        </a>
     </div>
-</div>
 
-<!-- ৪. তথ্য জমা দেওয়ার ফর্ম -->
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-    <h3 class="font-bold text-[#0A2540] mb-6 border-b pb-2">পেমেন্টের তথ্য জমা দিন</h3>
-
-    <form method="POST" action="/activate/submit" class="space-y-5">
+    <!-- ২. তথ্যের সেকশন (Protocol Info) -->
+    <div class="ai-panel p-6 relative">
+        <!-- Decoration -->
+        <div class="absolute top-0 right-0 p-10 bg-violet-600/5 rounded-full blur-3xl"></div>
         
-        <!-- Payment Method -->
-        <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">১. পেমেন্ট মেথড</label>
-            <div class="grid grid-cols-3 gap-3">
-                <label class="cursor-pointer">
-                    <input type="radio" name="method" value="bKash" class="peer sr-only" checked>
-                    <div class="py-2 border-2 border-gray-200 rounded-lg text-center peer-checked:border-[#E2136E] peer-checked:bg-pink-50 peer-checked:text-[#E2136E] transition text-sm font-bold">
-                        bKash
-                    </div>
-                </label>
-                <label class="cursor-pointer">
-                    <input type="radio" name="method" value="Nagad" class="peer sr-only">
-                    <div class="py-2 border-2 border-gray-200 rounded-lg text-center peer-checked:border-[#F7931A] peer-checked:bg-orange-50 peer-checked:text-[#F7931A] transition text-sm font-bold">
-                        Nagad
-                    </div>
-                </label>
-                <label class="cursor-pointer">
-                    <input type="radio" name="method" value="Rocket" class="peer sr-only">
-                    <div class="py-2 border-2 border-gray-200 rounded-lg text-center peer-checked:border-[#8C3494] peer-checked:bg-purple-50 peer-checked:text-[#8C3494] transition text-sm font-bold">
-                        Rocket
-                    </div>
-                </label>
+        <div class="flex items-center gap-3 mb-5">
+            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20">
+                <i class="fa-solid fa-shield-halved text-sm"></i>
+            </div>
+            <h3 class="font-bold text-slate-100 text-sm uppercase tracking-widest">সিকিউরিটি প্রোটোকল</h3>
+        </div>
+        
+        <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+            আপনার একাউন্টটি সুরক্ষিত রাখতে এবং সকল ইনকাম সোর্স আনলক করতে, নিচের নির্দেশনা অনুযায়ী <span class="text-violet-400 font-bold underline decoration-violet-500/30">এককালীন ভেরিফিকেশন ফি</span> প্রদান করুন।
+        </p>
+
+        <div class="space-y-4">
+            <div class="flex gap-4 items-start p-4 rounded-2xl bg-white/5 border border-white/5">
+                <i class="fa-solid fa-robot text-violet-400 mt-1"></i>
+                <p class="text-xs text-slate-300 leading-relaxed"><span class="text-white font-bold block mb-1">বট প্রোটেকশন:</span> এটি ফেক একাউন্ট এবং অটোমেটেড বট আক্রমণ থেকে সিস্টেমকে রক্ষা করে।</p>
+            </div>
+            <div class="flex gap-4 items-start p-4 rounded-2xl bg-white/5 border border-white/5">
+                <i class="fa-solid fa-bolt text-emerald-400 mt-1"></i>
+                <p class="text-xs text-slate-300 leading-relaxed"><span class="text-white font-bold block mb-1">ইনস্ট্যান্ট এক্সেস:</span> পেমেন্ট ভেরিফাই হওয়ার সাথে সাথে আপনার প্রিমিয়াম টাস্ক হাব ওপেন হয়ে যাবে।</p>
             </div>
         </div>
 
-        <!-- Sender Number -->
-        <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">২. আপনার সেন্ডার নম্বর</label>
-            <input type="number" name="sender_number" required placeholder="01xxxxxxxxx" 
-                   class="w-full p-3 border rounded-xl focus:outline-[#E2136E] bg-gray-50 focus:bg-white transition">
-            <p class="text-xs text-gray-400 mt-1 ml-1">যে নম্বর থেকে টাকা পাঠিয়েছেন</p>
+        <div class="mt-6 p-3 rounded-xl bg-amber-500/5 border border-amber-500/10 flex items-center gap-3">
+            <i class="fa-solid fa-circle-check text-amber-500"></i>
+            <p class="text-[10px] text-amber-500 font-bold uppercase tracking-tighter">এককালীন পেমেন্ট - লাইফটাইম ভ্যালিডিটি</p>
         </div>
+    </div>
 
-        <!-- TrxID -->
-        <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">৩. ট্রানজেকশন আইডি (TrxID)</label>
-            <input type="text" name="trx_id" required placeholder="উদাহরণ: 9H56..." 
-                   class="w-full p-3 border rounded-xl focus:outline-[#E2136E] bg-gray-50 focus:bg-white transition uppercase">
+    <!-- ৩. পেমেন্ট নির্দেশনা -->
+    <div class="ai-panel p-1 bg-gradient-to-br from-violet-600/20 to-transparent">
+        <div class="p-6 bg-slate-950/40 rounded-[26px]">
+            <h3 class="font-bold text-white mb-4 flex items-center gap-3">
+                <i class="fa-solid fa-paper-plane text-violet-400"></i> পেমেন্ট মেথড
+            </h3>
+            <p class="text-xs text-slate-400 mb-6 leading-relaxed">
+                নিচের নম্বরে <span class="text-white font-black px-1.5 py-0.5 bg-violet-600 rounded">৪০ টাকা</span> সেন্ড মানি (Send Money) সম্পন্ন করুন।
+            </p>
+
+            <!-- Virtual Card Number Box -->
+            <div class="p-5 bg-black/40 border border-white/10 rounded-2xl flex items-center justify-between group">
+                <div>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Receiver Number</p>
+                    <p class="text-2xl font-black text-white font-mono tracking-widest" id="payNumber">01912107604</p>
+                </div>
+                <button onclick="copyNumber()" class="w-12 h-12 flex items-center justify-center bg-violet-600 text-white rounded-xl shadow-lg shadow-violet-600/20 active:scale-90 transition-all">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+            </div>
         </div>
+    </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="w-full bg-[#0A2540] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#0057FF] transition shadow-lg mt-4">
-            তথ্য জমা দিন
-        </button>
+    <!-- ৪. তথ্য জমা দেওয়ার ফর্ম -->
+    <div class="ai-panel p-8 border-t-2 border-t-violet-500/30">
+        <h3 class="font-bold text-white text-lg mb-8 flex items-center gap-3">
+            <i class="fa-solid fa-pen-to-square text-violet-400"></i> ভেরিফিকেশন ডাটা
+        </h3>
 
-    </form>
+        <form method="POST" action="/activate/submit" class="space-y-6">
+            
+            <!-- Payment Method Selection -->
+            <div>
+                <label class="block text-xs font-bold text-slate-500 mb-4 uppercase tracking-widest">১. গেটওয়ে সিলেক্ট করুন</label>
+                <div class="grid grid-cols-3 gap-3">
+                    <label class="relative block">
+                        <input type="radio" name="method" value="bKash" class="method-radio sr-only" checked>
+                        <div class="method-card py-3 rounded-xl text-center text-xs font-black text-slate-300">bKash</div>
+                    </label>
+                    <label class="relative block">
+                        <input type="radio" name="method" value="Nagad" class="method-radio sr-only">
+                        <div class="method-card py-3 rounded-xl text-center text-xs font-black text-slate-300">Nagad</div>
+                    </label>
+                    <label class="relative block">
+                        <input type="radio" name="method" value="Rocket" class="method-radio sr-only">
+                        <div class="method-card py-3 rounded-xl text-center text-xs font-black text-slate-300">Rocket</div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="glow-line"></div>
+
+            <!-- Sender Number -->
+            <div>
+                <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">২. আপনার সেন্ডার নম্বর</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-4 text-slate-500"><i class="fa-solid fa-phone-volume"></i></span>
+                    <input type="number" name="sender_number" required placeholder="017XXXXXXXX" 
+                           class="cyber-input w-full p-4 pl-12 rounded-2xl text-sm font-bold">
+                </div>
+            </div>
+
+            <!-- TrxID -->
+            <div>
+                <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">৩. ট্রানজেকশন আইডি (TrxID)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-4 text-slate-500"><i class="fa-solid fa-fingerprint"></i></span>
+                    <input type="text" name="trx_id" required placeholder="8X7H92L..." 
+                           class="cyber-input w-full p-4 pl-12 rounded-2xl text-sm font-mono tracking-widest uppercase">
+                </div>
+                <p class="text-[10px] text-slate-500 mt-3 ml-1 italic">*সফল পেমেন্টের পর প্রাপ্ত SMS থেকে TrxID টি সংগ্রহ করুন।</p>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-initialize w-full py-5 rounded-2xl text-white font-black text-sm uppercase tracking-[2px] shadow-2xl">
+                ইনিশিয়েট অ্যাক্টিভেশন <i class="fa-solid fa-arrow-right-long ml-2"></i>
+            </button>
+
+        </form>
+    </div>
 </div>
 
-<!-- Copy Script -->
+<!-- Copy Script with AI Toast -->
 <script>
     function copyNumber() {
         const numberText = document.getElementById("payNumber").innerText;
         navigator.clipboard.writeText(numberText).then(() => {
+            // Simple alert replace with something better if needed
             alert("নম্বর কপি হয়েছে: " + numberText);
-        }).catch(err => {
-            console.error('Copy failed', err);
         });
     }
 </script>
