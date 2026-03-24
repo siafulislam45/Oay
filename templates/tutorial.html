@@ -2,41 +2,91 @@
 {% block content %}
 
 <style>
-    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    
-    .glass-card {
-        background: white;
-        border: 1px solid #F1F5F9;
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+    /* AI Reveal Animation */
+    .reveal-training { animation: revealIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Video Frame Styling */
+    .cyber-video-frame {
+        background: #000;
+        border: 4px solid rgba(255, 255, 255, 0.05);
+        border-radius: 30px;
+        box-shadow: 0 0 50px rgba(139, 92, 246, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    .video-glow {
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(135deg, #8B5CF6, #D946EF);
+        border-radius: 32px;
+        z-index: -1;
+        opacity: 0.3;
+    }
+
+    /* Glass Instruction Card */
+    .instruction-node {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        border-radius: 32px;
+    }
+
+    /* Step Nodes */
+    .step-node-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 14px;
+        z-index: 10;
+        position: relative;
+    }
+    .timeline-line {
+        position: absolute;
+        left: 15px;
+        top: 32px;
+        bottom: -24px;
+        width: 2px;
+        background: linear-gradient(to bottom, rgba(139, 92, 246, 0.3), transparent);
+    }
+
+    .btn-cyber-action {
+        background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+        box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
     }
 </style>
 
-<div class="max-w-2xl mx-auto space-y-6 fade-up pb-32 pt-4">
+<div class="max-w-2xl mx-auto space-y-10 reveal-training pb-32 pt-6 px-2">
 
-    <!-- 1. HEADER -->
-    <div class="text-center space-y-2">
-        <div class="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-indigo-50 text-[#4F46E5] text-2xl shadow-sm mb-1 transform -rotate-3">
-            <i class="fa-brands fa-youtube"></i>
+    <!-- ১. হেডার সেকশন -->
+    <div class="text-center relative">
+        <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-violet-600/10 rounded-full blur-3xl"></div>
+        
+        <div class="relative inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-violet-500/10 border border-violet-500/20 text-violet-400 text-3xl shadow-2xl mb-4 transform -rotate-3">
+            <i class="fa-solid fa-graduation-cap"></i>
         </div>
-        <h2 class="text-xl font-bold text-slate-800">কিভাবে কাজ করবেন?</h2>
-        <p class="text-slate-500 text-xs max-w-xs mx-auto">ভিডিওটি মনোযোগ দিয়ে দেখুন</p>
+        <h2 class="text-2xl font-black ai-gradient-text uppercase tracking-[2px]">কিভাবে কাজ করবেন?</h2>
+        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[3px] mt-1">System Operation Training Module</p>
     </div>
 
-    <!-- 2. VIDEO PLAYER (FIXED HEIGHT FOR FULL VIEW) -->
-    <div class="flex justify-center px-4">
-        <!-- 
-           Update: h-[750px] দেওয়া হয়েছে যাতে ভিডিও লম্বাভাবে পুরোটা দেখা যায়।
-           max-w-[420px] দেওয়া হয়েছে যাতে মোবাইলের উইডথ অনুযায়ী ফিট হয়।
-        -->
-        <div class="relative w-full max-w-[420px] h-[750px] bg-black rounded-[25px] overflow-hidden shadow-2xl shadow-indigo-200 border-[4px] border-white ring-1 ring-slate-200">
+    <!-- ২. ভিডিও প্লেয়ার (Full High View) -->
+    <div class="flex flex-col items-center px-2">
+        <div class="relative w-full max-w-[420px] h-[750px] cyber-video-frame">
+            <div class="video-glow"></div>
             
-            <!-- Loading Placeholder -->
-            <div class="absolute inset-0 flex items-center justify-center bg-slate-900 z-0">
-                <i class="fa-solid fa-circle-notch fa-spin text-white text-2xl"></i>
+            <!-- Loading Node -->
+            <div class="absolute inset-0 flex items-center justify-center bg-slate-950 z-0">
+                <div class="flex flex-col items-center gap-3">
+                    <i class="fa-solid fa-atom fa-spin text-violet-500 text-3xl"></i>
+                    <p class="text-[10px] text-slate-600 font-black uppercase tracking-widest">Loading Stream...</p>
+                </div>
             </div>
 
-            <!-- Facebook Iframe -->
+            <!-- Facebook Video Iframe -->
             <iframe 
                 src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1442701204199094%2F%3Fapp%3Dfbl&show_text=false&appId" 
                 class="absolute top-0 left-0 w-full h-full z-10" 
@@ -44,73 +94,74 @@
                 scrolling="no" 
                 frameborder="0" 
                 allowfullscreen="true" 
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
-                allowFullScreen="true">
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
             </iframe>
-
+        </div>
+        
+        <div class="mt-6 flex items-center gap-3 bg-white/5 border border-white/10 px-5 py-2 rounded-full shadow-inner">
+            <i class="fa-solid fa-volume-high text-violet-400 animate-bounce"></i>
+            <p class="text-[10px] text-slate-300 font-bold uppercase tracking-widest">ভিডিওর সাউন্ড অন করে মনোযোগ দিয়ে দেখুন</p>
         </div>
     </div>
-    
-    <div class="text-center -mt-2">
-        <p class="text-[10px] text-slate-400 font-bold bg-white px-3 py-1 rounded-full inline-block shadow-sm border border-slate-100">
-            <i class="fa-solid fa-volume-high text-[#4F46E5]"></i> ভিডিওতে সাউন্ড অন করুন
-        </p>
-    </div>
 
-    <!-- 3. INSTRUCTION STEPS -->
-    <div class="glass-card p-6 rounded-[30px] relative overflow-hidden mx-2">
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]"></div>
+    <!-- ৩. কাজের ধাপসমূহ (Instruction Timeline) -->
+    <div class="instruction-node p-8 relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-10 bg-violet-600/5 rounded-full blur-3xl"></div>
         
-        <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
-            <i class="fa-solid fa-list-check text-[#4F46E5]"></i> কাজের ধাপসমূহ
+        <h3 class="text-sm font-black text-white uppercase tracking-[3px] mb-10 flex items-center gap-3">
+            <i class="fa-solid fa-terminal text-violet-500"></i> অপারেশনাল প্রোটোকল
         </h3>
 
-        <div class="space-y-6 relative">
-            <!-- Vertical Line -->
-            <div class="absolute left-[15px] top-2 bottom-2 w-0.5 bg-slate-100"></div>
-
+        <div class="space-y-12">
             <!-- Step 1 -->
-            <div class="relative flex gap-4">
-                <div class="h-8 w-8 bg-indigo-100 text-[#4F46E5] rounded-full flex items-center justify-center font-bold text-sm z-10 ring-4 ring-white">1</div>
-                <div>
-                    <h4 class="text-sm font-bold text-slate-700">একাউন্ট তৈরি করুন</h4>
-                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">সঠিক তথ্য দিয়ে রেজিস্ট্রেশন সম্পন্ন করুন।</p>
+            <div class="relative flex gap-6 group">
+                <div class="timeline-line"></div>
+                <div class="step-node-circle bg-violet-600 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]">১</div>
+                <div class="flex-grow pt-1">
+                    <h4 class="text-sm font-black text-slate-100 uppercase tracking-wide group-hover:text-violet-400 transition-colors">একাউন্ট তৈরি ও ভেরিফাই</h4>
+                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed font-medium">সঠিক ইমেইল এবং তথ্য দিয়ে আপনার পার্সোনাল আর্নিং নোড তৈরি করুন। একাউন্ট একটিভ না থাকলে আগে একটিভ করে নিন।</p>
                 </div>
             </div>
 
             <!-- Step 2 -->
-            <div class="relative flex gap-4">
-                <div class="h-8 w-8 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center font-bold text-sm z-10 ring-4 ring-white">2</div>
-                <div>
-                    <h4 class="text-sm font-bold text-slate-700">টাস্ক কমপ্লিট করুন</h4>
-                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">ভিডিও দেখা বা লাইক দেওয়ার কাজগুলো করুন।</p>
+            <div class="relative flex gap-6 group">
+                <div class="timeline-line"></div>
+                <div class="step-node-circle bg-rose-600 text-white shadow-[0_0_15px_rgba(244,63,94,0.4)]">২</div>
+                <div class="flex-grow pt-1">
+                    <h4 class="text-sm font-black text-slate-100 uppercase tracking-wide group-hover:text-rose-400 transition-colors">টাস্ক হাব থেকে কাজ শুরু</h4>
+                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed font-medium">টাস্ক সেন্টারে গিয়ে ভিডিও দেখা, লাইক বা শেয়ার করার মতো সহজ কাজগুলো সম্পন্ন করে সঠিক স্ক্রিনশট প্রুফ হিসেবে সাবমিট করুন।</p>
                 </div>
             </div>
 
             <!-- Step 3 -->
-            <div class="relative flex gap-4">
-                <div class="h-8 w-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold text-sm z-10 ring-4 ring-white">3</div>
-                <div>
-                    <h4 class="text-sm font-bold text-slate-700">টাকা বুঝে নিন</h4>
-                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">৩০০ টাকা হলে বিকাশ বা নগদে পেমেন্ট নিন।</p>
+            <div class="relative flex gap-6 group">
+                <div class="step-node-circle bg-emerald-600 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)]">৩</div>
+                <div class="flex-grow pt-1">
+                    <h4 class="text-sm font-black text-slate-100 uppercase tracking-wide group-hover:text-emerald-400 transition-colors">উইথড্রয়াল ও পেমেন্ট</h4>
+                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed font-medium">আপনার ব্যালেন্স মিনিমাম লিমিট অতিক্রম করলে বিকাশ বা নগদের মাধ্যমে পেমেন্ট রিকোয়েস্ট পাঠান। ২৪ ঘণ্টার মধ্যে পেমেন্ট সম্পন্ন হবে।</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 4. CTA BUTTON -->
-    <div class="text-center pb-6 px-4">
+    <!-- ৪. ফাইনাল কল টু অ্যাকশন -->
+    <div class="text-center space-y-4 px-4">
         {% if session.get('user_id') %}
-            <a href="/tasks" class="w-full inline-flex justify-center items-center gap-2 bg-[#0A2540] text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-indigo-200 hover:scale-105 transition">
-                <span>কাজ শুরু করুন</span>
-                <i class="fa-solid fa-arrow-right"></i>
+            <a href="/tasks" class="btn-cyber-action w-full flex items-center justify-center gap-3 py-5 rounded-2xl text-white font-black text-sm uppercase tracking-[3px] shadow-2xl active:scale-95 transition-all">
+                ইনিশিয়েট অপারেশন <i class="fa-solid fa-rocket"></i>
             </a>
+            <p class="text-[9px] text-slate-600 font-mono uppercase tracking-tighter italic">Execute the protocol to start earning yield</p>
         {% else %}
-            <a href="/register" class="w-full inline-flex justify-center items-center gap-2 bg-[#4F46E5] text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-indigo-200 hover:scale-105 transition">
-                <span>এখনই জয়েন করুন</span>
-                <i class="fa-solid fa-user-plus"></i>
+            <a href="/register" class="btn-cyber-action w-full flex items-center justify-center gap-3 py-5 rounded-2xl text-white font-black text-sm uppercase tracking-[3px] shadow-2xl active:scale-95 transition-all">
+                রেজিস্টার করুন <i class="fa-solid fa-user-plus"></i>
             </a>
+            <p class="text-[9px] text-slate-600 font-mono uppercase tracking-tighter italic">Create your node to access the network</p>
         {% endif %}
+    </div>
+
+    <!-- Security Tagline -->
+    <div class="text-center opacity-30">
+        <p class="text-[9px] font-mono text-slate-500 tracking-widest uppercase">Verified Training Interface • Pay-R Network Sec-v3</p>
     </div>
 
 </div>
