@@ -143,6 +143,35 @@
             </div>
         </div>
     </div>
+
+    <!-- ================= APP DOWNLOAD SECTION ================= -->
+    <!-- ডিফল্টভাবে hidden থাকবে, জাভাস্ক্রিপ্ট চেক করে এটি শো করাবে -->
+    <div id="appDownloadSection" class="hidden bg-gradient-to-r from-slate-900 to-[#0A2540] rounded-[24px] p-5 shadow-2xl relative overflow-hidden group mb-6 border border-slate-700">
+        
+        <!-- Background Decor -->
+        <div class="absolute right-0 top-0 opacity-5 text-8xl transform translate-x-4 -translate-y-4 group-hover:scale-110 transition duration-700">
+            <i class="fa-brands fa-google-play"></i>
+        </div>
+        <div class="absolute -left-6 -bottom-6 w-24 h-24 bg-blue-500 rounded-full blur-2xl opacity-20"></div>
+
+        <div class="flex items-center justify-between relative z-10">
+            <div class="flex items-center gap-4">
+                <div class="h-12 w-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-white text-2xl border border-white/10 shadow-inner animate-bounce">
+                    <i class="fa-solid fa-mobile-screen"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-sm">Pay-R অ্যাপ নামিয়ে নিন</h3>
+                    <p class="text-[10px] text-slate-400 mt-0.5">হোমস্ক্রিন থেকে এক ক্লিকে কাজ করুন</p>
+                </div>
+            </div>
+            
+            <!-- Install Button -->
+            <button id="manualInstallBtn" class="bg-gradient-to-r from-[#4F46E5] to-[#E2136E] text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg hover:shadow-pink-500/40 active:scale-95 transition flex items-center gap-1.5 border border-white/20">
+                <i class="fa-solid fa-download"></i> Install
+            </button>
+        </div>
+    </div>
+    
     <!-- ================= APP INSTALL BANNER (Hidden by Default) ================= -->
     <div id="installAppCard" class="hidden bg-gradient-to-r from-[#4F46E5] to-[#E2136E] rounded-3xl p-5 shadow-lg shadow-indigo-200 mb-6 relative overflow-hidden group fade-up border border-indigo-400/50">
         <!-- Background Icon -->
@@ -290,8 +319,59 @@
     </div>
 
 </div>
+<script>
+    // ================= PWA APP INSTALL LOGIC =================
+    let deferredPrompt;
+    const appDownloadSection = document.getElementById('appDownloadSection');
+    const manualInstallBtn = document.getElementById('manualInstallBtn');
 
-<!-- SCRIPTS -->
+    // ব্রাউজার যখন বুঝবে অ্যাপটি ইনস্টল করার যোগ্য
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // ডিফল্ট পপ-আপ বন্ধ করা
+        e.preventDefault();
+        // ইভেন্ট সেভ করে রাখা
+        deferredPrompt = e;
+        
+        // আমাদের সুন্দর ব্যানারটি শো করানো
+        if (appDownloadSection) {
+            appDownloadSection.classList.remove('hidden');
+        }
+    });
+
+    // ইউজার যখন Install বাটনে ক্লিক করবে
+    if (manualInstallBtn) {
+        manualInstallBtn.addEventListener('click', async () => {
+            if (deferredPrompt !== null) {
+                // ব্রাউজারের আসল ইনস্টল পপ-আপ দেখানো
+                deferredPrompt.prompt();
+                
+                // ইউজারের উত্তরের জন্য অপেক্ষা করা
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('App Installed Successfully!');
+                }
+                
+                // প্রম্পট রিসেট করা
+                deferredPrompt = null;
+                
+                // ব্যানার লুকিয়ে ফেলা
+                if (appDownloadSection) {
+                    appDownloadSection.classList.add('hidden');
+                }
+            }
+        });
+    }
+
+    // ইনস্টল সম্পন্ন হলে অটোমেটিক ব্যানার হাইড হয়ে যাবে
+    window.addEventListener('appinstalled', () => {
+        if (appDownloadSection) {
+            appDownloadSection.classList.add('hidden');
+        }
+        deferredPrompt = null;
+    });
+    
+</script>
+    
 <script>
     // 1. REALISTIC LIVE PAYOUTS LOGIC
     const payoutContainer = document.getElementById('payoutContainer');
