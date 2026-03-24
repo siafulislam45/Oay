@@ -311,5 +311,38 @@
         });
     }
     </script>
+
+    <!-- ================= PWA INSTALLATION LOGIC ================= -->
+    <script>
+        let deferredPrompt;
+        const installCard = document.getElementById('installAppCard');
+        const installBtn = document.getElementById('installAppBtn');
+
+        // যখন ব্রাউজার বুঝবে যে অ্যাপটি ইনস্টল করার যোগ্য, তখন এই ইভেন্ট ফায়ার হবে
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // ডিফল্ট পপ-আপ আটকানো
+            e.preventDefault();
+            // ইভেন্ট সেভ করে রাখা
+            deferredPrompt = e;
+            // আমাদের ডিজাইন করা ব্যানারটি শো করানো
+            if (installCard) {
+                installCard.classList.remove('hidden');
+            }
+        });
+
+        // ইউজার যখন Install বাটনে ক্লিক করবে
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt !== null) {
+                    // ব্রাউজারের আসল ইনস্টল পপ-আপ দেখানো
+                    deferredPrompt.prompt();
+                    // ইউজারের উত্তরের জন্য অপেক্ষা করা
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    // প্রম্পট রিসেট করা
 </body>
       </html>
