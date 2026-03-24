@@ -2,85 +2,159 @@
 {% block content %}
 
 <style>
-    .fade-up { animation: fadeUp 0.5s ease-out; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    /* AI Page Reveal */
+    .vip-reveal { animation: revealIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Premium Node Card */
+    .vip-node-card {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        border-radius: 35px;
+        box-shadow: 0 10px 40px rgba(251, 191, 36, 0.1);
+    }
+
+    .ai-card-dark {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        border-radius: 30px;
+    }
+
+    /* Cyber Inputs */
+    .cyber-input {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f1f5f9;
+        transition: all 0.3s ease;
+    }
+    .cyber-input:focus {
+        border-color: #8B5CF6;
+        background: rgba(139, 92, 246, 0.05);
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+        outline: none;
+    }
+
+    .btn-initialize {
+        background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        transition: all 0.3s ease;
+    }
+    .btn-initialize:active { transform: scale(0.96); }
+
+    .monofont { font-family: 'Inter', 'Courier New', monospace; }
+
+    /* Pulsing Crown */
+    .glow-crown {
+        color: #fbbf24;
+        filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
+        animation: crownPulse 2s infinite ease-in-out;
+    }
+    @keyframes crownPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+    }
 </style>
 
-<div class="max-w-md mx-auto space-y-6 pb-24 pt-4 fade-up">
+<div class="max-w-md mx-auto space-y-8 vip-reveal pb-32 pt-6 px-2">
     
-    <!-- 1. Header (Plan Summary) -->
-    <div class="bg-gradient-to-r from-[#0A2540] to-[#1E1B4B] p-6 rounded-[30px] text-white shadow-xl relative overflow-hidden text-center">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl"></div>
+    <!-- ১. প্ল্যান সামারি কার্ড -->
+    <div class="vip-node-card p-8 text-center relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl"></div>
+        
         <div class="relative z-10">
-            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">You are buying</p>
-            <h2 class="text-3xl font-black text-yellow-400 mb-1 tracking-wide">{{ plan.name }}</h2>
-            <div class="inline-block bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mt-2">
-                <span class="text-xs font-bold text-white">Price: <span class="text-lg font-mono">৳{{ plan.price }}</span></span>
+            <div class="w-20 h-20 bg-amber-500/10 rounded-3xl flex items-center justify-center mx-auto mb-5 border border-amber-500/20 shadow-2xl">
+                <i class="fa-solid fa-crown text-4xl glow-crown"></i>
+            </div>
+            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[3px] mb-2">Initiating VIP Node</p>
+            <h2 class="text-3xl font-black text-amber-500 mb-2 tracking-tight">{{ plan.name }}</h2>
+            
+            <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-2 rounded-2xl mt-4">
+                <span class="text-[10px] text-slate-400 font-bold uppercase">Price:</span>
+                <span class="text-2xl font-black text-white monofont tracking-tighter">৳{{ plan.price }}</span>
             </div>
         </div>
     </div>
 
-    <!-- 2. Payment Instruction -->
-    <div class="bg-orange-50 p-5 rounded-[24px] border border-orange-100 shadow-sm relative overflow-hidden">
-        <div class="absolute -right-4 -top-4 text-orange-200 text-6xl opacity-50"><i class="fa-solid fa-money-bill-transfer"></i></div>
+    <!-- ২. পেমেন্ট প্রোটোকল (নির্দেশনা) -->
+    <div class="ai-card-dark p-6 border-amber-500/20 bg-amber-500/5 relative overflow-hidden">
+        <div class="absolute -right-6 -top-6 text-amber-500/10 text-7xl"><i class="fa-solid fa-bolt-lightning"></i></div>
+        
         <div class="relative z-10">
-            <p class="text-xs font-bold text-orange-800 uppercase tracking-widest mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-circle-info"></i> পেমেন্ট নির্দেশনা
-            </p>
-            <div class="bg-white p-3 rounded-xl border border-orange-100 text-center mb-3 shadow-sm">
-                <p class="text-[10px] text-slate-500 mb-0.5">Send Money To:</p>
-                <p class="text-2xl font-bold font-mono text-[#0A2540]" id="adminNumber">01912107604</p>
+            <h3 class="text-[10px] font-black text-amber-500 uppercase tracking-[2px] mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved"></i> পেমেন্ট প্রোটোকল
+            </h3>
+            
+            <div class="bg-black/40 p-4 rounded-2xl border border-white/5 text-center mb-4">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">Receiver Number (Admin)</p>
+                <p class="text-2xl font-black text-white monofont tracking-widest" id="adminNumber">01912107604</p>
             </div>
-            <button type="button" onclick="copyAdminNumber()" class="w-full bg-orange-500 text-white py-2 rounded-xl text-xs font-bold hover:bg-orange-600 transition shadow-md">
-                নম্বরটি কপি করুন <i class="fa-regular fa-copy ml-1"></i>
+            
+            <button type="button" onclick="copyAdminNumber()" class="w-full bg-amber-500/10 border border-amber-500/30 text-amber-500 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[2px] hover:bg-amber-500 hover:text-slate-900 transition-all active:scale-95">
+                নম্বর কপি করুন <i class="fa-regular fa-copy ml-2"></i>
             </button>
-            <p class="text-[10px] text-orange-600 mt-3 text-center font-medium leading-relaxed">
-                উপরের নম্বরে টাকা পাঠিয়ে নিচের ফর্মে সঠিক ট্রানজেকশন আইডি (TrxID) দিন।
+            
+            <p class="text-[10px] text-slate-400 mt-4 text-center leading-relaxed">
+                উপরের নম্বরে <span class="text-white font-bold">সেন্ড মানি</span> সম্পন্ন করে নিচের ফর্মে ট্রানজেকশন ডাটা এন্ট্রি করুন।
             </p>
         </div>
     </div>
 
-    <!-- 3. Payment Form -->
-    <form id="vipBuyForm" method="POST" class="bg-white p-6 rounded-[30px] shadow-lg border border-slate-50 space-y-5" onsubmit="return preventDoubleSubmit()">
+    <!-- ৩. ট্রানজেকশন ডাটা ফর্ম -->
+    <form id="vipBuyForm" method="POST" class="ai-card-dark p-8 border-t-2 border-t-violet-500/30 space-y-6" onsubmit="return preventDoubleSubmit()">
         
+        <!-- Gateway Selection -->
         <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">পেমেন্ট মেথড</label>
-            <select name="method" required class="w-full p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-700 appearance-none">
-                <option value="bKash">bKash</option>
-                <option value="Nagad">Nagad</option>
-                <option value="Rocket">Rocket</option>
-            </select>
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[2px] mb-3 ml-1">১. পেমেন্ট গেটওয়ে</label>
+            <div class="relative">
+                <select name="method" required class="cyber-input w-full p-4 rounded-2xl text-sm font-bold appearance-none">
+                    <option value="bKash">bKash</option>
+                    <option value="Nagad">Nagad</option>
+                    <option value="Rocket">Rocket</option>
+                </select>
+                <span class="absolute right-4 top-4.5 text-slate-500 pointer-events-none"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+            </div>
         </div>
         
+        <!-- Sender Number -->
         <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">আপনার সেন্ডার নম্বর</label>
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[2px] mb-2 ml-1">২. সেন্ডার নম্বর</label>
             <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fa-solid fa-phone"></i></div>
+                <span class="absolute left-4 top-4.5 text-slate-500"><i class="fa-solid fa-phone-volume"></i></span>
                 <input type="number" name="sender" required placeholder="যে নম্বর থেকে টাকা পাঠিয়েছেন" 
-                       class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-700">
+                       class="cyber-input w-full pl-12 p-4 rounded-2xl text-sm font-bold tracking-widest">
             </div>
         </div>
         
+        <!-- Transaction ID -->
         <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">TrxID (ট্রানজেকশন আইডি)</label>
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[2px] mb-2 ml-1">৩. ট্রানজেকশন আইডি (TrxID)</label>
             <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fa-solid fa-hashtag"></i></div>
-                <input type="text" name="trx_id" required placeholder="Example: 9A5K..." 
-                       class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-700 uppercase tracking-widest">
+                <span class="absolute left-4 top-4.5 text-slate-500"><i class="fa-solid fa-fingerprint"></i></span>
+                <input type="text" name="trx_id" required placeholder="Example: 8X7H9..." 
+                       class="cyber-input w-full pl-12 p-4 rounded-2xl text-sm font-black monofont uppercase tracking-[2px]">
             </div>
-            <p class="text-[9px] text-red-500 mt-1.5 ml-1 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> একই TrxID দুইবার ব্যবহার করলে একাউন্ট ব্যান হবে।</p>
+            <div class="mt-4 p-3 rounded-xl bg-rose-500/5 border border-rose-500/10 flex items-start gap-3">
+                <i class="fa-solid fa-triangle-exclamation text-rose-500 text-xs mt-0.5"></i>
+                <p class="text-[9px] text-rose-400 font-bold uppercase leading-tight">সতর্কতা: ভুল বা ফেক ট্রানজেকশন আইডি দিলে আইডি সাথে সাথে ব্যান করা হবে।</p>
+            </div>
         </div>
 
-        <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white py-4 rounded-2xl font-bold shadow-xl shadow-indigo-200 hover:scale-[1.02] transition active:scale-95 flex items-center justify-center gap-2 mt-4">
-            <span>কনফার্ম করুন</span>
+        <button type="submit" id="submitBtn" class="btn-initialize w-full py-5 rounded-2xl text-white font-black text-sm uppercase tracking-[3px] shadow-2xl flex items-center justify-center gap-3 mt-4">
+            <span>কনফার্ম অর্ডার</span>
             <i class="fa-solid fa-circle-check"></i>
         </button>
     </form>
 
+    <!-- Security Footer -->
+    <div class="text-center opacity-30">
+        <p class="text-[9px] font-mono text-slate-600 tracking-widest uppercase">Secured Quantum Payout Gateway • Pay-R Network</p>
+    </div>
+
 </div>
 
+<!-- Scripts -->
 <script>
-    // Copy Number
     function copyAdminNumber() {
         const num = document.getElementById("adminNumber").innerText;
         navigator.clipboard.writeText(num).then(() => {
@@ -88,12 +162,11 @@
         });
     }
 
-    // Prevent Double Click Submission
     function preventDoubleSubmit() {
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> প্রসেস হচ্ছে...';
-        btn.classList.add('opacity-80', 'cursor-not-allowed');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> প্রসেস হচ্ছে...';
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
         return true;
     }
 </script>
