@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    .wheel-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        margin: 0 auto;
+    }
+    .wheel {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 8px solid #0A2540;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        background: conic-gradient(
+            #E2136E 0deg 60deg, #4F46E5 60deg 120deg, 
+            #F59E0B 120deg 180deg, #10B981 180deg 240deg, 
+            #8B5CF6 240deg 300deg, #EF4444 300deg 360deg
+        );
+        transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1);
+        position: relative;
+    }
+    .pointer {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 30px;
+        color: #0A2540;
+        z-index: 10;
+        filter: drop-shadow(0 4px 2px rgba(0,0,0,0.3));
+    }
+    /* Wheel Text Positions */
+    .wheel-text { position: absolute; color: white; font-weight: bold; font-size: 14px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+    .t1 { top: 15%; left: 65%; transform: rotate(30deg); }
+    .t2 { top: 45%; right: 10%; transform: rotate(90deg); }
+    .t3 { bottom: 15%; right: 25%; transform: rotate(150deg); }
+    .t4 { bottom: 15%; left: 25%; transform: rotate(210deg); }
+    .t5 { top: 45%; left: 10%; transform: rotate(270deg); }
+    .t6 { top: 15%; left: 25%; transform: rotate(330deg); }
+</style>
+
+<div class="max-w-md mx-auto space-y-8 pb-32 pt-4">
+
+    <div class="text-center">
+        <h2 class="text-3xl font-black text-[#0A2540]">লাকি স্পিন 🎁</h2>
+        <p class="text-slate-500 text-sm mt-1">প্রতিদিন একবার ভাগ্য পরীক্ষা করুন</p>
+    </div>
+
+    <!-- Spin Wheel -->
+    <div class="wheel-container">
+        <div class="pointer"><i class="fa-solid fa-location-dot"></i></div>
+        <div class="wheel" id="wheel">
+            <div class="wheel-text t1">৳১০</div>
+            <div class="wheel-text t2">৳০</div>
+            <div class="wheel-text t3">৳৫</div>
+            <div class="wheel-text t4">৳১</div>
+            <div class="wheel-text t5">৳২</div>
+            <div class="wheel-text t6">৳৩</div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="text-center bg-white p-6 rounded-[30px] shadow-lg border border-slate-100">
+        {% if can_spin %}
+            <button id="spinBtn" onclick="spinWheel()" class="bg-gradient-to-r from-[#4F46E5] to-[#E2136E] text-white px-10 py-4 rounded-full font-black text-lg shadow-lg hover:scale-105 active:scale-95 transition">
+                SPIN NOW
+            </button>
+        {% else %}
+            <button disabled class="bg-slate-200 text-slate-400 px-10 py-4 rounded-full font-bold text-lg cursor-not-allowed">
+                আজকের স্পিন শেষ
+            </button>
+            <p class="text-xs text-slate-500 mt-3">আগামীকাল আবার চেষ্টা করুন!</p>
+        {% endif %}
+        
+        <p id="resultMsg" class="mt-4 font-bold text-lg hidden"></p>
+    </div>
+
+</div>
+
+<script>
+    function spinWheel() {
+        const btn = document.getElementById('spinBtn');
+        const wheel = document.getElementById('wheel');
+        const msg = document.getElementById('resultMsg');
+        
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+
+        // Backend Request
+        fetch('/spin', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                // Calculate Rotation based on reward
+                // Maps reward to degree segment
+                let degrees = 3600; // Spin 10 times extra
+                if(data.reward === 10) degrees += 330;
+                else if(data.reward === 0) degrees += 270;
+                else if(data.reward === 5) degrees += 210;
+                else if(data.reward === 1) degrees += 150;
+                else if(data.reward === 2) degrees += 90;
+                else if(data.reward === 3) degrees += 30;
+
+                wheel.style.transform = `rotate(${degrees}deg)`;
+
+                setTimeout(() => {
+                    msg.classList.remove('hidden');
+                    if(data.reward > 0) {
+                        msg.innerHTML = `🎉 অভিনন্দন! আপনি <span class="text-green-600">৳${data.reward}</span> পেয়েছেন!`;
+                    } else {
+                        msg.innerHTML = `😔 Better Luck Next Time!`;
+                        msg.classList.add('text-red-500');
+                    }
+                    setTimeout(() => location.reload(), 3000); // Reload after 3s
+                }, 4000); // 4 seconds animation time
+            } else {
+                alert(data.message);
+                location.reload();
+            }
+        });
+    }
+</script>
+{% endblock %}
