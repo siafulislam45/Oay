@@ -2,102 +2,123 @@
 {% block content %}
 
 <style>
-    /* Custom Animations */
-    .fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(30px); }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-    
-    .blob {
-        position: absolute;
-        filter: blur(80px);
-        opacity: 0.4;
-        z-index: -1;
-        animation: float 10s infinite alternate;
-    }
-    @keyframes float { from { transform: translate(0,0); } to { transform: translate(20px, -20px); } }
+    /* AI Core Animations */
+    .reveal-hero { animation: revealIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+    @keyframes revealIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Phone Mockup Shadow */
-    .mockup-shadow {
-        box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.25);
+    .glow-bg {
+        position: fixed;
+        width: 100vw; height: 100vh;
+        background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+        z-index: -1;
+        pointer-events: none;
     }
+
+    /* Glassmorphism Elements */
+    .ai-glass-card {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        border-radius: 32px;
+    }
+
+    .ai-gradient-text {
+        background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Floating Animation */
+    .float-ai { animation: floating 6s ease-in-out infinite; }
+    @keyframes floating { 
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    .btn-cyber {
+        background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-cyber:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(139, 92, 246, 0.5); }
 </style>
 
-<div class="overflow-hidden">
+<div class="glow-bg"></div>
+
+<div class="relative overflow-hidden">
 
     <!-- 1. HERO SECTION -->
-    <section class="relative pt-10 pb-20 md:pt-20 md:pb-32 px-4">
+    <section class="relative pt-16 pb-24 md:pt-32 md:pb-48 px-5">
         
-        <!-- Background Blobs -->
-        <div class="blob w-96 h-96 bg-purple-500 rounded-full top-0 left-0 mix-blend-multiply"></div>
-        <div class="blob w-96 h-96 bg-indigo-500 rounded-full top-0 right-0 mix-blend-multiply animation-delay-2000"></div>
+        <!-- Background Ambient Glows -->
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-violet-600/10 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600/10 rounded-full blur-[120px]"></div>
 
-        <div class="container mx-auto text-center max-w-4xl fade-up">
+        <div class="container mx-auto text-center max-w-5xl reveal-hero">
             
-            <div class="inline-flex items-center gap-2 bg-white/50 backdrop-blur-sm border border-indigo-100 px-4 py-1.5 rounded-full mb-6 shadow-sm">
+            <div class="inline-flex items-center gap-3 bg-violet-500/10 border border-violet-500/20 px-5 py-2 rounded-full mb-8 backdrop-blur-md">
                 <span class="flex h-2 w-2 relative">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
                 </span>
-                <span class="text-xs font-bold text-indigo-600 tracking-wide">বাংলাদেশের #১ আর্নিং প্ল্যাটফর্ম</span>
+                <span class="text-[10px] font-black text-violet-400 tracking-[2px] uppercase">Next-Gen Earning Interface</span>
             </div>
 
-            <h1 class="text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-6">
-                সহজ কাজ করে <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]">অনলাইনে আয় করুন</span>
+            <h1 class="text-4xl md:text-7xl font-black text-white leading-[1.1] mb-8">
+                সহজ মাইক্রো-টাস্কে <br>
+                <span class="ai-gradient-text italic">স্মার্ট ইনকাম শুরু করুন</span>
             </h1>
 
-            <p class="text-slate-500 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-                Pay-R এর সাথে যুক্ত হয়ে প্রতিদিন আয় করুন। ভিডিও দেখা, টাস্ক কমপ্লিট এবং রেফার করে ঘরে বসেই স্মার্ট ইনকাম জেনারেট করুন।
+            <p class="text-slate-400 text-base md:text-lg mb-12 max-w-2xl mx-auto leading-relaxed font-medium">
+                Pay-R এর কোয়ান্টাম নেটওয়ার্কের সাথে যুক্ত হয়ে প্রতিদিন আয় করুন। <br class="hidden md:block"> ভিডিও দেখা, সার্ভে এবং রেফারেল এর মাধ্যমে ঘরে বসেই নিশ্চিত উপার্জন।
             </p>
 
-            <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-16">
-                <a href="/register" class="w-full md:w-auto bg-[#4F46E5] text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 hover:scale-105 transition flex items-center justify-center gap-2">
-                    একাউন্ট খুলুন <i class="fa-solid fa-arrow-right"></i>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-5 mb-24">
+                <a href="/register" class="w-full md:w-auto btn-cyber text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-[2px] flex items-center justify-center gap-3">
+                    একাউন্ট খুলুন <i class="fa-solid fa-bolt-lightning"></i>
                 </a>
-                <a href="/login" class="w-full md:w-auto bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-slate-50 transition flex items-center justify-center gap-2">
-                    <i class="fa-regular fa-user"></i> লগ ইন
+                <a href="/login" class="w-full md:w-auto bg-white/5 text-slate-300 border border-white/10 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-[2px] hover:bg-white/10 transition-all">
+                    লগ ইন করুন
                 </a>
             </div>
 
-            <!-- APP MOCKUP (CSS Design) -->
-            <div class="relative mx-auto w-full max-w-[300px] md:max-w-[600px] perspective-1000">
-                <div class="relative bg-white rounded-[40px] border-8 border-slate-900 shadow-2xl overflow-hidden mockup-shadow transform rotate-x-10 hover:rotate-0 transition duration-700">
+            <!-- FUTURISTIC DEVICE MOCKUP -->
+            <div class="relative mx-auto w-full max-w-[320px] md:max-w-[700px] float-ai">
+                <div class="relative bg-slate-950 rounded-[45px] p-2 border-[6px] border-slate-800 shadow-[0_0_80px_rgba(139,92,246,0.15)] overflow-hidden">
                     <!-- Notch -->
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 h-6 w-32 bg-slate-900 rounded-b-xl z-20"></div>
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 h-7 w-36 bg-slate-800 rounded-b-3xl z-20 border-x border-b border-white/5"></div>
                     
-                    <!-- Fake Screen Content -->
-                    <div class="bg-slate-50 h-[400px] md:h-[350px] w-full pt-10 px-4 pb-4 flex flex-col gap-3">
-                        <!-- Header -->
-                        <div class="flex justify-between items-center">
-                            <div class="h-8 w-8 bg-indigo-100 rounded-full"></div>
-                            <div class="h-4 w-24 bg-slate-200 rounded"></div>
+                    <!-- Screen Simulation -->
+                    <div class="bg-[#030712] h-[450px] md:h-[400px] w-full rounded-[38px] overflow-hidden p-6 relative">
+                        <!-- Header UI -->
+                        <div class="flex justify-between items-center mb-8 opacity-50">
+                            <div class="h-8 w-8 bg-violet-500/20 rounded-xl"></div>
+                            <div class="h-3 w-20 bg-slate-800 rounded-full"></div>
                         </div>
-                        <!-- Balance Card -->
-                        <div class="bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] h-32 rounded-3xl w-full shadow-lg flex items-center justify-center text-white">
+                        <!-- Balance Card UI -->
+                        <div class="bg-gradient-to-br from-violet-600 to-indigo-900 h-36 rounded-3xl w-full mb-8 flex items-center justify-center border border-white/10">
                             <div class="text-center">
-                                <div class="h-2 w-16 bg-white/30 rounded mb-2 mx-auto"></div>
-                                <div class="h-8 w-32 bg-white/20 rounded mx-auto backdrop-blur-sm"></div>
+                                <p class="text-[8px] uppercase tracking-widest text-white/50 mb-1">Total Assets</p>
+                                <p class="text-2xl font-black text-white font-mono">৳১২,৪৫০.০০</p>
                             </div>
                         </div>
-                        <!-- Menu Grid -->
-                        <div class="grid grid-cols-4 gap-2">
-                            <div class="h-16 bg-white rounded-xl shadow-sm"></div>
-                            <div class="h-16 bg-white rounded-xl shadow-sm"></div>
-                            <div class="h-16 bg-white rounded-xl shadow-sm"></div>
-                            <div class="h-16 bg-white rounded-xl shadow-sm"></div>
+                        <!-- Menu Grid UI -->
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="h-14 bg-white/5 rounded-2xl border border-white/5"></div>
+                            <div class="h-14 bg-white/5 rounded-2xl border border-white/5"></div>
+                            <div class="h-14 bg-white/5 rounded-2xl border border-white/5"></div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Floating Badge -->
-                <div class="absolute -right-4 top-20 bg-white p-3 rounded-2xl shadow-xl animate-bounce hidden md:block">
-                    <div class="flex items-center gap-3">
-                        <div class="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                            <i class="fa-solid fa-money-bill"></i>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-slate-400 font-bold">Payment Sent</p>
-                            <p class="text-sm font-bold text-slate-800">৳ ৫,০০০.০০</p>
-                        </div>
+                <!-- Floating Payment Notification -->
+                <div class="absolute -right-6 top-1/3 bg-slate-900/90 backdrop-blur-xl p-4 rounded-2xl border border-emerald-500/30 shadow-2xl hidden md:flex items-center gap-4">
+                    <div class="h-10 w-10 bg-emerald-500/20 rounded-full flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-[8px] text-slate-500 font-black uppercase">Payment Dispatched</p>
+                        <p class="text-sm font-black text-white">৳৫০০০.০০ (bKash)</p>
                     </div>
                 </div>
             </div>
@@ -105,132 +126,120 @@
         </div>
     </section>
 
-    <!-- 2. STATS BAR -->
-    <section class="bg-white border-y border-slate-100 py-10">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-3 gap-4 text-center divide-x divide-slate-100">
+    <!-- 2. ANALYTICAL STATS BAR -->
+    <section class="bg-slate-950/50 border-y border-white/5 py-12">
+        <div class="container mx-auto px-5">
+            <div class="grid grid-cols-3 gap-5 text-center divide-x divide-white/5">
                 <div>
-                    <h3 class="text-2xl md:text-4xl font-bold text-[#4F46E5]">৬০K+</h3>
-                    <p class="text-xs md:text-sm text-slate-500 mt-1">এক্টিভ ইউজার</p>
+                    <h3 class="text-2xl md:text-5xl font-black text-white tracking-tighter">৬০K<span class="text-violet-500">+</span></h3>
+                    <p class="text-[10px] md:text-xs text-slate-500 mt-2 font-black uppercase tracking-widest">Active Nodes</p>
                 </div>
                 <div>
-                    <h3 class="text-2xl md:text-4xl font-bold text-[#E2136E]">২৪/৭</h3>
-                    <p class="text-xs md:text-sm text-slate-500 mt-1">লাইভ সাপোর্ট</p>
+                    <h3 class="text-2xl md:text-5xl font-black text-white tracking-tighter">২৪<span class="text-violet-500">/</span>৭</h3>
+                    <p class="text-[10px] md:text-xs text-slate-500 mt-2 font-black uppercase tracking-widest">Live Support</p>
                 </div>
                 <div>
-                    <h3 class="text-2xl md:text-4xl font-bold text-green-600">১০০%</h3>
-                    <p class="text-xs md:text-sm text-slate-500 mt-1">পেমেন্ট গ্যারান্টি</p>
+                    <h3 class="text-2xl md:text-5xl font-black text-white tracking-tighter">১০০<span class="text-violet-500">%</span></h3>
+                    <p class="text-[10px] md:text-xs text-slate-500 mt-2 font-black uppercase tracking-widest">Verification</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 3. HOW IT WORKS -->
-    <section class="py-20 px-4 bg-slate-50">
-        <div class="container mx-auto max-w-5xl">
-            <div class="text-center mb-16">
-                <span class="text-[#4F46E5] font-bold text-xs tracking-widest uppercase">Process</span>
-                <h2 class="text-3xl font-bold text-slate-800 mt-2">কিভাবে কাজ করবেন?</h2>
-                <p class="text-slate-500 mt-2">মাত্র ৩টি সহজ ধাপে আয় শুরু করুন</p>
+    <!-- 3. OPERATIONAL PROTOCOL (How it works) -->
+    <section class="py-24 px-5">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-20">
+                <span class="text-violet-500 font-black text-[10px] tracking-[4px] uppercase">Protocol</span>
+                <h2 class="text-3xl md:text-5xl font-black text-white mt-4">কিভাবে কাজ শুরু করবেন?</h2>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
                 <!-- Step 1 -->
-                <div class="bg-white p-8 rounded-[30px] shadow-sm hover:shadow-xl transition duration-300 relative group overflow-hidden">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -mr-4 -mt-4 transition group-hover:bg-[#4F46E5]"></div>
-                    <div class="h-14 w-14 bg-indigo-100 text-[#4F46E5] rounded-2xl flex items-center justify-center text-2xl mb-6 relative z-10 group-hover:bg-white">
-                        <i class="fa-solid fa-user-plus"></i>
+                <div class="ai-glass-card p-10 group hover:border-violet-500/40 transition-all duration-500">
+                    <div class="h-16 w-16 bg-violet-600/10 text-violet-400 rounded-2xl flex items-center justify-center text-3xl mb-8 border border-violet-500/20 group-hover:bg-violet-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-user-gear"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-800 mb-3">একাউন্ট খুলুন</h3>
-                    <p class="text-sm text-slate-500 leading-relaxed">
-                        মাত্র ১ মিনিটে রেজিস্ট্রেশন করুন। কোনো অভিজ্ঞতার প্রয়োজন নেই। সম্পূর্ণ ফ্রী।
+                    <h3 class="text-xl font-bold text-white mb-4 italic uppercase">Node Entry</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed font-medium">
+                        খুব সহজেই একাউন্ট রেজিস্টার করে আপনার প্রোফাইলটি সেটআপ করে নিন।
                     </p>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="bg-white p-8 rounded-[30px] shadow-sm hover:shadow-xl transition duration-300 relative group overflow-hidden">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-pink-50 rounded-bl-full -mr-4 -mt-4 transition group-hover:bg-[#E2136E]"></div>
-                    <div class="h-14 w-14 bg-pink-100 text-[#E2136E] rounded-2xl flex items-center justify-center text-2xl mb-6 relative z-10 group-hover:bg-white">
-                        <i class="fa-solid fa-list-check"></i>
+                <div class="ai-glass-card p-10 group hover:border-rose-500/40 transition-all duration-500">
+                    <div class="h-16 w-16 bg-rose-600/10 text-rose-500 rounded-2xl flex items-center justify-center text-3xl mb-8 border border-rose-500/20 group-hover:bg-rose-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-microchip"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-800 mb-3">টাস্ক করুন</h3>
-                    <p class="text-sm text-slate-500 leading-relaxed">
-                        ফেসবুক লাইক, ইউটিউব ভিডিও দেখা এবং অ্যাপ ডাউনলোডের মতো সহজ কাজ করুন।
+                    <h3 class="text-xl font-bold text-white mb-4 italic uppercase">Task Execution</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed font-medium">
+                        ভিডিও দেখা, সাবস্ক্রাইব বা অ্যাপ টেস্টিং এর মতো সহজ টাস্কগুলো সম্পন্ন করুন।
                     </p>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="bg-white p-8 rounded-[30px] shadow-sm hover:shadow-xl transition duration-300 relative group overflow-hidden">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-bl-full -mr-4 -mt-4 transition group-hover:bg-green-600"></div>
-                    <div class="h-14 w-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-6 relative z-10 group-hover:bg-white">
-                        <i class="fa-solid fa-money-bill-transfer"></i>
+                <div class="ai-glass-card p-10 group hover:border-emerald-500/40 transition-all duration-500">
+                    <div class="h-16 w-16 bg-emerald-600/10 text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mb-8 border border-emerald-500/20 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-wallet"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-800 mb-3">পেমেন্ট নিন</h3>
-                    <p class="text-sm text-slate-500 leading-relaxed">
-                        মিনিমাম ব্যালেন্স হলে বিকাশ, নগদ বা রকেটের মাধ্যমে টাকা তুলে নিন।
+                    <h3 class="text-xl font-bold text-white mb-4 italic uppercase">Yield Payout</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed font-medium">
+                        আপনার উপার্জিত অর্থ বিকাশ, নগদ বা রকেটের মাধ্যমে ইনস্ট্যান্ট পেমেন্ট নিন।
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 4. FEATURES GRID -->
-    <section class="py-20 px-4">
+    <!-- 4. CORE FEATURES HUB -->
+    <section class="py-24 px-5 bg-gradient-to-b from-transparent to-slate-950">
         <div class="container mx-auto max-w-4xl">
-            <div class="bg-[#0A2540] rounded-[40px] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
-                <!-- Decor -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-[#4F46E5] rounded-full blur-[80px] opacity-50"></div>
-                <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#E2136E] rounded-full blur-[80px] opacity-40"></div>
-
-                <div class="relative z-10 text-center mb-12">
-                    <h2 class="text-3xl font-bold">কেন Pay-R সেরা?</h2>
-                    <p class="text-indigo-200 mt-2">আমাদের বিশেষ সুবিধাসমূহ</p>
+            <div class="ai-glass-card p-8 md:p-16 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-80 h-80 bg-violet-600/10 rounded-full blur-[100px]"></div>
+                
+                <div class="text-center mb-16 relative z-10">
+                    <h2 class="text-3xl font-black text-white italic">কেন PAY-R প্রিমিয়াম?</h2>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
-                    <div class="text-center p-4 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10">
-                        <i class="fa-solid fa-bolt text-yellow-400 text-3xl mb-3"></i>
-                        <h4 class="font-bold text-sm">ফাস্ট পেমেন্ট</h4>
+                    <div class="text-center">
+                        <i class="fa-solid fa-bolt-lightning text-amber-400 text-3xl mb-4"></i>
+                        <h4 class="font-bold text-[10px] text-white uppercase tracking-widest">ফাস্ট পেমেন্ট</h4>
                     </div>
-                    <div class="text-center p-4 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10">
-                        <i class="fa-solid fa-shield-halved text-green-400 text-3xl mb-3"></i>
-                        <h4 class="font-bold text-sm">১০০% সেইফ</h4>
+                    <div class="text-center">
+                        <i class="fa-solid fa-fingerprint text-emerald-400 text-3xl mb-4"></i>
+                        <h4 class="font-bold text-[10px] text-white uppercase tracking-widest">হাই সিকিউরিটি</h4>
                     </div>
-                    <div class="text-center p-4 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10">
-                        <i class="fa-solid fa-headset text-blue-400 text-3xl mb-3"></i>
-                        <h4 class="font-bold text-sm">সাপোর্ট টিম</h4>
+                    <div class="text-center">
+                        <i class="fa-solid fa-headset text-sky-400 text-3xl mb-4"></i>
+                        <h4 class="font-bold text-[10px] text-white uppercase tracking-widest">লাইভ সাপোর্ট</h4>
                     </div>
-                    <div class="text-center p-4 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10">
-                        <i class="fa-solid fa-gift text-pink-400 text-3xl mb-3"></i>
-                        <h4 class="font-bold text-sm">ডেইলি বোনাস</h4>
+                    <div class="text-center">
+                        <i class="fa-solid fa-gift text-rose-400 text-3xl mb-4"></i>
+                        <h4 class="font-bold text-[10px] text-white uppercase tracking-widest">বোনাস রিওয়ার্ড</h4>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 5. FINAL CTA -->
-    <section class="pb-20 px-4 text-center">
-        <h2 class="text-2xl font-bold text-slate-800 mb-4">শুরু করতে প্রস্তুত?</h2>
-        <p class="text-slate-500 mb-8 max-w-md mx-auto">আজই আপনার যাত্রা শুরু করুন এবং হাজার হাজার মানুষের সাথে আয় করুন।</p>
-        <a href="/register" class="inline-flex items-center gap-3 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-indigo-300 transition hover:-translate-y-1">
-            <i class="fa-solid fa-rocket"></i> একাউন্ট খুলুন
+    <!-- 5. FINAL TERMINAL CTA -->
+    <section class="py-24 px-5 text-center">
+        <h2 class="text-3xl md:text-5xl font-black text-white mb-8">ইনিশিয়েট ইনকাম প্রোসেস?</h2>
+        <p class="text-slate-500 mb-12 max-w-md mx-auto text-sm font-bold uppercase tracking-widest">Join the most advanced micro-task network in Bangladesh</p>
+        <a href="/register" class="btn-cyber inline-flex items-center gap-4 text-white px-12 py-5 rounded-2xl font-black text-sm uppercase tracking-[3px] transition-all">
+            গেট স্টার্টেড <i class="fa-solid fa-arrow-right"></i>
         </a>
     </section>
 
-    <!-- 6. FOOTER -->
-    <footer class="bg-white border-t border-slate-100 py-10 text-center">
-        <div class="flex justify-center gap-6 mb-6">
-            <a href="#" class="text-slate-400 hover:text-blue-600 transition text-2xl"><i class="fa-brands fa-facebook"></i></a>
-            <a href="https://t.me/securehx" class="text-slate-400 hover:text-sky-500 transition text-2xl"><i class="fa-brands fa-telegram"></i></a>
-            <a href="#" class="text-slate-400 hover:text-red-600 transition text-2xl"><i class="fa-brands fa-youtube"></i></a>
+    <!-- 6. QUANTUM FOOTER -->
+    <footer class="bg-slate-950 border-t border-white/5 py-16 text-center">
+        <div class="flex justify-center gap-10 mb-10">
+            <a href="#" class="text-slate-600 hover:text-white transition-all text-2xl"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://t.me/PayRsupprt" class="text-slate-600 hover:text-violet-400 transition-all text-2xl"><i class="fa-brands fa-telegram"></i></a>
+            <a href="#" class="text-slate-600 hover:text-rose-500 transition-all text-2xl"><i class="fa-brands fa-youtube"></i></a>
         </div>
-        <p class="text-xs text-slate-400 font-medium">© 2025 Pay-R. All rights reserved.</p>
-        <div class="flex justify-center gap-4 mt-4 text-[10px] text-slate-400">
-            <a href="#" class="hover:text-[#4F46E5]">Terms</a>
-            <a href="#" class="hover:text-[#4F46E5]">Privacy</a>
-            <a href="#" class="hover:text-[#4F46E5]">Policy</a>
-        </div>
+        <p class="text-[10px] text-slate-700 font-black uppercase tracking-[4px]">© 2025 PAY-R • Quantum Ledger Network</p>
     </footer>
 
 </div>
