@@ -2,160 +2,213 @@
 {% block content %}
 
 <style>
-    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    
-    /* Image Zoom Hover Effect */
-    .proof-img { transition: transform 0.5s ease; }
-    .proof-card:hover .proof-img { transform: scale(1.05); }
+    /* AI Page Reveal Animation */
+    .reveal-proofs { animation: revealIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Modal Animation */
-    .modal-enter { animation: modalIn 0.3s ease-out forwards; }
-    @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    /* Quantum Node Cards */
+    .proof-node-card {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.1);
+        border-radius: 28px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    .proof-node-card:hover {
+        border-color: rgba(34, 211, 238, 0.4);
+        transform: translateY(-5px);
+    }
+
+    /* Cyber Image Container */
+    .image-frame {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .image-overlay {
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.9), transparent);
+    }
+
+    /* Transparency Protocol Box */
+    .protocol-box {
+        background: rgba(139, 92, 246, 0.05);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 24px;
+    }
+
+    /* Cyber Inputs for Admin */
+    .node-input {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f1f5f9;
+        transition: all 0.3s ease;
+    }
+    .node-input:focus {
+        border-color: #22d3ee;
+        background: rgba(34, 211, 238, 0.05);
+        outline: none;
+    }
+
+    /* Modal Styling */
+    .glass-modal {
+        background: rgba(3, 7, 18, 0.95);
+        backdrop-filter: blur(15px);
+    }
+
+    .monofont { font-family: 'Inter', monospace; }
 </style>
 
-<div class="max-w-5xl mx-auto space-y-8 fade-up pb-32 pt-4 px-2">
+<div class="max-w-6xl mx-auto space-y-10 reveal-proofs pb-32 pt-6 px-3">
 
-    <!-- 1. HEADER & STATEMENT (Trust Building) -->
-    <div class="text-center space-y-3">
-        <div class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-3xl shadow-lg shadow-indigo-200 mb-2 transform -rotate-3">
-            <i class="fa-solid fa-receipt"></i>
+    <!-- ১. হেডার ও ট্রান্সপারেন্সি প্রোটোকল -->
+    <div class="text-center space-y-6">
+        <div class="relative inline-block">
+            <div class="absolute inset-0 bg-cyan-500 rounded-3xl blur-2xl opacity-20 animate-pulse"></div>
+            <div class="relative h-20 w-20 rounded-3xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-4xl text-cyan-400 shadow-2xl transform -rotate-3">
+                <i class="fa-solid fa-shield-check"></i>
+            </div>
         </div>
-        <h2 class="text-3xl font-bold text-slate-800">পেমেন্ট গ্যালারি</h2>
         
-        <!-- Statement Box -->
-        <div class="max-w-2xl mx-auto bg-white p-5 rounded-2xl shadow-sm border border-indigo-50 text-left mt-6 relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-1 h-full bg-[#4F46E5]"></div>
-            <div class="flex items-start gap-4">
-                <div class="h-10 w-10 bg-indigo-50 text-[#4F46E5] rounded-full flex-shrink-0 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-shield-check"></i>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase">ভেরিফিকেশন হাব</h2>
+        
+        <!-- Statement Panel -->
+        <div class="max-w-3xl mx-auto protocol-box p-6 text-left relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-cyan-500 shadow-[0_0_15px_#22d3ee]"></div>
+            <div class="flex items-start gap-5">
+                <div class="h-12 w-12 bg-cyan-500/10 text-cyan-400 rounded-2xl flex-shrink-0 flex items-center justify-center border border-cyan-500/20">
+                    <i class="fa-solid fa-fingerprint text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-slate-800 text-sm mb-1">স্বচ্ছতা ও বিশ্বাস (Statement)</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Pay-R এ আমরা শতভাগ স্বচ্ছতায় বিশ্বাসী। এখানে প্রতিদিন আমাদের ইউজারদের পাঠানো পেমেন্টের স্ক্রিনশট শেয়ার করা হয়। এটি প্রমাণ করে যে আমরা নিয়মিত এবং সঠিক সময়ে পেমেন্ট প্রদান করি। নিশ্চিন্তে কাজ করুন, আপনার পরিশ্রমের টাকা সুরক্ষিত।
+                    <h3 class="text-xs font-black text-white uppercase tracking-[3px] mb-2">Transparency Protocol v3.1</h3>
+                    <p class="text-[11px] md:text-xs text-slate-400 leading-relaxed font-medium">
+                        Pay-R নেটওয়ার্ক শতভাগ স্বচ্ছতায় বিশ্বাসী। আমাদের ইউজারদের সফল পেমেন্টের রিয়েল-টাইম ডাটা এখানে সংরক্ষিত থাকে। এটি আমাদের পেমেন্ট ভেরিফিকেশন সিস্টেমের একটি অংশ, যা প্রমাণ করে আমরা সঠিক সময়ে আপনার উপার্জিত অর্থ পৌঁছে দিই। আপনার পরিশ্রম আমাদের কাছে আমানত।
                     </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 2. ADMIN UPLOAD FORM (Hidden for Users) -->
+    <!-- ২. অ্যাডমিন প্যানেল (ডাটা ইনসার্ট নোড) -->
     {% if user and user.role == 'admin' %}
-    <div class="bg-white p-6 rounded-[24px] shadow-lg border border-slate-100 max-w-xl mx-auto relative overflow-hidden group">
-        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-cloud-arrow-up text-[#4F46E5]"></i> নতুন প্রুফ আপলোড
+    <div class="ai-node-card p-8 max-w-xl mx-auto border-violet-500/30">
+        <h3 class="font-black text-white text-xs uppercase tracking-[3px] mb-6 flex items-center gap-3">
+            <i class="fa-solid fa-cloud-arrow-up text-violet-500"></i> নতুন ডাটা আপলোড করুন
         </h3>
 
-        <form method="POST" action="/proofs" enctype="multipart/form-data" class="space-y-4">
-            <div class="border-2 border-dashed border-indigo-200 rounded-2xl p-6 text-center hover:bg-indigo-50 transition relative cursor-pointer">
+        <form method="POST" action="/proofs" enctype="multipart/form-data" class="space-y-6">
+            <div class="relative group">
                 <input type="file" name="images" accept="image/*" multiple max="3" required 
-                       class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                       class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                        onchange="previewCount(this)">
-                <div class="text-slate-400">
-                    <i class="fa-regular fa-images text-3xl mb-2 text-indigo-400"></i>
-                    <p class="text-xs font-bold text-slate-600">ছবি সিলেক্ট করুন (Max 3)</p>
-                    <p class="text-[10px] text-green-600 mt-2 font-bold hidden" id="fileCountMsg"></p>
+                <div class="node-input border-dashed border-2 border-slate-700 rounded-2xl p-8 text-center group-hover:border-violet-500 transition-all">
+                    <i class="fa-regular fa-images text-4xl mb-3 text-slate-500 group-hover:text-violet-400"></i>
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Select Image Nodes (Max 3)</p>
+                    <p class="text-[10px] text-emerald-400 mt-3 font-bold hidden monofont" id="fileCountMsg"></p>
                 </div>
             </div>
-            <input type="text" name="description" placeholder="ছোট ক্যাপশন লিখুন..." 
-                   class="w-full pl-4 p-3 border border-slate-200 rounded-xl focus:outline-[#4F46E5] text-xs bg-slate-50 focus:bg-white transition">
-            <button type="submit" class="w-full bg-[#0A2540] text-white py-3 rounded-xl font-bold hover:bg-[#4F46E5] transition shadow-md">
-                পাবলিশ করুন
+            <input type="text" name="description" placeholder="Short description / caption..." 
+                   class="node-input w-full p-4 rounded-2xl text-xs font-bold tracking-tight">
+            <button type="submit" class="w-full bg-violet-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[3px] shadow-lg shadow-violet-600/20 active:scale-95 transition-all">
+                পাবলিশ নোড
             </button>
         </form>
     </div>
-    <script>
-        function previewCount(input) {
-            const msg = document.getElementById('fileCountMsg');
-            if (input.files && input.files.length > 0) {
-                msg.innerText = `✅ ${input.files.length} টি ছবি সিলেক্ট করা হয়েছে`;
-                msg.classList.remove('hidden');
-            }
-        }
-    </script>
     {% endif %}
 
-    <!-- 3. PROOFS GRID (Premium Gallery) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- ৩. প্রুফ গ্রিড (Distributed Ledger) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for proof in proofs %}
-        <div class="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden group proof-card hover:shadow-xl transition duration-300">
+        <div class="proof-node-card group">
             
-            <!-- Header -->
-            <div class="p-3 flex justify-between items-center border-b border-slate-50">
-                <div class="flex items-center gap-2">
-                    <div class="h-8 w-8 bg-[#0A2540] rounded-full flex items-center justify-center text-white text-xs shadow-md">
-                        <i class="fa-solid fa-check"></i>
+            <!-- Node Header -->
+            <div class="p-4 flex justify-between items-center bg-white/5 border-b border-white/5">
+                <div class="flex items-center gap-3">
+                    <div class="h-9 w-9 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-inner">
+                        <i class="fa-solid fa-check-double text-sm"></i>
                     </div>
                     <div>
-                        <p class="text-[11px] font-bold text-slate-700">Official Payment</p>
-                        <p class="text-[9px] text-slate-400">{{ proof.created_at[:10] }}</p>
+                        <p class="text-[10px] font-black text-white uppercase tracking-tighter">Verified Payment</p>
+                        <p class="text-[9px] text-slate-500 monofont uppercase">{{ proof.created_at[:10] }}</p>
                     </div>
                 </div>
                 {% if user and user.role == 'admin' %}
-                <a href="/proof/delete/{{ proof.id }}" onclick="return confirm('ডিলিট করবেন?')" class="text-slate-300 hover:text-red-500 transition">
+                <a href="/proof/delete/{{ proof.id }}" onclick="return confirm('এই প্রুফটি কি সিস্টেম থেকে মুছে ফেলতে চান?')" class="text-slate-600 hover:text-rose-500 transition-colors px-2">
                     <i class="fa-solid fa-trash-can"></i>
                 </a>
                 {% endif %}
             </div>
 
-            <!-- Image Thumbnail (Click to Open Modal) -->
-            <div class="relative h-64 overflow-hidden cursor-zoom-in" onclick="openModal('{{ proof.image_urls[0] }}', '{{ proof.description or 'সফল পেমেন্ট' }}')">
-                <img src="{{ proof.image_urls[0] }}" alt="Proof" class="w-full h-full object-cover proof-img">
-                
-                <!-- Overlay Icon -->
-                <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                    <div class="bg-white/20 backdrop-blur-md p-3 rounded-full text-white">
-                        <i class="fa-solid fa-expand"></i>
+            <!-- Image Hub -->
+            <div class="p-4">
+                <div class="image-frame h-72 cursor-zoom-in group" onclick="openModal('{{ proof.image_urls[0] }}', '{{ proof.description or 'সফল পেমেন্ট ভেরিফাইড' }}')">
+                    <img src="{{ proof.image_urls[0] }}" alt="Verification Data" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    
+                    <div class="absolute inset-0 image-overlay flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div class="bg-white/10 backdrop-blur-md p-4 rounded-full text-cyan-400 border border-white/10">
+                            <i class="fa-solid fa-expand text-xl"></i>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Multi-image Badge -->
-                {% if proof.image_urls|length > 1 %}
-                <div class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm">
-                    <i class="fa-solid fa-layer-group"></i> +{{ proof.image_urls|length - 1 }}
+                    <!-- Counter Badge -->
+                    {% if proof.image_urls|length > 1 %}
+                    <div class="absolute bottom-4 right-4 bg-slate-900/80 text-cyan-400 text-[9px] font-black px-3 py-1 rounded-lg border border-cyan-500/30 backdrop-blur-md uppercase tracking-widest">
+                        <i class="fa-solid fa-layer-group mr-1"></i> +{{ proof.image_urls|length - 1 }} Nodes
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
 
-            <!-- Description -->
+            <!-- Description Log -->
             {% if proof.description %}
-            <div class="p-3 bg-slate-50/50">
-                <p class="text-xs text-slate-600 line-clamp-2">
-                    <span class="font-bold text-[#0A2540]">Note:</span> {{ proof.description }}
-                </p>
+            <div class="px-5 pb-5 mt-[-10px]">
+                <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                    <p class="text-[11px] text-slate-400 leading-relaxed italic monofont">
+                        <span class="text-cyan-500 font-black not-italic mr-1">LOG:</span> {{ proof.description }}
+                    </p>
+                </div>
             </div>
             {% endif %}
 
         </div>
         {% else %}
-        <div class="col-span-full text-center py-20 bg-white rounded-[32px] border-2 border-dashed border-slate-200">
-            <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-slate-300">
-                <i class="fa-regular fa-image"></i>
+        <!-- Empty Hub State -->
+        <div class="col-span-full py-32 text-center ai-node-card border-dashed border-white/10">
+            <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/5 opacity-30">
+                <i class="fa-regular fa-image text-3xl text-slate-400"></i>
             </div>
-            <p class="text-xs text-slate-400">কোনো প্রুফ পাওয়া যায়নি</p>
+            <p class="text-[10px] font-black text-slate-600 uppercase tracking-[4px]">ডাটাবেসে কোনো প্রুফ পাওয়া যায়নি</p>
         </div>
         {% endfor %}
     </div>
 
 </div>
 
-<!-- 4. IMAGE MODAL / LIGHTBOX (Popup) -->
-<div id="imageModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0" onclick="closeModal()">
+<!-- ৪. প্রফেশনাল লাইটবক্স (Image Preview Modal) -->
+<div id="imageModal" class="fixed inset-0 z-[100] hidden glass-modal flex items-center justify-center p-5 transition-all duration-300 opacity-0" onclick="closeModal()">
     
-    <!-- Close Button -->
-    <button class="absolute top-5 right-5 h-10 w-10 bg-white/10 rounded-full text-white hover:bg-white/30 transition flex items-center justify-center z-50">
-        <i class="fa-solid fa-xmark text-xl"></i>
+    <!-- Exit Button -->
+    <button class="absolute top-8 right-8 h-12 w-12 bg-white/5 rounded-2xl text-slate-400 hover:text-white hover:bg-white/10 border border-white/10 transition flex items-center justify-center z-[110]">
+        <i class="fa-solid fa-xmark text-2xl"></i>
     </button>
 
-    <!-- Modal Content -->
-    <div class="relative max-w-lg w-full" onclick="event.stopPropagation()">
-        <img id="modalImg" src="" alt="Full Proof" class="w-full h-auto max-h-[80vh] object-contain rounded-2xl shadow-2xl modal-enter">
-        <div class="mt-4 text-center">
-            <p id="modalDesc" class="text-white/90 text-sm font-medium bg-black/50 inline-block px-4 py-2 rounded-full backdrop-blur-md"></p>
+    <!-- Modal Content Node -->
+    <div class="relative max-w-2xl w-full flex flex-col items-center" onclick="event.stopPropagation()">
+        <div class="bg-slate-900 p-2 rounded-[32px] border border-cyan-500/20 shadow-[0_0_80px_rgba(34,211,238,0.1)]">
+            <img id="modalImg" src="" alt="Full Log" class="w-full h-auto max-h-[75vh] object-contain rounded-[28px] animate-proof-reveal">
+        </div>
+        
+        <div class="mt-8 text-center">
+            <p id="modalDesc" class="text-[10px] font-black text-cyan-400 uppercase tracking-[3px] bg-cyan-500/10 px-6 py-3 rounded-2xl border border-cyan-500/20 backdrop-blur-xl shadow-2xl"></p>
         </div>
     </div>
 </div>
+
+<style>
+    @keyframes proof-reveal { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .animate-proof-reveal { animation: proof-reveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+</style>
 
 <!-- SCRIPTS -->
 <script>
@@ -166,20 +219,21 @@
     function openModal(imgUrl, desc) {
         modalImg.src = imgUrl;
         modalDesc.innerText = desc;
-        
         modal.classList.remove('hidden');
-        // Fade In Animation
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-        }, 10);
+        setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
     }
 
     function closeModal() {
         modal.classList.add('opacity-0');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modalImg.src = ''; // Clear source
-        }, 300);
+        setTimeout(() => { modal.classList.add('hidden'); modalImg.src = ''; }, 300);
+    }
+
+    function previewCount(input) {
+        const msg = document.getElementById('fileCountMsg');
+        if (input.files && input.files.length > 0) {
+            msg.innerText = `>> SYSTEM: ${input.files.length} NODE(S) SELECTED`;
+            msg.classList.remove('hidden');
+        }
     }
 </script>
 
