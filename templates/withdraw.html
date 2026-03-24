@@ -2,166 +2,223 @@
 {% block content %}
 
 <style>
-    .fade-up { animation: fadeUp 0.6s ease-out; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    
-    .method-card { transition: all 0.3s ease; border: 2px solid transparent; }
-    input:checked + .bkash-card { border-color: #E2136E; background-color: #fce7f3; color: #E2136E; }
-    input:checked + .nagad-card { border-color: #F7931A; background-color: #ffedd5; color: #F7931A; }
-    input:checked + .rocket-card { border-color: #8C3494; background-color: #f3e8ff; color: #8C3494; }
+    /* AI Reveal Animation */
+    .withdraw-reveal { animation: revealIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Glassmorphism Cards */
+    .ai-card {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.1);
+        border-radius: 28px;
+    }
+
+    /* VIP Neon Card */
+    .vip-gold-card {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(20, 20, 20, 0.5) 100%);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+    }
+
+    /* System Progress Bars */
+    .node-progress {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .node-fill-violet { background: linear-gradient(90deg, #8B5CF6, #D946EF); box-shadow: 0 0 10px rgba(139, 92, 246, 0.5); }
+    .node-fill-amber { background: linear-gradient(90deg, #F59E0B, #FB923C); box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+
+    /* Custom Radio Styling */
+    .wallet-radio:checked + .wallet-card-violet {
+        border-color: #8B5CF6;
+        background: rgba(139, 92, 246, 0.1);
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+    }
+    .wallet-radio:checked + .wallet-card-amber {
+        border-color: #F59E0B;
+        background: rgba(245, 158, 11, 0.1);
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    }
+
+    .cyber-input {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f1f5f9;
+        transition: all 0.3s ease;
+    }
+    .cyber-input:focus {
+        border-color: #8B5CF6;
+        background: rgba(139, 92, 246, 0.05);
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
+        outline: none;
+    }
+
+    .btn-withdraw {
+        background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+        box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+    }
+    .btn-withdraw:active { transform: scale(0.96); }
+
+    .monofont { font-family: 'Inter', 'Courier New', monospace; }
 </style>
 
-<div class="max-w-xl mx-auto space-y-6 fade-up pb-24 pt-4">
+<div class="max-w-xl mx-auto space-y-8 withdraw-reveal pb-32 pt-4 px-2">
 
-    <!-- 1. HEADER TITLE -->
-    <div class="flex items-center gap-3 px-2">
-        <a href="/dashboard" class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-slate-600 shadow-sm hover:text-[#4F46E5] transition">
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
-        <h2 class="text-xl font-bold text-slate-800">টাকা উত্তোলন</h2>
+    <!-- 1. HEADER PROTOCOL -->
+    <div class="flex items-center justify-between px-2">
+        <div class="flex items-center gap-4">
+            <a href="/dashboard" class="h-11 w-11 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2 class="text-xl font-black text-white tracking-tight uppercase">টাকা উত্তোলন</h2>
+                <p class="text-[10px] font-black text-violet-500 uppercase tracking-[2px]">Payout Node Activation</p>
+            </div>
+        </div>
+        <div class="h-11 w-11 bg-violet-600/10 text-violet-400 rounded-2xl flex items-center justify-center border border-violet-600/20 shadow-lg shadow-violet-500/10">
+            <i class="fa-solid fa-money-bill-transfer text-lg"></i>
+        </div>
     </div>
 
-    <!-- 2. CONDITIONS SHOWCASE (Dynamic based on VIP) -->
+    <!-- 2. CONDITIONS NODE -->
     {% if user.current_level > 0 %}
-        <!-- 💎 VIP USER BANNER (Bypass Conditions) -->
-        <div class="bg-gradient-to-r from-yellow-100 to-yellow-50 p-5 rounded-3xl border border-yellow-300 shadow-sm relative overflow-hidden group">
-            <div class="absolute -right-4 -top-4 text-7xl text-yellow-400 opacity-20 transform group-hover:scale-110 transition duration-500">
+        <!-- 💎 VIP ACCESS GRANTED -->
+        <div class="vip-gold-card p-6 rounded-[32px] relative overflow-hidden group">
+            <div class="absolute -right-5 -top-5 text-8xl text-amber-500/10 group-hover:scale-125 transition-transform">
                 <i class="fa-solid fa-crown"></i>
             </div>
-            <div class="flex items-center gap-4 relative z-10">
-                <div class="h-12 w-12 bg-gradient-to-br from-yellow-400 to-orange-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-lg">
-                    <i class="fa-solid fa-crown"></i>
+            <div class="flex items-center gap-5 relative z-10">
+                <div class="h-14 w-14 bg-amber-500/20 text-amber-500 rounded-2xl flex items-center justify-center text-3xl border border-amber-500/20 shadow-xl">
+                    <i class="fa-solid fa-bolt"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-yellow-800 text-base">VIP মেম্বারশিপ অ্যাক্টিভ</h3>
-                    <p class="text-xs text-yellow-700 mt-0.5 leading-relaxed font-medium">আপনার জন্য কোনো রেফারেল বা একাউন্ট বয়সের শর্ত নেই। মেইন এবং ভিআইপি যেকোনো ব্যালেন্স থেকে মিনিমাম ৫০ টাকা হলেই উইথড্র করতে পারবেন।</p>
+                    <h3 class="font-black text-amber-500 text-sm uppercase tracking-widest">VIP মেম্বারশিপ অ্যাক্টিভ</h3>
+                    <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">অটোমেটিক ভেরিফিকেশন মোড অন। রেফারেল ছাড়াই মাত্র ৫০ টাকা হলে উত্তোলন করতে পারবেন।</p>
                 </div>
             </div>
         </div>
     {% else %}
-        <!-- 🔒 FREE USER CHECKLIST -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-50">
-            <h3 class="font-bold text-slate-700 text-sm mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-list-check text-[#4F46E5]"></i> ফ্রি ইউজারের শর্তসমূহ
-            </h3>
+        <!-- 🔒 SYSTEM CHECKS (Free User) -->
+        <div class="ai-card p-7">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fa-solid fa-shield-halved text-violet-500 text-sm"></i>
+                <h3 class="font-black text-white text-[10px] uppercase tracking-[2px]">অ্যাকাউন্ট স্ট্যাটাস চেক</h3>
+            </div>
 
-            <!-- Referral Check -->
-            <div class="mb-4">
-                <div class="flex justify-between text-xs mb-1.5">
-                    <span class="text-slate-500 font-bold flex items-center gap-2">
-                        <i class="fa-solid fa-users text-blue-500"></i> ৩টি রেফারেল
-                    </span>
-                    <span class="font-bold {{ 'text-green-600' if ref_count >= 3 else 'text-red-500' }}">
+            <!-- Referral Protocol -->
+            <div class="mb-6">
+                <div class="flex justify-between text-[10px] font-black uppercase mb-2">
+                    <span class="text-slate-500 tracking-wider">Referral Nodes (Min 3)</span>
+                    <span class="{{ 'text-emerald-400' if ref_count >= 3 else 'text-rose-500' }} tracking-tighter">
                         {{ ref_count }} / 3
                     </span>
                 </div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5">
-                    <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-700" 
+                <div class="node-progress">
+                    <div class="node-fill-violet h-full transition-all duration-1000" 
                          style="width: {{ (ref_count / 3) * 100 if ref_count < 3 else 100 }}%"></div>
                 </div>
             </div>
 
-            <!-- Account Age Check -->
-            <div class="mb-4">
-                <div class="flex justify-between text-xs mb-1.5">
-                    <span class="text-slate-500 font-bold flex items-center gap-2">
-                        <i class="fa-regular fa-calendar-days text-purple-500"></i> একাউন্ট বয়স (১ দিন)
-                    </span>
-                    <span class="font-bold {{ 'text-green-600' if account_days >= 1 else 'text-red-500' }}">
+            <!-- Account Age Protocol -->
+            <div>
+                <div class="flex justify-between text-[10px] font-black uppercase mb-2">
+                    <span class="text-slate-500 tracking-wider">Uptime Age (Min 1 Day)</span>
+                    <span class="{{ 'text-emerald-400' if account_days >= 1 else 'text-rose-500' }} tracking-tighter">
                         {{ account_days }} দিন
                     </span>
                 </div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5">
-                    <div class="bg-purple-500 h-1.5 rounded-full transition-all duration-700" 
+                <div class="node-progress">
+                    <div class="node-fill-amber h-full transition-all duration-1000" 
                          style="width: {{ '100' if account_days >= 1 else '50' }}%"></div>
                 </div>
             </div>
         </div>
     {% endif %}
 
-    <!-- 3. WITHDRAWAL FORM -->
-    <form method="POST" action="/withdraw" class="bg-white p-6 rounded-3xl shadow-lg border border-slate-50 relative overflow-hidden">
+    <!-- 3. WITHDRAWAL COMMAND CENTER -->
+    <form method="POST" action="/withdraw" class="ai-card p-8 border-t-2 border-t-violet-500/30">
         
-        <!-- Saved Wallet Info -->
-        <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100 mb-6 flex justify-between items-center group">
-            <div>
-                <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">টাকা রিসিভ করবেন</p>
-                <h3 class="text-lg font-bold text-[#0A2540] font-mono tracking-wide">{{ user.wallet_number }}</h3>
-                <span class="text-[10px] px-2 py-0.5 rounded bg-white text-indigo-600 font-bold shadow-sm border border-indigo-50 mt-1 inline-block">
-                    {{ user.wallet_method }}
+        <!-- Target Wallet Summary -->
+        <div class="bg-black/40 p-5 rounded-2xl border border-white/5 mb-8 flex justify-between items-center group">
+            <div class="space-y-1">
+                <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest">Target Wallet</p>
+                <h3 class="text-xl font-black text-white monofont tracking-widest">{{ user.wallet_number }}</h3>
+                <span class="text-[9px] px-2 py-0.5 rounded bg-violet-600/20 text-violet-400 font-black border border-violet-500/20 uppercase">
+                    {{ user.wallet_method }} Gateway
                 </span>
             </div>
-            <a href="/adm" class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-slate-400 hover:text-[#4F46E5] shadow-sm transition hover:scale-110" title="Change Number">
-                <i class="fa-solid fa-pen-to-square"></i>
+            <a href="/adm" class="h-10 w-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-violet-400 transition-all">
+                <i class="fa-solid fa-pen-to-square text-sm"></i>
             </a>
         </div>
 
-        <!-- Wallet Selection -->
-        <div class="mb-6">
-            <label class="block text-xs font-bold text-slate-700 mb-3 ml-1">কোন একাউন্ট থেকে তুলবেন?</label>
+        <!-- Wallet Type Selection -->
+        <div class="mb-8">
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[2px] mb-4 ml-1">১. সোর্স ওয়ালেট সিলেক্ট করুন</label>
             <div class="grid grid-cols-2 gap-4">
                 
-                <!-- Main Wallet -->
-                <label class="cursor-pointer group">
-                    <input type="radio" name="wallet_type" value="main" class="peer sr-only" checked>
-                    <div class="p-4 border-2 border-slate-100 rounded-2xl bg-white peer-checked:border-[#4F46E5] peer-checked:bg-indigo-50 relative overflow-hidden transition">
-                        <p class="text-[10px] text-slate-500 uppercase font-bold">Main Wallet</p>
-                        <h3 class="text-xl font-bold text-slate-800 mt-1 font-mono">৳ {{ user.balance }}</h3>
-                        
-                        <!-- Dynamic Text based on VIP Status -->
-                        {% if user.current_level > 0 %}
-                            <p class="text-[9px] text-green-600 mt-1 font-bold">Min: 50 ৳ | Cond: No</p>
-                        {% else %}
-                            <p class="text-[9px] text-red-400 mt-1 font-bold">Min: 300 ৳ | Cond: Yes</p>
-                        {% endif %}
+                <!-- Main Wallet Node -->
+                <label class="cursor-pointer relative">
+                    <input type="radio" name="wallet_type" value="main" class="wallet-radio sr-only" checked>
+                    <div class="wallet-card-violet p-5 border border-white/5 rounded-2xl bg-black/20 transition-all duration-300">
+                        <p class="text-[9px] text-slate-500 font-black uppercase tracking-wider">Standard</p>
+                        <h3 class="text-lg font-black text-white mt-1 monofont tracking-tighter">৳{{ user.balance }}</h3>
+                        <p class="text-[8px] font-bold mt-2 {{ 'text-emerald-400' if user.current_level > 0 else 'text-rose-500' }} uppercase">
+                            Min: {{ '50' if user.current_level > 0 else '300' }} ৳
+                        </p>
                     </div>
                 </label>
 
-                <!-- VIP Wallet -->
-                <label class="cursor-pointer group">
-                    <input type="radio" name="wallet_type" value="vip" class="peer sr-only" {{ 'disabled' if user.current_level == 0 }}>
-                    <div class="p-4 border-2 border-slate-100 rounded-2xl bg-white peer-checked:border-yellow-500 peer-checked:bg-yellow-50 relative overflow-hidden transition {{ 'opacity-50 grayscale' if user.current_level == 0 }}">
-                        <div class="absolute top-0 right-0 bg-yellow-500 text-white text-[8px] px-2 py-0.5 rounded-bl-lg font-bold tracking-wider">VIP</div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold">VIP Wallet</p>
-                        <h3 class="text-xl font-bold text-yellow-600 mt-1 font-mono">৳ {{ user.vip_balance or 0 }}</h3>
-                        <p class="text-[9px] text-green-600 mt-1 font-bold">Min: 50 ৳ | Cond: No</p>
+                <!-- VIP Wallet Node -->
+                <label class="cursor-pointer relative">
+                    <input type="radio" name="wallet_type" value="vip" class="wallet-radio sr-only" {{ 'disabled' if user.current_level == 0 }}>
+                    <div class="wallet-card-amber p-5 border border-white/5 rounded-2xl bg-black/20 transition-all duration-300 {{ 'opacity-30 grayscale' if user.current_level == 0 }}">
+                        <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[8px] px-2 py-0.5 rounded-bl-lg font-black tracking-tighter">VIP HUB</div>
+                        <p class="text-[9px] text-slate-500 font-black uppercase tracking-wider">Yield Pool</p>
+                        <h3 class="text-lg font-black text-amber-500 mt-1 monofont tracking-tighter">৳{{ user.vip_balance or 0 }}</h3>
+                        <p class="text-[8px] font-bold mt-2 text-emerald-400 uppercase">Min: 50 ৳</p>
                     </div>
                 </label>
 
             </div>
         </div>
 
-        <!-- Amount Input -->
-        <div class="mb-6">
-            <label class="block text-xs font-bold text-slate-500 mb-1.5 ml-1">টাকার পরিমাণ</label>
+        <!-- Amount Command -->
+        <div class="mb-8">
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[2px] mb-3 ml-1">২. টাকার পরিমাণ দিন</label>
             <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <i class="fa-solid fa-bangladeshi-taka-sign"></i>
-                </div>
-                <!-- Min attribute dynamically changed via Javascript is tricky, so we set it generic -->
-                <input type="number" name="amount" required placeholder="পরিমাণ দিন" 
-                       class="w-full pl-10 p-4 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#4F46E5] focus:ring-2 focus:ring-indigo-100 bg-slate-50 focus:bg-white transition text-lg font-bold text-slate-800 font-mono">
+                <span class="absolute left-4 top-4.5 text-violet-400"><i class="fa-solid fa-hashtag"></i></span>
+                <input type="number" name="amount" required placeholder="0.00" 
+                       class="cyber-input w-full pl-12 p-4 rounded-2xl text-xl font-black monofont tracking-widest">
             </div>
+            <p class="text-[9px] text-slate-600 mt-3 font-mono uppercase tracking-tighter">Enter whole numbers only • Max limit: Account Balance</p>
         </div>
 
-        <!-- Submit Button Logic -->
+        <!-- Action Logic -->
         <div class="mt-4">
             {% set can_withdraw_free = (ref_count >= 3 and account_days >= 1) %}
             {% set is_vip = (user.current_level > 0) %}
             
             {% if is_vip or can_withdraw_free %}
-                <button type="submit" class="w-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-indigo-200 hover:scale-[1.02] active:scale-95 transition flex items-center justify-center gap-2">
-                    <span>উত্তোলন করুন</span>
-                    <i class="fa-solid fa-arrow-right"></i>
+                <button type="submit" class="btn-withdraw w-full py-5 rounded-2xl text-white font-black text-sm uppercase tracking-[3px] shadow-2xl flex items-center justify-center gap-3">
+                    ইনিশিয়েট উইথড্রয়াল <i class="fa-solid fa-arrow-right-long"></i>
                 </button>
             {% else %}
-                <button type="button" disabled class="w-full bg-slate-200 text-slate-400 py-4 rounded-xl font-bold cursor-not-allowed flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-lock"></i> শর্ত পূরণ হয়নি
+                <button type="button" disabled class="w-full bg-white/5 border border-white/5 text-slate-600 py-5 rounded-2xl text-xs font-black uppercase tracking-[3px] cursor-not-allowed flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-lock"></i> সিস্টেম রিকোয়ারমেন্ট অপূর্ণ
                 </button>
             {% endif %}
         </div>
 
     </form>
+
+    <!-- Footer Security Tag -->
+    <div class="text-center opacity-30">
+        <p class="text-[9px] font-mono text-slate-500 tracking-widest uppercase">Secured Financial Gateway • Pay-R Infrastructure</p>
+    </div>
 
 </div>
 {% endblock %}
