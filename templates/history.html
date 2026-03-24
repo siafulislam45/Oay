@@ -2,89 +2,104 @@
 {% block content %}
 
 <style>
-    .fade-up { animation: fadeUp 0.6s ease-out; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    
-    .glass-card {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    /* AI Reveal Animation */
+    .reveal-history { animation: revealIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Glassmorphic Transaction Cards */
+    .ledger-card {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.1);
+        border-radius: 24px;
+        transition: all 0.3s ease;
     }
+    .ledger-card:hover {
+        border-color: rgba(139, 92, 246, 0.3);
+        background: rgba(15, 23, 42, 0.8);
+    }
+
+    /* Status Glows */
+    .status-success { color: #10b981; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); }
+    .status-pending { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); animation: pulse-amber 2s infinite; }
+    .status-failed { color: #f43f5e; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); }
+
+    @keyframes pulse-amber {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    .monofont { font-family: 'Inter', monospace; }
 </style>
 
-<div class="max-w-2xl mx-auto space-y-8 fade-up pb-32 pt-4">
+<div class="max-w-2xl mx-auto space-y-10 reveal-history pb-32 pt-4 px-2">
 
     <!-- 1. HEADER SUMMARY -->
-    <div class="bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] rounded-[32px] p-6 text-white shadow-xl shadow-indigo-200 relative overflow-hidden">
-        <!-- Decor -->
-        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
-        <div class="absolute bottom-0 left-0 w-24 h-24 bg-pink-500 opacity-20 rounded-full blur-2xl"></div>
+    <div class="bg-gradient-to-br from-violet-900/40 to-slate-950 p-7 rounded-[32px] border border-violet-500/20 shadow-2xl relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-violet-600/10 rounded-full blur-3xl"></div>
         
         <div class="relative z-10 flex justify-between items-center">
             <div>
-                <p class="text-[10px] text-indigo-200 uppercase tracking-widest font-bold mb-1">Account History</p>
-                <h2 class="text-3xl font-black">ট্রানজেকশন</h2>
+                <p class="text-[10px] text-violet-400 uppercase tracking-[3px] font-black mb-1">Financial Ledger</p>
+                <h2 class="text-3xl font-black text-white tracking-tighter">ট্রানজেকশন</h2>
             </div>
-            <div class="h-14 w-14 bg-white/20 rounded-[18px] flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner">
-                <i class="fa-solid fa-clock-rotate-left text-2xl"></i>
+            <div class="h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 shadow-inner">
+                <i class="fa-solid fa-clock-rotate-left text-2xl text-violet-400"></i>
             </div>
         </div>
     </div>
 
     <!-- 2. WITHDRAWAL HISTORY -->
     <div>
-        <div class="flex items-center justify-between px-2 mb-4">
-            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                <div class="bg-red-100 text-red-600 h-8 w-8 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-arrow-up-right-dots"></i>
-                </div>
-                উত্তোলনের হিস্টোরি (Cash Out)
+        <div class="flex items-center justify-between px-3 mb-5">
+            <h3 class="font-black text-slate-300 text-[10px] uppercase tracking-[2px] flex items-center gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                Cash-Out Protocols
             </h3>
-            <span class="text-[10px] bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-bold border border-slate-200">
-                Total: {{ withdrawals|length }}
+            <span class="text-[9px] bg-white/5 text-slate-500 px-3 py-1 rounded-full font-black border border-white/5 uppercase">
+                Nodes: {{ withdrawals|length }}
             </span>
         </div>
 
         {% if withdrawals %}
-        <div class="space-y-3">
+        <div class="space-y-4">
             {% for item in withdrawals %}
-            <div class="glass-card p-4 rounded-3xl flex items-center justify-between group hover:shadow-lg hover:border-indigo-100 transition duration-300">
+            <div class="ledger-card p-5 flex items-center justify-between group">
                 
                 <div class="flex items-center gap-4">
-                    <!-- Method Icon -->
-                    <div class="h-12 w-12 rounded-2xl flex items-center justify-center text-xl shadow-sm
-                        {% if item.method == 'Rocket' %} bg-purple-50 text-purple-600 border border-purple-100
-                        {% elif item.method == 'Nagad' %} bg-orange-50 text-orange-600 border border-orange-100
-                        {% else %} bg-pink-50 text-pink-600 border border-pink-100 {% endif %}">
-                        <i class="fa-solid fa-wallet"></i>
+                    <!-- Method Icon Node -->
+                    <div class="h-12 w-12 rounded-xl flex items-center justify-center text-xl shadow-inner
+                        {% if item.method == 'Rocket' %} bg-purple-500/10 text-purple-400 border border-purple-500/20
+                        {% elif item.method == 'Nagad' %} bg-orange-500/10 text-orange-400 border border-orange-500/20
+                        {% else %} bg-rose-500/10 text-rose-400 border border-rose-500/20 {% endif %}">
+                        <i class="fa-solid fa-wallet text-sm"></i>
                     </div>
                     
                     <div>
-                        <h4 class="font-bold text-slate-800 text-sm">{{ item.method }} Transfer</h4>
-                        <div class="flex items-center gap-2 text-[10px] text-slate-500 mt-1">
-                            <span class="font-mono bg-slate-50 px-2 py-0.5 rounded border border-slate-100">{{ item.created_at[:10] }}</span>
-                            <span>•</span>
-                            <span class="font-mono">{{ item.number }}</span>
+                        <h4 class="font-bold text-slate-100 text-sm tracking-tight">{{ item.method }} Transfer</h4>
+                        <div class="flex items-center gap-2 text-[10px] text-slate-500 mt-1 font-mono">
+                            <span class="opacity-60">{{ item.created_at[:10] }}</span>
+                            <span class="text-slate-700">|</span>
+                            <span class="tracking-widest">{{ item.number }}</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="text-right">
-                    <p class="font-bold text-[#E2136E] text-lg font-mono tracking-tight">-৳{{ item.amount }}</p>
+                    <p class="font-black text-rose-500 text-lg monofont tracking-tighter">-৳{{ item.amount }}</p>
                     
                     <!-- Status Badge -->
                     {% if item.status == 'approved' %}
-                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 bg-green-100 border border-green-200 px-2.5 py-0.5 rounded-full mt-1">
-                            <i class="fa-solid fa-check"></i> Success
+                        <span class="status-success inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-0.5 rounded-full mt-2">
+                            Success
                         </span>
                     {% elif item.status == 'rejected' %}
-                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-red-600 bg-red-50 border border-red-200 px-2.5 py-0.5 rounded-full mt-1">
-                            <i class="fa-solid fa-xmark"></i> Failed
+                        <span class="status-failed inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-0.5 rounded-full mt-2">
+                            Failed
                         </span>
                     {% else %}
-                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-yellow-600 bg-yellow-50 border border-yellow-200 px-2.5 py-0.5 rounded-full mt-1 animate-pulse">
-                            <i class="fa-regular fa-clock"></i> Pending
+                        <span class="status-pending inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-0.5 rounded-full mt-2">
+                            Pending
                         </span>
                     {% endif %}
                 </div>
@@ -93,71 +108,67 @@
             {% endfor %}
         </div>
         {% else %}
-        <!-- Empty State -->
-        <div class="text-center py-12 bg-white rounded-[32px] border border-dashed border-slate-200 shadow-sm">
-            <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 text-3xl">
-                <i class="fa-solid fa-money-bill-1-wave"></i>
+        <!-- Empty Ledger State -->
+        <div class="text-center py-16 ledger-card border-dashed border-white/5">
+            <div class="h-16 w-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-700 text-3xl">
+                <i class="fa-solid fa-receipt"></i>
             </div>
-            <h3 class="text-sm font-bold text-slate-600">কোনো উত্তোলনের রেকর্ড নেই</h3>
-            <p class="text-xs text-slate-400 mt-1">টাকা তুললে এখানে দেখতে পাবেন</p>
+            <h3 class="text-sm font-bold text-slate-500">কোনো উত্তোলনের রেকর্ড নেই</h3>
+            <p class="text-[10px] text-slate-600 mt-1 uppercase tracking-widest">টাকা তুললে এখানে সিঙ্ক হবে</p>
         </div>
         {% endif %}
     </div>
 
-    <!-- 3. TASK HISTORY -->
-    <div class="pt-4">
-        <div class="flex items-center justify-between px-2 mb-4">
-            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                <div class="bg-green-100 text-green-600 h-8 w-8 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-arrow-down-long"></i>
-                </div>
-                কাজের হিস্টোরি (Income)
+    <!-- 3. TASK INCOME HISTORY -->
+    <div class="pt-6">
+        <div class="flex items-center justify-between px-3 mb-5">
+            <h3 class="font-black text-slate-300 text-[10px] uppercase tracking-[2px] flex items-center gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Income Generation Logs
             </h3>
-            <span class="text-[10px] bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-bold border border-slate-200">
-                Total: {{ tasks|length }}
+            <span class="text-[9px] bg-white/5 text-slate-500 px-3 py-1 rounded-full font-black border border-white/5 uppercase">
+                Nodes: {{ tasks|length }}
             </span>
         </div>
 
         {% if tasks %}
-        <div class="space-y-3">
+        <div class="space-y-4">
             {% for task in tasks %}
-            <div class="glass-card p-4 rounded-3xl flex items-center justify-between hover:bg-white transition group">
+            <div class="ledger-card p-5 flex items-center justify-between">
                 
                 <div class="flex items-center gap-4">
-                    <!-- Task Type Icon -->
-                    <div class="h-12 w-12 rounded-2xl flex items-center justify-center text-xl shadow-sm border
-                        {% if task.type == 'Special' %} bg-yellow-50 text-yellow-600 border-yellow-100
-                        {% else %} bg-blue-50 text-blue-600 border-blue-100 {% endif %}">
+                    <!-- Task Node Icon -->
+                    <div class="h-12 w-12 rounded-xl flex items-center justify-center text-xl shadow-inner border
+                        {% if task.type == 'Special' %} bg-amber-500/10 text-amber-500 border-amber-500/20
+                        {% else %} bg-indigo-500/10 text-indigo-400 border-indigo-500/20 {% endif %}">
                         {% if task.type == 'Special' %}
-                            <i class="fa-solid fa-gift"></i>
+                            <i class="fa-solid fa-bolt text-sm"></i>
                         {% else %}
-                            <i class="fa-brands fa-youtube"></i>
+                            <i class="fa-solid fa-microchip text-sm"></i>
                         {% endif %}
                     </div>
                     
-                    <div class="max-w-[140px] sm:max-w-xs">
-                        <h4 class="font-bold text-slate-800 text-sm truncate">{{ task.title }}</h4>
-                        <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1">
-                            <span class="font-mono bg-slate-50 px-2 py-0.5 rounded border border-slate-100">{{ task.created_at[:10] }}</span>
-                        </div>
+                    <div class="max-w-[140px] sm:max-w-xs overflow-hidden">
+                        <h4 class="font-bold text-slate-100 text-sm truncate tracking-tight">{{ task.title }}</h4>
+                        <p class="text-[10px] text-slate-500 mt-1 font-mono opacity-60">{{ task.created_at[:10] }}</p>
                     </div>
                 </div>
 
                 <div class="text-right">
-                    <p class="font-bold text-green-600 text-lg font-mono tracking-tight">+৳{{ task.reward }}</p>
+                    <p class="font-black text-emerald-400 text-lg monofont tracking-tighter">+৳{{ task.reward }}</p>
                     
                     <!-- Status Badge -->
                     {% if task.status == 'approved' %}
-                        <span class="text-[9px] font-bold text-green-600 bg-green-50 px-2.5 py-0.5 rounded-full mt-1 inline-block border border-green-100">
-                            Paid
+                        <span class="text-[9px] font-black text-emerald-500 bg-emerald-500/5 px-2.5 py-1 rounded-md border border-emerald-500/10 mt-2 inline-block uppercase tracking-tighter">
+                            Processed
                         </span>
                     {% elif task.status == 'rejected' %}
-                        <span class="text-[9px] font-bold text-red-600 bg-red-50 px-2.5 py-0.5 rounded-full mt-1 inline-block border border-red-100">
-                            Rejected
+                        <span class="text-[9px] font-black text-rose-500 bg-rose-500/5 px-2.5 py-1 rounded-md border border-rose-500/10 mt-2 inline-block uppercase tracking-tighter">
+                            Discarded
                         </span>
                     {% else %}
-                        <span class="text-[9px] font-bold text-orange-500 bg-orange-50 px-2.5 py-0.5 rounded-full mt-1 inline-block border border-orange-100">
-                            Reviewing...
+                        <span class="text-[9px] font-black text-amber-500 bg-amber-500/5 px-2.5 py-1 rounded-md border border-amber-500/10 mt-2 inline-block uppercase tracking-tighter animate-pulse">
+                            Validating...
                         </span>
                     {% endif %}
                 </div>
@@ -166,18 +177,23 @@
             {% endfor %}
         </div>
         {% else %}
-        <!-- Empty State -->
-        <div class="text-center py-12 bg-white rounded-[32px] border border-dashed border-slate-200 shadow-sm">
-            <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 text-3xl">
-                <i class="fa-solid fa-clipboard-question"></i>
+        <!-- Empty Logs State -->
+        <div class="text-center py-16 ledger-card border-dashed border-white/5">
+            <div class="h-16 w-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-700 text-3xl">
+                <i class="fa-solid fa-database"></i>
             </div>
-            <h3 class="text-sm font-bold text-slate-600">কোনো কাজের রেকর্ড নেই</h3>
-            <p class="text-xs text-slate-400 mt-1">টাস্ক কমপ্লিট করলে এখানে দেখতে পাবেন</p>
-            <a href="/tasks" class="mt-4 inline-block bg-[#4F46E5] text-white px-6 py-2 rounded-full text-xs font-bold shadow-md hover:bg-indigo-600 transition">
-                কাজ শুরু করুন
+            <h3 class="text-sm font-bold text-slate-500">কোনো কাজের রেকর্ড নেই</h3>
+            <p class="text-[10px] text-slate-600 mt-1 uppercase tracking-widest">টাস্ক সম্পন্ন করলে ডাটা এখানে আসবে</p>
+            <a href="/tasks" class="mt-6 inline-block bg-violet-600 text-white px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[2px] shadow-lg shadow-violet-600/20 active:scale-95 transition-all">
+                Execute Task Node
             </a>
         </div>
         {% endif %}
+    </div>
+
+    <!-- Security Tagline -->
+    <div class="text-center opacity-30">
+        <p class="text-[9px] font-mono text-slate-600 tracking-widest uppercase">Immutable Ledger Access • Pay-R Network Security</p>
     </div>
 
 </div>
