@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#4F46E5">
-    <title>Pay-R | Earning Simplified</title>
+    <meta name="theme-color" content="#0f172a">
+    <title>Pay-R | Next-Gen Earning</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,209 +12,211 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts (Outfit for Numbers/English, Hind Siliguri for Bengali) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <style>
         :root {
-            --accent: #4F46E5;
-            --bg-light: #F8FAFC;
+            --primary: #22d3ee; /* Cyan 400 */
+            --bg-dark: #0f172a; /* Slate 900 */
+            --card-dark: #1e293b; /* Slate 800 */
         }
 
         body { 
-            font-family: 'Hind Siliguri', 'Inter', sans-serif; 
-            background-color: var(--bg-light);
-            color: #1E293B;
+            font-family: 'Hind Siliguri', 'Outfit', sans-serif; 
+            background-color: var(--bg-dark);
+            color: #f1f5f9;
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
+            overflow-x: hidden;
         }
 
-        /* --- CLEAN SCROLLBAR --- */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        /* --- CYBER GLOW EFFECTS --- */
+        .cyber-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 211, 238, 0.1);
+            border-radius: 24px;
+        }
 
-        /* --- SIDEBAR TRANSITION --- */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+        }
+
+        /* --- SIDEBAR CUSTOMIZATION --- */
         #sidebar { 
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            box-shadow: 10px 0 30px -10px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
         }
-        .sidebar-open { transform: translateX(0) !important; }
+        .sidebar-open { transform: translateX(0); box-shadow: 20px 0 80px rgba(0,0,0,0.5); }
         .sidebar-closed { transform: translateX(-100%); }
 
-        /* --- PREMIUM ELEMENTS --- */
-        .header-blur {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid #E2E8F0;
-        }
-        
-        .card-premium {
-            background: white;
-            border: 1px solid #F1F5F9;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
-            border-radius: 20px;
+        /* --- BOTTOM NAV FLOATING ISLAND --- */
+        .nav-island {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .nav-item-active {
-            color: var(--accent);
-            background: #EEF2FF;
-            border-radius: 12px;
+        .active-dot {
+            position: absolute;
+            bottom: -8px;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--primary);
         }
 
         /* --- ANIMATIONS --- */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes pulse-cyan {
+            0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(34, 211, 238, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
         }
-        .animate-content { animation: fadeIn 0.4s ease-out forwards; }
+        .animate-cyan { animation: pulse-cyan 2s infinite; }
 
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            transition: all 0.2s;
+        .reveal {
+            animation: revealEffect 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .btn-primary:active { transform: scale(0.96); }
+        @keyframes revealEffect {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
+    <!-- background decorative blobs -->
+    <div class="fixed top-[-10%] right-[-10%] w-72 h-72 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="fixed bottom-[-10%] left-[-10%] w-72 h-72 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
     <!-- ================= 1. HEADER ================= -->
-    <nav class="header-blur fixed top-0 w-full z-50 h-16">
-        <div class="max-w-5xl mx-auto px-4 h-full flex justify-between items-center">
-            <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
-                </svg>
+    <nav class="fixed top-0 w-full z-50 h-16 bg-slate-900/50 backdrop-blur-md border-b border-white/5">
+        <div class="container mx-auto px-5 h-full flex justify-between items-center">
+            <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800 border border-white/10 text-cyan-400 active:scale-90 transition-all">
+                <i class="fa-solid fa-bars-staggered"></i>
             </button>
 
-            <a href="/" class="flex items-center gap-2">
-                <div class="h-8 w-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">P</div>
-                <span class="text-xl font-bold tracking-tight text-slate-800">Pay<span class="text-indigo-600">R</span></span>
-            </a>
-
-            <div class="flex items-center gap-2">
-                <a href="/notice" class="p-2 hover:bg-slate-100 rounded-full relative">
-                    <i class="fa-regular fa-bell text-xl text-slate-600"></i>
-                    {% if settings and settings.notice_text %}
-                    <span class="absolute top-2 right-2.5 h-2 w-2 bg-indigo-500 rounded-full ring-2 ring-white"></span>
-                    {% endif %}
-                </a>
+            <div class="flex flex-col items-center">
+                <span class="text-xl font-bold tracking-[2px] glow-text text-white">
+                    PAY<span class="text-cyan-400">-R</span>
+                </span>
             </div>
+
+            <a href="/notice" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800 border border-white/10 text-slate-400 relative">
+                <i class="fa-regular fa-bell text-lg"></i>
+                {% if settings and settings.notice_text %}
+                <span class="absolute top-0 right-0 h-3 w-3 bg-cyan-500 rounded-full border-2 border-slate-900 animate-pulse"></span>
+                {% endif %}
+            </a>
         </div>
     </nav>
 
-    <div class="h-16"></div> <!-- Spacer -->
+    <div class="h-16"></div>
 
     <!-- ================= 2. SIDEBAR ================= -->
-    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"></div>
     
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-white z-[70] sidebar-closed flex flex-col">
-        <!-- Sidebar Profile -->
-        <div class="p-6 border-bottom border-slate-50 bg-slate-50/50">
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-72 z-[70] sidebar-closed flex flex-col border-r border-white/5">
+        <!-- Sidebar Header -->
+        <div class="p-8 pt-12">
             {% if session.get('user_id') %}
-            <div class="flex items-center gap-4">
-                <div class="h-14 w-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl font-bold shadow-lg shadow-indigo-200">
-                    {{ session.get('email', 'U')[0] | upper }}
+            <div class="flex flex-col gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 p-[2px] shadow-lg shadow-cyan-500/20">
+                    <div class="w-full h-full bg-slate-900 rounded-2xl flex items-center justify-center text-cyan-400 text-2xl font-bold">
+                        {{ session.get('email', 'U')[0] | upper }}
+                    </div>
                 </div>
                 <div>
-                    <h4 class="font-bold text-slate-800 leading-tight truncate w-32">
+                    <h3 class="text-white font-bold text-lg leading-tight truncate">
                         {{ session.get('email', 'User').split('@')[0] | title }}
-                    </h4>
-                    <p class="text-xs text-slate-500 font-medium mt-1">ID: {{ user.referral_code if user else '000000' }}</p>
+                    </h3>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/20 font-mono tracking-tighter">
+                            ID: {{ user.referral_code if user else 'N/A' }}
+                        </span>
+                    </div>
                 </div>
             </div>
             {% else %}
             <div class="py-4">
-                <p class="text-sm font-medium text-slate-600 mb-2">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
-                <a href="/login" class="text-indigo-600 font-bold hover:underline">লগইন করুন →</a>
+                <h2 class="text-xl font-bold text-white mb-4">স্বাগতম!</h2>
+                <a href="/login" class="px-6 py-2 bg-cyan-500 text-slate-900 rounded-lg font-bold text-sm">লগইন করুন</a>
             </div>
             {% endif %}
         </div>
 
-        <!-- Menu Section -->
-        <nav class="flex-grow overflow-y-auto p-4 space-y-1">
-            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">প্রধান মেনু</p>
+        <!-- Navigation Links -->
+        <div class="flex-grow overflow-y-auto px-4 py-4 space-y-2">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[2px] px-4 mb-2">সেবা সমূহ</p>
             
-            <a href="/dashboard" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all {{ 'nav-item-active' if request.endpoint == 'dashboard' }}">
-                <i class="fa-solid fa-house-user text-lg"></i>
-                <span class="font-semibold text-sm">ড্যাশবোর্ড</span>
+            <a href="/dashboard" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all {{ 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' if request.endpoint == 'dashboard' else 'text-slate-400 hover:bg-white/5' }}">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="font-medium text-sm">হোম ড্যাশবোর্ড</span>
             </a>
 
-            <a href="/tasks" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all {{ 'nav-item-active' if request.endpoint == 'tasks' }}">
-                <i class="fa-solid fa-bolt-lightning text-lg"></i>
-                <span class="font-semibold text-sm">টাস্ক সেন্টার</span>
+            <a href="/tasks" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
+                <i class="fa-solid fa-rocket text-lg"></i>
+                <span class="font-medium text-sm">টাস্ক সেন্টার</span>
             </a>
 
-            <a href="/drive" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all {{ 'nav-item-active' if request.endpoint == 'drive_store' }}">
-                <i class="fa-solid fa-mobile-screen-button text-lg"></i>
-                <span class="font-semibold text-sm">ড্রাইভ অফার</span>
+            <a href="/drive" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
+                <i class="fa-solid fa-wifi text-lg"></i>
+                <span class="font-medium text-sm">ড্রাইভ অফার</span>
             </a>
 
-            <a href="/vip" class="flex items-center gap-3.5 px-4 py-3 bg-amber-50/50 text-amber-600 rounded-xl hover:bg-amber-50 transition-all">
+            <a href="/vip" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 to-transparent border border-amber-500/20 text-amber-500 transition-all">
                 <i class="fa-solid fa-crown text-lg"></i>
                 <span class="font-bold text-sm">VIP মেম্বারশিপ</span>
             </a>
 
-            <div class="h-px bg-slate-100 my-4"></div>
-            
-            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">অ্যাকাউন্ট ও তথ্য</p>
+            <div class="h-px bg-white/5 my-4 mx-4"></div>
 
-            <a href="/withdraw" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-                <i class="fa-solid fa-wallet text-lg"></i>
-                <span class="font-semibold text-sm">টাকা উত্তোলন</span>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[2px] px-4 mb-2">রেকর্ড</p>
+
+            <a href="/history" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
+                <i class="fa-solid fa-receipt text-lg"></i>
+                <span class="font-medium text-sm">লেনদেন হিস্টোরি</span>
             </a>
 
-            <a href="/history" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-                <i class="fa-solid fa-list-ul text-lg"></i>
-                <span class="font-semibold text-sm">হিস্টোরি</span>
+            <a href="/referrals" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
+                <i class="fa-solid fa-user-plus text-lg"></i>
+                <span class="font-medium text-sm">আমার রেফারেল</span>
             </a>
 
-            <a href="/referrals" class="flex items-center gap-3.5 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-                <i class="fa-solid fa-users-viewfinder text-lg"></i>
-                <span class="font-semibold text-sm">রেফারেল ফ্রেন্ডস</span>
-            </a>
+            <div class="h-px bg-white/5 my-4 mx-4"></div>
 
-            <div class="h-px bg-slate-100 my-4"></div>
-
-            <a href="https://t.me/PayRsupprt" target="_blank" class="flex items-center justify-between px-4 py-3 bg-sky-50 text-sky-600 rounded-xl hover:bg-sky-100 transition-all">
-                <div class="flex items-center gap-3.5">
-                    <i class="fa-brands fa-telegram text-xl"></i>
-                    <span class="font-bold text-sm">সাপোর্ট গ্রুপ</span>
-                </div>
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            <a href="https://t.me/PayRsupprt" target="_blank" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                <i class="fa-brands fa-telegram text-xl"></i>
+                <span class="font-bold text-sm">লাইভ সাপোর্ট</span>
             </a>
 
             {% if session.get('user_id') %}
-            <a href="/logout" class="flex items-center gap-3.5 px-4 py-3 text-rose-500 hover:bg-rose-50 rounded-xl mt-6 transition-all">
+            <a href="/logout" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-rose-500 hover:bg-rose-500/10 mt-6 transition-all">
                 <i class="fa-solid fa-power-off text-lg"></i>
                 <span class="font-bold text-sm">লগ আউট</span>
             </a>
             {% endif %}
-        </nav>
-        
-        <div class="p-4 text-center">
-            <p class="text-[10px] text-slate-400 font-medium">Version 2.0.1 • Crafted with ❤️</p>
         </div>
-    </aside>
+    </div>
 
-    <!-- ================= 3. FLASH NOTIFICATIONS ================= -->
-    <div class="container mx-auto px-4 mt-4 z-40">
+    <!-- ================= 3. FLASH MESSAGES ================= -->
+    <div class="fixed top-20 left-0 w-full px-5 z-[40]">
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
-              <div class="flash-msg max-w-md mx-auto bg-white p-4 mb-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3 animate-content">
-                <div class="h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 
-                    {{ 'bg-rose-50 text-rose-500' if category == 'error' else 'bg-emerald-50 text-emerald-500' }}">
-                    <i class="fa-solid {{ 'fa-circle-exclamation' if category == 'error' else 'fa-check-circle' }}"></i>
+              <div class="cyber-card p-4 mb-3 flex items-center gap-4 reveal shadow-2xl">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center {{ 'bg-rose-500/20 text-rose-500' if category == 'error' else 'bg-cyan-500/20 text-cyan-400' }}">
+                    <i class="fa-solid {{ 'fa-triangle-exclamation' if category == 'error' else 'fa-circle-check' }}"></i>
                 </div>
-                <span class="text-sm font-semibold text-slate-700">{{ message }}</span>
+                <p class="text-sm font-bold text-slate-200">{{ message }}</p>
               </div>
             {% endfor %}
           {% endif %}
@@ -222,116 +224,105 @@
     </div>
 
     <!-- ================= 4. MAIN CONTENT ================= -->
-    <main class="flex-grow container mx-auto px-4 pb-28 pt-2">
+    <main class="flex-grow container mx-auto px-5 pb-32 pt-4 reveal">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- ================= 5. TELEGRAM FLOATING BUTTON ================= -->
-    <a href="https://t.me/PayRsupprt" target="_blank" class="fixed bottom-24 right-5 z-40 flex items-center gap-2 group">
-        <div class="bg-white px-3 py-1.5 rounded-full shadow-md text-xs font-bold text-slate-600 opacity-0 group-hover:opacity-100 transition-all border border-slate-100">
-            হেল্প পান
-        </div>
-        <div class="h-14 w-14 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl shadow-xl shadow-indigo-200 ring-4 ring-white transition-transform hover:scale-110 active:scale-95">
-            <i class="fa-brands fa-telegram"></i>
-        </div>
-    </a>
+    <!-- ================= 5. TELEGRAM FLOATING ================= -->
+    <div class="fixed bottom-28 right-6 z-50">
+        <a href="https://t.me/PayRsupprt" target="_blank" class="block">
+            <div class="w-14 h-14 bg-cyan-500 rounded-2xl flex items-center justify-center text-slate-900 text-2xl shadow-lg shadow-cyan-500/40 animate-cyan transition-transform hover:scale-110">
+                <i class="fa-brands fa-telegram"></i>
+            </div>
+        </a>
+    </div>
 
-    <!-- ================= 6. BOTTOM TAB NAV ================= -->
+    <!-- ================= 6. BOTTOM NAVIGATION ================= -->
     {% if session.get('user_id') %}
-    <div class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl border-t border-slate-100 px-2 pb-safe z-50">
-        <div class="max-w-md mx-auto flex justify-around items-center h-16">
+    <div class="fixed bottom-6 left-0 w-full px-6 z-50">
+        <div class="max-w-md mx-auto nav-island h-18 px-4 flex justify-between items-center">
             
-            <a href="/dashboard" class="flex flex-col items-center justify-center w-16 transition-colors {{ 'text-indigo-600' if request.endpoint == 'dashboard' else 'text-slate-400' }}">
+            <a href="/dashboard" class="relative py-4 flex flex-col items-center justify-center w-14 transition-all {{ 'text-cyan-400' if request.endpoint == 'dashboard' else 'text-slate-500' }}">
                 <i class="fa-solid fa-house-chimney text-xl"></i>
-                <span class="text-[10px] font-bold mt-1">হোম</span>
+                {% if request.endpoint == 'dashboard' %}<div class="active-dot"></div>{% endif %}
             </a>
 
-            <a href="/history" class="flex flex-col items-center justify-center w-16 transition-colors {{ 'text-indigo-600' if request.endpoint == 'history' else 'text-slate-400' }}">
-                <i class="fa-solid fa-clock-rotate-left text-xl"></i>
-                <span class="text-[10px] font-bold mt-1">হিস্টোরি</span>
+            <a href="/history" class="relative py-4 flex flex-col items-center justify-center w-14 transition-all {{ 'text-cyan-400' if request.endpoint == 'history' else 'text-slate-500' }}">
+                <i class="fa-solid fa-receipt text-xl"></i>
+                {% if request.endpoint == 'history' %}<div class="active-dot"></div>{% endif %}
             </a>
 
-            <!-- Action Button -->
-            <a href="/tasks" class="relative -top-5 flex items-center justify-center">
-                <div class="absolute h-16 w-16 bg-indigo-600/20 rounded-full animate-ping opacity-20"></div>
-                <div class="h-14 w-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-300 ring-4 ring-white">
-                    <i class="fa-solid fa-layer-group"></i>
-                </div>
+            <!-- Central Hub Button -->
+            <a href="/tasks" class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center text-slate-900 text-2xl shadow-xl shadow-cyan-500/30 -translate-y-6 border-4 border-slate-900 hover:scale-105 active:scale-95 transition-all">
+                <i class="fa-solid fa-plus"></i>
             </a>
 
-            <a href="/withdraw" class="flex flex-col items-center justify-center w-16 transition-colors {{ 'text-indigo-600' if request.endpoint == 'withdraw' else 'text-slate-400' }}">
+            <a href="/withdraw" class="relative py-4 flex flex-col items-center justify-center w-14 transition-all {{ 'text-cyan-400' if request.endpoint == 'withdraw' else 'text-slate-500' }}">
                 <i class="fa-solid fa-wallet text-xl"></i>
-                <span class="text-[10px] font-bold mt-1">উত্তোলন</span>
+                {% if request.endpoint == 'withdraw' %}<div class="active-dot"></div>{% endif %}
             </a>
 
-            <button onclick="toggleSidebar()" class="flex flex-col items-center justify-center w-16 text-slate-400">
-                <i class="fa-solid fa-bars-staggered text-xl"></i>
-                <span class="text-[10px] font-bold mt-1">মেনু</span>
+            <button onclick="toggleSidebar()" class="py-4 flex flex-col items-center justify-center w-14 text-slate-500">
+                <i class="fa-solid fa-grid-2 text-xl"></i>
             </button>
 
         </div>
     </div>
     {% endif %}
 
-    <!-- ================= PWA INSTALL CARD (Hidden by default) ================= -->
-    <div id="installAppCard" class="fixed bottom-24 left-4 right-4 bg-white p-4 rounded-2xl shadow-2xl border border-indigo-100 hidden z-[55] animate-content">
+    <!-- PWA Installation Toast -->
+    <div id="pwa-toast" class="fixed bottom-28 left-6 right-6 cyber-card p-4 hidden z-50 reveal border-cyan-500/30">
         <div class="flex items-center gap-4">
-            <div class="h-12 w-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
-                <i class="fa-solid fa-mobile-screen"></i>
-            </div>
+            <div class="text-cyan-400 text-2xl"><i class="fa-solid fa-mobile-screen-button"></i></div>
             <div class="flex-grow">
-                <h4 class="font-bold text-slate-800 text-sm">অ্যাপটি ইনস্টল করুন</h4>
-                <p class="text-xs text-slate-500">সহজ ব্যবহারের জন্য হোমস্ক্রিনে যোগ করুন</p>
+                <p class="text-xs font-bold text-white">অ্যাপটি আপনার ফোনে সেভ করুন</p>
+                <p class="text-[10px] text-slate-400">আরও দ্রুত এবং সহজ অভিজ্ঞতার জন্য</p>
             </div>
-            <button id="installAppBtn" class="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg">ইনস্টল</button>
+            <button id="pwa-install-btn" class="bg-cyan-500 text-slate-900 px-4 py-1.5 rounded-lg text-xs font-black">INSTALL</button>
         </div>
     </div>
 
-    <!-- ================= SCRIPTS ================= -->
+    <!-- Scripts -->
     <script>
         const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
+        const overlay = document.getElementById('overlay');
 
         function toggleSidebar() {
             const isOpen = sidebar.classList.contains('sidebar-open');
             if (!isOpen) {
-                sidebar.classList.remove('sidebar-closed');
-                sidebar.classList.add('sidebar-open');
+                sidebar.classList.replace('sidebar-closed', 'sidebar-open');
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.add('opacity-100'), 10);
             } else {
-                sidebar.classList.remove('sidebar-open');
-                sidebar.classList.add('sidebar-closed');
+                sidebar.classList.replace('sidebar-open', 'sidebar-closed');
                 overlay.classList.remove('opacity-100');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
             }
         }
 
-        // Auto-hide Flash Messages
+        // Handle auto-closing flash messages
         setTimeout(() => {
-            document.querySelectorAll('.flash-msg').forEach(el => {
-                el.style.transition = 'all 0.5s';
+            const alerts = document.querySelectorAll('.cyber-card.reveal');
+            alerts.forEach(el => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(-20px)';
                 setTimeout(() => el.remove(), 500);
             });
         }, 4000);
 
-        // PWA Install Logic
+        // PWA logic
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('installAppCard').classList.remove('hidden');
+            document.getElementById('pwa-toast').classList.remove('hidden');
         });
 
-        document.getElementById('installAppBtn')?.addEventListener('click', async () => {
+        document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('installAppCard').classList.add('hidden');
-                }
+                if (outcome === 'accepted') document.getElementById('pwa-toast').remove();
                 deferredPrompt = null;
             }
         });
@@ -344,6 +335,5 @@
             });
         }
     </script>
-
 </body>
 </html>
