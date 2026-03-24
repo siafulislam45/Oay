@@ -1,72 +1,165 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="max-w-md mx-auto space-y-6 fade-up pb-24 pt-4">
+<style>
+    /* AI Reveal Animation */
+    .setup-reveal { animation: revealIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-    <!-- Header -->
-    <div class="text-center">
-        <div class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-indigo-50 text-[#4F46E5] text-3xl shadow-sm mb-3">
-            <i class="fa-solid fa-sliders"></i>
+    /* AI Panel Styling */
+    .ai-config-panel {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 32px;
+        padding: 30px;
+    }
+
+    /* Cyber Input Styling */
+    .node-input {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f1f5f9;
+        border-radius: 18px;
+        transition: all 0.3s ease;
+    }
+    .node-input:focus {
+        border-color: #8B5CF6;
+        background: rgba(139, 92, 246, 0.05);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+        outline: none;
+    }
+
+    /* Gateway Selection */
+    .gateway-card {
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-align: center;
+        padding: 12px 0;
+    }
+
+    /* bKash Active State */
+    .radio-bkash:checked + .gateway-card {
+        border-color: #E2136E;
+        background: rgba(226, 19, 110, 0.1);
+        color: #f472b6;
+        box-shadow: 0 0 15px rgba(226, 19, 110, 0.2);
+    }
+
+    /* Nagad Active State */
+    .radio-nagad:checked + .gateway-card {
+        border-color: #F7931A;
+        background: rgba(247, 147, 26, 0.1);
+        color: #fbbf24;
+        box-shadow: 0 0 15px rgba(247, 147, 26, 0.2);
+    }
+
+    /* Rocket Active State */
+    .radio-rocket:checked + .gateway-card {
+        border-color: #8C3494;
+        background: rgba(140, 52, 148, 0.1);
+        color: #d946ef;
+        box-shadow: 0 0 15px rgba(140, 52, 148, 0.2);
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+    }
+    .btn-save:active { transform: scale(0.96); }
+
+    .warning-box {
+        background: rgba(245, 158, 11, 0.05);
+        border: 1px solid rgba(245, 158, 11, 0.1);
+        border-radius: 16px;
+        padding: 12px;
+    }
+</style>
+
+<div class="max-w-md mx-auto space-y-8 setup-reveal pb-32 pt-6 px-2">
+
+    <!-- হেডার সেকশন -->
+    <div class="text-center relative">
+        <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-violet-600/10 rounded-full blur-3xl"></div>
+        
+        <div class="relative inline-flex items-center justify-center h-20 w-20 rounded-3xl bg-violet-500/10 border border-violet-500/20 text-violet-400 text-3xl shadow-2xl mb-4">
+            <i class="fa-solid fa-gears animate-pulse"></i>
         </div>
-        <h2 class="text-xl font-bold text-[#0A2540]">পেমেন্ট সেটআপ</h2>
-        <p class="text-xs text-slate-500">টাকা তোলার জন্য আপনার নাম্বার সেট করুন</p>
+        <h2 class="text-2xl font-black ai-gradient-text uppercase tracking-[2px]">পেমেন্ট গেটওয়ে সেটআপ</h2>
+        <p class="text-[11px] text-slate-500 font-bold tracking-widest uppercase mt-1">Configuring Your Financial Node</p>
     </div>
 
-    <!-- Setup Form -->
-    <div class="bg-white p-6 rounded-[30px] shadow-xl shadow-indigo-100 border border-slate-50">
+    <!-- সেটআপ ফর্ম প্যানেল -->
+    <div class="ai-config-panel shadow-2xl">
         
-        <form method="POST" action="/adm" class="space-y-5">
+        <form method="POST" action="/adm" class="space-y-8">
             
-            <!-- Method Select -->
+            <!-- গেটওয়ে সিলেকশন -->
             <div>
-                <label class="block text-xs font-bold text-slate-600 mb-3 ml-1">পেমেন্ট মেথড</label>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[2px] mb-4 ml-1">
+                    <i class="fa-solid fa-satellite-dish mr-2 text-violet-500"></i> ১. পেমেন্ট গেটওয়ে বেছে নিন
+                </label>
                 <div class="grid grid-cols-3 gap-3">
                     <!-- bKash -->
-                    <label class="cursor-pointer group">
-                        <input type="radio" name="method" value="bKash" class="peer sr-only" {{ 'checked' if user.wallet_method == 'bKash' }}>
-                        <div class="py-3 border-2 border-slate-100 rounded-xl text-center peer-checked:border-[#E2136E] peer-checked:bg-pink-50 peer-checked:text-[#E2136E] transition hover:border-pink-200">
-                            <span class="block text-xs font-bold">bKash</span>
+                    <label class="relative block">
+                        <input type="radio" name="method" value="bKash" class="radio-bkash sr-only" {{ 'checked' if user.wallet_method == 'bKash' }}>
+                        <div class="gateway-card">
+                            <span class="text-xs font-black uppercase tracking-tighter">bKash</span>
                         </div>
                     </label>
                     <!-- Nagad -->
-                    <label class="cursor-pointer group">
-                        <input type="radio" name="method" value="Nagad" class="peer sr-only" {{ 'checked' if user.wallet_method == 'Nagad' }}>
-                        <div class="py-3 border-2 border-slate-100 rounded-xl text-center peer-checked:border-[#F7931A] peer-checked:bg-orange-50 peer-checked:text-[#F7931A] transition hover:border-orange-200">
-                            <span class="block text-xs font-bold">Nagad</span>
+                    <label class="relative block">
+                        <input type="radio" name="method" value="Nagad" class="radio-nagad sr-only" {{ 'checked' if user.wallet_method == 'Nagad' }}>
+                        <div class="gateway-card">
+                            <span class="text-xs font-black uppercase tracking-tighter">Nagad</span>
                         </div>
                     </label>
                     <!-- Rocket -->
-                    <label class="cursor-pointer group">
-                        <input type="radio" name="method" value="Rocket" class="peer sr-only" {{ 'checked' if user.wallet_method == 'Rocket' }}>
-                        <div class="py-3 border-2 border-slate-100 rounded-xl text-center peer-checked:border-[#8C3494] peer-checked:bg-purple-50 peer-checked:text-[#8C3494] transition hover:border-purple-200">
-                            <span class="block text-xs font-bold">Rocket</span>
+                    <label class="relative block">
+                        <input type="radio" name="method" value="Rocket" class="radio-rocket sr-only" {{ 'checked' if user.wallet_method == 'Rocket' }}>
+                        <div class="gateway-card">
+                            <span class="text-xs font-black uppercase tracking-tighter">Rocket</span>
                         </div>
                     </label>
                 </div>
             </div>
 
-            <!-- Number Input -->
+            <!-- ওয়ালেট নম্বর ইনপুট -->
             <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1.5 ml-1">আপনার ওয়ালেট নাম্বার</label>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[2px] mb-3 ml-1">
+                    <i class="fa-solid fa-address-card mr-2 text-violet-500"></i> ২. আপনার ওয়ালেট নম্বর দিন
+                </label>
                 <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-phone"></i>
-                    </div>
-                    <input type="number" name="number" required placeholder="017xxxxxxxx" value="{{ user.wallet_number or '' }}"
-                           class="w-full pl-10 p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] bg-slate-50 focus:bg-white transition text-sm font-bold text-slate-700">
+                    <span class="absolute left-4 top-4.5 text-slate-500"><i class="fa-solid fa-hashtag text-sm"></i></span>
+                    <input type="number" name="number" required placeholder="01XXXXXXXXX" value="{{ user.wallet_number or '' }}"
+                           class="node-input w-full pl-12 p-4 text-sm font-bold tracking-[2px]">
                 </div>
-                <p class="text-[10px] text-orange-500 mt-2 ml-1">
-                    <i class="fa-solid fa-triangle-exclamation"></i> সতর্কবার্তা: নাম্বারটি ভালো করে চেক করে সেভ করুন। ভুল নাম্বারে টাকা গেলে আমরা দায়ী থাকব না।
-                </p>
+                
+                <!-- সতর্কবার্তা বক্স -->
+                <div class="warning-box mt-5 flex items-start gap-3">
+                    <div class="text-amber-500 mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <p class="text-[10px] text-amber-500/80 font-bold leading-relaxed uppercase tracking-tight">
+                        সতর্কতা: আপনার নম্বরটি পুনরায় যাচাই করুন। ভুল নম্বরে পেমেন্ট রিকোয়েস্ট পাঠালে সিস্টেম তা রিকভার করতে পারবে না।
+                    </p>
+                </div>
             </div>
 
-            <!-- Save Button -->
-            <button type="submit" class="w-full bg-[#0A2540] text-white py-4 rounded-xl font-bold shadow-lg hover:bg-[#4F46E5] transition active:scale-95 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-floppy-disk"></i> তথ্য সেভ করুন
+            <!-- সেভ বাটন -->
+            <button type="submit" class="btn-save w-full py-5 rounded-2xl text-white font-black text-sm uppercase tracking-[3px] flex items-center justify-center gap-3">
+                <i class="fa-solid fa-shield-halved"></i> কনফিগারেশন সেভ করুন
             </button>
 
         </form>
     </div>
 
+    <!-- নিচের টেক্সট -->
+    <div class="text-center opacity-40">
+        <p class="text-[9px] font-mono text-slate-500 tracking-tighter">Secure P2P Encryption Active • Pay-R Network</p>
+    </div>
+
 </div>
+
 {% endblock %}
