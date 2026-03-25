@@ -3,306 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#10b981">
-    <title>Pay-R | Next-Gen Fintech</title>
-    
-    <!-- Tailwind CSS -->
+    <title>Pay-R | Quantum Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts: Inter & Hind Siliguri -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --emerald: #10b981;
-            --teal: #14b8a6;
-            --slate-deep: #0f172a;
-            --slate-muted: #64748b;
-            --bg-light: #f8fafc;
-        }
-
-        body { 
-            font-family: 'Inter', 'Hind Siliguri', sans-serif; 
-            background-color: var(--bg-light);
-            color: var(--slate-deep);
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
-        }
-
-        /* --- 1. Suble Animated Mesh Gradient Background --- */
-        .mesh-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background-color: var(--bg-light);
-        }
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.15;
-            animation: moveOrb 20s infinite alternate;
-        }
-        .orb-1 { width: 400px; height: 400px; background: var(--emerald); top: -100px; left: -100px; }
-        .orb-2 { width: 500px; height: 500px; background: var(--teal); bottom: -150px; right: -150px; animation-delay: -5s; }
-        .orb-3 { width: 300px; height: 300px; background: #60a5fa; top: 30%; left: 50%; animation-delay: -10s; }
-
-        @keyframes moveOrb {
-            from { transform: translate(0, 0); }
-            to { transform: translate(50px, 50px); }
-        }
-
-        /* --- 2. Typography Strategy --- */
-        .hero-heading {
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            line-height: 0.95;
-        }
-        .micro-label {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--slate-muted);
-        }
-
-        /* --- 3. Glassmorphism & Cards --- */
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(15, 23, 42, 0.05);
-        }
-        .clean-card {
-            background: #ffffff;
-            border-radius: 24px;
-            border: 1px solid rgba(15, 23, 42, 0.05);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .clean-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.08);
-        }
-
-        /* --- 4. Animated Gradient Text --- */
-        .gradient-text {
-            background: linear-gradient(135deg, #0f172a 0%, #10b981 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shineText 5s linear infinite;
-        }
-        @keyframes shineText {
-            to { background-position: 200% center; }
-        }
-
-        /* --- 5. Premium Buttons --- */
-        .btn-premium {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
-            transition: all 0.3s;
-        }
-        .btn-premium::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
-            transform: rotate(45deg);
-            transition: 0.5s;
-        }
-        .btn-premium:hover::after {
-            left: 100%;
-        }
-
-        /* --- 6. Bento Grid Customization --- */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: minmax(100px, auto);
-            gap: 1.5rem;
-        }
-        @media (max-width: 768px) {
-            .bento-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        }
-
-        /* Oversized Watermarks */
-        .watermark {
-            position: absolute;
-            bottom: -20px; right: -10px;
-            font-size: 100px;
-            font-weight: 900;
-            color: rgba(15, 23, 42, 0.03);
-            pointer-events: none;
-        }
+        body { font-family: 'Hind Siliguri', 'Inter', sans-serif; background-color: #020617; color: #e2e8f0; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
-<body class="min-h-screen">
-
-    <!-- Background Orbs -->
-    <div class="mesh-bg">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
-
-    <!-- ================= 1. NAVBAR ================= -->
-    <nav class="glass-nav fixed top-0 w-full z-[100] h-20">
-        <div class="container mx-auto h-full px-6 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                    <i class="fa-solid fa-bolt-lightning"></i>
-                </div>
-                <span class="text-xl font-black tracking-tighter uppercase">Pay<span class="text-emerald-500">-R</span></span>
-            </div>
-            
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#" class="text-xs font-bold uppercase tracking-widest hover:text-emerald-500 transition">Dashboard</a>
-                <a href="#" class="text-xs font-bold uppercase tracking-widest hover:text-emerald-500 transition">Micro-tasks</a>
-                <a href="#" class="text-xs font-bold uppercase tracking-widest hover:text-emerald-500 transition">Marketplace</a>
-            </div>
-
-            <button class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100/50 hover:bg-emerald-50 transition">
-                <i class="fa-solid fa-bars-staggered"></i>
-            </button>
-        </div>
+<body class="min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="glass fixed top-0 w-full z-50 h-16 flex items-center px-5 justify-between">
+        <div class="text-xl font-black tracking-tighter text-white">PAY<span class="text-violet-500">-R</span></div>
+        <a href="/notice" class="text-slate-400"><i class="fa-regular fa-bell text-xl"></i></a>
     </nav>
 
-    <div class="h-24"></div>
+    <div class="h-16"></div>
 
-    <!-- ================= 2. HERO SECTION ================= -->
-    <main class="container mx-auto px-6">
-        <section class="py-12 text-center md:text-left flex flex-col md:flex-row items-center gap-12">
-            <div class="md:w-3/5 space-y-8">
-                <p class="micro-label">Next-Gen Earning Framework</p>
-                <h1 class="hero-heading text-6xl md:text-8xl gradient-text">
-                    Earn Smart <br> Invest Smarter.
-                </h1>
-                <p class="text-slate-500 text-lg max-w-lg leading-relaxed">
-                    সহজ মাইক্রো-টাস্ক সম্পন্ন করে প্রতিদিন আয় করুন এবং আপনার উপার্জিত অর্থকে দ্রুত ক্যাশআউট করুন বাংলাদেশের সবচেয়ে বিশ্বস্ত প্ল্যাটফর্মে।
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                    <button class="btn-premium px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest">Get Started Free</button>
-                    <button class="px-10 py-5 rounded-2xl font-bold text-sm bg-white border border-slate-100 hover:bg-slate-50 transition uppercase tracking-widest">Watch Tutorial</button>
-                </div>
-            </div>
-
-            <!-- Floating Abstract Dashboard Composition -->
-            <div class="md:w-2/5 relative py-20 px-10">
-                <!-- Main Glass Balance Card -->
-                <div class="relative z-20 bg-white/40 backdrop-blur-3xl border border-white/50 p-8 rounded-[40px] shadow-2xl animate-bounce" style="animation-duration: 4s;">
-                    <p class="micro-label mb-2">Total Yield</p>
-                    <h2 class="text-4xl font-black tracking-tighter">৳ ১২,৪৫০.০০</h2>
-                    <div class="mt-6 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                        <span class="text-[10px] font-bold text-emerald-600 uppercase">Live Syncing</span>
-                    </div>
-                </div>
-
-                <!-- Floating Pill 1 -->
-                <div class="absolute top-0 right-0 z-30 bg-white shadow-xl p-4 rounded-2xl border border-slate-50 flex items-center gap-3 animate-pulse">
-                    <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-check text-xs"></i></div>
-                    <div>
-                        <p class="text-[9px] font-black uppercase text-slate-400">Task Paid</p>
-                        <p class="text-xs font-bold">৳ ২৫০.০০</p>
-                    </div>
-                </div>
-
-                <!-- Floating Pill 2 -->
-                <div class="absolute bottom-10 -left-5 z-10 bg-white shadow-xl p-4 rounded-2xl border border-slate-50 flex items-center gap-3">
-                    <div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-down text-xs"></i></div>
-                    <div>
-                        <p class="text-[9px] font-black uppercase text-slate-400">New Bonus</p>
-                        <p class="text-xs font-bold">Claimed!</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= 3. BENTO GRID FEATURES ================= -->
-        <section class="py-20">
-            <div class="text-center mb-16 space-y-4">
-                <p class="micro-label">Our Capabilities</p>
-                <h2 class="text-4xl font-black tracking-tight">Everything you need to <span class="text-emerald-500">grow.</span></h2>
-            </div>
-
-            <div class="bento-grid">
-                <!-- Large Card -->
-                <div class="col-span-2 row-span-2 clean-card p-10 relative overflow-hidden group">
-                    <div class="watermark">01</div>
-                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-8 group-hover:bg-emerald-600 group-hover:text-white transition-all">
-                        <i class="fa-solid fa-rocket"></i>
-                    </div>
-                    <h3 class="text-2xl font-black mb-4">Instant Task Node</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed max-w-xs">
-                        আমাদের হাই-স্পিড নোড ব্যবহার করে সেকেন্ডের মধ্যে টাস্ক সাবমিট করুন এবং ইনস্ট্যান্ট রিওয়ার্ড ক্লেইম করুন।
-                    </p>
-                    <button class="mt-8 text-xs font-black uppercase tracking-widest text-emerald-600 flex items-center gap-2">Explore missions <i class="fa-solid fa-arrow-right"></i></button>
-                </div>
-
-                <!-- Small Card 1 -->
-                <div class="col-span-2 md:col-span-1 clean-card p-8 relative overflow-hidden group">
-                    <div class="watermark">02</div>
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <h3 class="text-lg font-black">Secure Vault</h3>
-                    <p class="text-slate-500 text-[11px] mt-2">২-লেয়ার এনক্রিপশন সিস্টেম।</p>
-                </div>
-
-                <!-- Small Card 2 -->
-                <div class="col-span-2 md:col-span-1 clean-card p-8 relative overflow-hidden group">
-                    <div class="watermark">03</div>
-                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-xl mb-6 group-hover:bg-orange-600 group-hover:text-white transition-all">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-                    </div>
-                    <h3 class="text-lg font-black">Fast Payout</h3>
-                    <p class="text-slate-500 text-[11px] mt-2">২৪ ঘণ্টার মধ্যে পেমেন্ট নিশ্চিত।</p>
-                </div>
-
-                <!-- Wide Horizontal Card -->
-                <div class="col-span-2 clean-card p-8 flex items-center justify-between group">
-                    <div class="space-y-2">
-                        <h3 class="text-xl font-black">Global Leaderboard</h3>
-                        <p class="text-slate-500 text-xs">শীর্ষ আয়কারীদের তালিকায় যুক্ত হোন।</p>
-                    </div>
-                    <div class="flex -space-x-4">
-                        <div class="w-12 h-12 rounded-full border-4 border-white bg-slate-200"></div>
-                        <div class="w-12 h-12 rounded-full border-4 border-white bg-emerald-200"></div>
-                        <div class="w-12 h-12 rounded-full border-4 border-white bg-teal-200"></div>
-                        <div class="w-12 h-12 rounded-full border-4 border-white bg-slate-900 flex items-center justify-center text-white text-[10px] font-bold">+5k</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= 4. FINAL CTA ================= -->
-        <section class="py-20">
-            <div class="bg-slate-900 rounded-[40px] p-12 md:p-24 text-center text-white relative overflow-hidden shadow-2xl">
-                <div class="absolute top-0 right-0 w-80 h-80 bg-emerald-500 rounded-full blur-[120px] opacity-20"></div>
-                <div class="relative z-10 space-y-8">
-                    <h2 class="text-4xl md:text-6xl font-black tracking-tighter">Ready to join the <br> quantum network?</h2>
-                    <p class="text-slate-400 max-w-lg mx-auto text-lg">আজই একাউন্ট খুলুন এবং আপনার প্রথম টাস্ক থেকে আয় শুরু করুন।</p>
-                    <button class="btn-premium px-12 py-6 rounded-2xl font-black text-sm uppercase tracking-[3px] scale-110">Initialize Account Now</button>
-                </div>
-            </div>
-        </section>
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto">
+        {% block content %}{% endblock %}
     </main>
 
-    <!-- FOOTER -->
-    <footer class="py-12 border-t border-slate-100 mt-20">
-        <div class="container mx-auto px-6 text-center">
-            <p class="micro-label opacity-50 mb-4">Crafted for Excellence</p>
-            <p class="text-xs text-slate-400 font-medium">© 2025 Pay-R Quantum. All rights reserved.</p>
-        </div>
-    </footer>
-
+    <!-- Bottom Nav -->
+    <div class="fixed bottom-0 w-full glass h-18 flex justify-around items-center pb-2 z-50">
+        <a href="/dashboard" class="text-violet-500 flex flex-col items-center"><i class="fa-solid fa-house text-xl"></i><span class="text-[10px] font-bold">হোম</span></a>
+        <a href="/tasks" class="text-slate-500 flex flex-col items-center"><i class="fa-solid fa-bolt text-xl"></i><span class="text-[10px] font-bold">টাস্ক</span></a>
+        <a href="/withdraw" class="text-slate-500 flex flex-col items-center"><i class="fa-solid fa-wallet text-xl"></i><span class="text-[10px] font-bold">টাকা</span></a>
+        <a href="/account" class="text-slate-500 flex flex-col items-center"><i class="fa-solid fa-user text-xl"></i><span class="text-[10px] font-bold">প্রোফাইল</span></a>
+    </div>
 </body>
 </html>
