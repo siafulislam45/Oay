@@ -1,391 +1,278 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#030712">
-    <title>Pay-R | AI Powered Earning</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- PWA Meta Tags -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="/static/icons/icon-192x192.png">
+{% extends "layout.html" %}
+{% block content %}
 
-    <style>
-        :root {
-            --primary-violet: #8B5CF6;
-            --accent-purple: #C084FC;
-            --dark-bg: #030712;
-            --card-bg: rgba(15, 23, 42, 0.6);
-        }
+<style>
+    /* --- ১. কাস্টম এনিমেশন এবং গ্লাস ইফেক্ট --- */
+    .dashboard-reveal { animation: revealIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        body { 
-            font-family: 'Hind Siliguri', 'Inter', sans-serif; 
-            background-color: var(--dark-bg);
-            color: #E2E8F0;
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
-            user-select: none;
-        }
+    .glass-pill {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(15, 23, 42, 0.05);
+    }
 
-        /* --- AI STYLING --- */
-        .ai-gradient-text {
-            background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .clean-card {
+        background: #ffffff;
+        border-radius: 28px;
+        border: 1px solid rgba(15, 23, 42, 0.03);
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.04);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .clean-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 60px -15px rgba(16, 185, 129, 0.1);
+        border-color: rgba(16, 185, 129, 0.2);
+    }
 
-        .ai-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(139, 92, 246, 0.15);
-            border-radius: 24px;
-        }
+    .text-emerald-gradient {
+        background: linear-gradient(135deg, #0f172a 0%, #10b981 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
-        /* --- SIDEBAR --- */
-        #sidebar { 
-            background: rgba(3, 7, 18, 0.98);
-            backdrop-filter: blur(25px);
-            border-right: 1px solid rgba(139, 92, 246, 0.1);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 70;
-        }
-        .sidebar-open { transform: translateX(0) !important; }
-        .sidebar-closed { transform: translateX(-100%); }
+    /* --- ২. মাইক্রো লেবেলিং --- */
+    .micro-label {
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: #64748b;
+    }
 
-        /* --- NAVIGATION --- */
-        .nav-island {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
+    /* --- ৩. বেন্টো গ্রিড লেআউট --- */
+    .bento-wrapper {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: minmax(100px, auto);
+        gap: 1.25rem;
+    }
+    @media (max-width: 768px) {
+        .bento-wrapper { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    }
 
-        .active-tab {
-            color: #8B5CF6;
-            position: relative;
-        }
-        .active-tab::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            width: 4px;
-            height: 4px;
-            background: #8B5CF6;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #8B5CF6;
-        }
+    .shimmer-btn {
+        position: relative; overflow: hidden;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    .shimmer-btn::after {
+        content: ''; position: absolute; top: -50%; left: -150%; width: 50%; height: 200%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+        transform: rotate(45deg); animation: shimmer 4s infinite;
+    }
+    @keyframes shimmer { 100% { left: 250%; } }
+</style>
 
-        /* --- GLOW EFFECTS --- */
-        .glow-sphere {
-            position: fixed;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
-            z-index: -1;
-            pointer-events: none;
-        }
+<div class="max-w-5xl mx-auto space-y-8 pb-32 pt-6 dashboard-reveal">
 
-        .btn-ai-main {
-            background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
-            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
-        }
-
-        /* Animations */
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .reveal { animation: slideIn 0.5s ease-out forwards; }
-    </style>
-</head>
-<body class="flex flex-col min-h-screen">
-
-    <!-- Ambient background glows -->
-    <div class="glow-sphere top-[-10%] left-[-10%]"></div>
-    <div class="glow-sphere bottom-[-10%] right-[-10%]"></div>
-
-    <!-- ================= 1. HEADER (Top Bar) ================= -->
-    <nav class="fixed top-0 w-full z-50 bg-slate-950/60 backdrop-blur-lg border-b border-white/5">
-        <div class="container mx-auto px-5 h-16 flex justify-between items-center">
-            
-            <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-violet-400 border border-white/10 active:scale-90 transition-all">
-                <i class="fa-solid fa-bars-staggered text-lg"></i>
-            </button>
-
-            <div class="flex flex-col items-center">
-                <a href="/" class="text-xl font-bold tracking-[3px] ai-gradient-text uppercase">PAY<span class="text-violet-500">-R</span></a>
-                <div class="h-[2px] w-6 bg-violet-600 rounded-full"></div>
-            </div>
-
-            <a href="/notice" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-slate-400 border border-white/10 relative">
-                <i class="fa-regular fa-bell text-lg"></i>
-                {% if settings and settings.notice_text %}
-                <span class="absolute top-1 right-1 h-2.5 w-2.5 bg-violet-500 rounded-full border-2 border-slate-950 animate-pulse"></span>
-                {% endif %}
-            </a>
-        </div>
-    </nav>
-
-    <div class="h-16"></div>
-
-    <!-- ================= 2. SIDEBAR (Full Detailed Menu) ================= -->
-    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"></div>
-    
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 sidebar-closed flex flex-col">
-        <!-- Sidebar Profile -->
-        <div class="p-8 mt-4 border-b border-white/5">
-            {% if session.get('user_id') %}
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-800 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-violet-500/20">
-                    {{ session.get('email', 'U')[0] | upper }}
-                </div>
-                <div class="overflow-hidden">
-                    <h3 class="text-white font-bold text-lg truncate leading-tight">{{ session.get('email', 'User').split('@')[0] | title }}</h3>
-                    <p class="text-[10px] text-violet-400 font-mono mt-1 bg-violet-500/10 px-2 py-0.5 rounded inline-block border border-violet-500/20">ID: {{ user.referral_code if user else '000000' }}</p>
-                </div>
-            </div>
-            {% else %}
-            <div class="py-2">
-                <h3 class="text-white font-bold">গেস্ট ইউজার</h3>
-                <a href="/login" class="text-violet-400 text-sm hover:underline">লগইন করুন →</a>
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- Sidebar Navigation Links -->
-        <nav class="flex-grow overflow-y-auto px-4 py-6 space-y-1 custom-scrollbar">
-            
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-3">মেইন ইন্টারফেস</p>
-            
-            <a href="/dashboard" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all group {{ 'bg-violet-500/10 text-violet-400 border border-violet-500/20' if request.endpoint == 'dashboard' else 'text-slate-400 hover:bg-white/5' }}">
-                <i class="fa-solid fa-house-chimney text-lg group-hover:scale-110"></i>
-                <span class="font-medium text-sm">ড্যাশবোর্ড</span>
-            </a>
-
-            <a href="/tasks" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all group">
-                <i class="fa-solid fa-microchip text-lg group-hover:text-violet-400"></i>
-                <span class="font-medium text-sm">টাস্ক সেন্টার</span>
-            </a>
-
-            <a href="/drive" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all group">
-                <i class="fa-solid fa-tower-broadcast text-lg group-hover:text-violet-400"></i>
-                <span class="font-medium text-sm">ড্রাইভ অফার</span>
-            </a>
-
-            <a href="/vip" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-amber-500/5 text-amber-500 border border-amber-500/10 hover:bg-amber-500/10 transition-all">
-                <i class="fa-solid fa-crown text-lg"></i>
-                <span class="font-bold text-sm">VIP মেম্বারশিপ</span>
-            </a>
-
-            <div class="h-px bg-white/5 my-6 mx-4"></div>
-
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-3">ফাইন্যান্সিয়াল ও রেকর্ড</p>
-
-            <a href="/withdraw" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
-                <i class="fa-solid fa-wallet text-lg"></i>
-                <span class="font-medium text-sm">টাকা উত্তোলন</span>
-            </a>
-
-            <a href="/history" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
-                <i class="fa-solid fa-clock-rotate-left text-lg"></i>
-                <span class="font-medium text-sm">পেমেন্ট হিস্টোরি</span>
-            </a>
-
-            <a href="/proofs" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
-                <i class="fa-solid fa-shield-check text-lg"></i>
-                <span class="font-medium text-sm">পেমেন্ট প্রুফ</span>
-            </a>
-
-            <a href="/referrals" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
-                <i class="fa-solid fa-users-rays text-lg"></i>
-                <span class="font-medium text-sm">রেফারেল লিস্ট</span>
-            </a>
-
-            <div class="h-px bg-white/5 my-6 mx-4"></div>
-
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-3">অন্যান্য</p>
-
-            <a href="/account" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
-                <i class="fa-solid fa-user-gear text-lg"></i>
-                <span class="font-medium text-sm">আমার প্রোফাইল</span>
-            </a>
-
-            <a href="/tutorial" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-slate-400 hover:bg-white/5 transition-all">
-                <i class="fa-solid fa-circle-play text-lg"></i>
-                <span class="font-medium text-sm">টিউটোরিয়াল ভিডিও</span>
-            </a>
-
-            <!-- Support Node -->
-            <a href="https://t.me/PayRsupprt" target="_blank" class="flex items-center justify-between px-4 py-4 rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20 mt-4 group">
-                <div class="flex items-center gap-4">
-                    <i class="fa-brands fa-telegram text-2xl group-hover:scale-110 transition-transform"></i>
-                    <span class="font-bold text-sm">লাইভ সাপোর্ট</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px]"></i>
-            </a>
-
-            {% if session.get('user_id') %}
-            <a href="/logout" class="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-rose-500 hover:bg-rose-500/10 mt-8 transition-all">
-                <i class="fa-solid fa-power-off text-lg"></i>
-                <span class="font-bold text-sm">লগ আউট</span>
-            </a>
-            {% endif %}
-        </nav>
-        
-        <div class="p-6 border-t border-white/5 text-center">
-            <p class="text-[10px] text-slate-500 font-mono tracking-tighter">Powered by Pay-R Quantum v3.0</p>
-        </div>
-    </aside>
-
-    <!-- ================= 3. FLASH MESSAGES ================= -->
-    <div class="fixed top-20 left-0 w-full px-5 z-[45]">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="ai-card p-4 mb-3 flex items-center gap-4 reveal shadow-2xl border-l-4 {{ 'border-l-rose-500' if category == 'error' else 'border-l-violet-500' }}">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center {{ 'bg-rose-500/20 text-rose-500' if category == 'error' else 'bg-violet-500/20 text-violet-400' }}">
-                    <i class="fa-solid {{ 'fa-circle-exclamation' if category == 'error' else 'fa-circle-check' }}"></i>
-                </div>
-                <p class="text-sm font-bold text-slate-200">{{ message }}</p>
-              </div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-    </div>
-
-    <!-- ================= 4. MAIN CONTENT AREA ================= -->
-    <main class="flex-grow container mx-auto px-5 pb-32 pt-4 reveal">
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- ================= 5. TELEGRAM FLOATING WIDGET ================= -->
-    <div class="fixed bottom-28 right-6 z-50">
-        <a href="https://t.me/PayRsupprt" target="_blank" class="block group">
+    <!-- ১. টপ প্রোফাইল এবং গ্রিটিং (HUD) -->
+    <div class="flex justify-between items-center px-2">
+        <div class="flex items-center gap-4">
             <div class="relative">
-                <div class="absolute inset-0 bg-violet-600 rounded-2xl blur-lg opacity-40 group-hover:opacity-70 transition-opacity"></div>
-                <div class="w-14 h-14 bg-violet-600 rounded-2xl flex items-center justify-center text-white text-2xl relative z-10 border border-white/20 shadow-xl transition-transform hover:scale-110 active:scale-95">
-                    <i class="fa-brands fa-telegram"></i>
+                <div class="h-14 w-14 rounded-2xl bg-white shadow-lg flex items-center justify-center border border-slate-100">
+                    <span class="text-2xl font-black text-emerald-500">{{ user.email[0] | upper }}</span>
+                </div>
+                <div class="absolute -bottom-1 -right-1 h-4 w-4 bg-emerald-500 border-2 border-white rounded-full"></div>
+            </div>
+            <div>
+                <p class="micro-label mb-0.5">Authorized Node</p>
+                <h2 class="text-xl font-black text-slate-900 leading-none">
+                    {{ user.email.split('@')[0] | title }}
+                </h2>
+                <div class="mt-1.5 flex items-center gap-2">
+                    {% if user.current_level > 0 %}
+                        <span class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-md border border-emerald-100">Elite VIP</span>
+                    {% else %}
+                        <span class="bg-slate-50 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-100">Starter Core</span>
+                    {% endif %}
                 </div>
             </div>
+        </div>
+        <a href="/notice" class="h-12 w-12 glass-pill rounded-2xl flex items-center justify-center text-slate-600 relative hover:text-emerald-500 transition-all">
+            <i class="fa-regular fa-bell text-xl"></i>
+            {% if settings.notice_text %}
+            <span class="absolute top-3 right-3 h-2 w-2 bg-emerald-500 rounded-full animate-ping"></span>
+            {% endif %}
         </a>
     </div>
 
-    <!-- ================= 6. BOTTOM NAVIGATION (Floating Island) ================= -->
-    {% if session.get('user_id') %}
-    <div class="fixed bottom-6 left-0 w-full px-6 z-50">
-        <div class="max-w-md mx-auto nav-island h-18 px-6 flex justify-between items-center">
+    <!-- ২. বেন্টো গ্রিড মেইন প্যানেল -->
+    <div class="bento-wrapper">
+        
+        <!-- Large Card: Main Assets (Total Balance) -->
+        <div class="col-span-4 md:col-span-2 row-span-2 clean-card p-8 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute -right-6 -top-6 text-[120px] font-black text-slate-950/[0.02] pointer-events-none">01</div>
+            <div>
+                <p class="micro-label mb-4 tracking-[0.2em]">Current Yield Analysis</p>
+                <h3 class="text-5xl font-black text-emerald-gradient tracking-tighter">
+                    ৳{{ user.balance }}
+                </h3>
+                <p class="text-slate-400 text-xs font-bold mt-2 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Live Main Ledger
+                </p>
+            </div>
             
-            <a href="/dashboard" class="flex flex-col items-center justify-center w-12 transition-all {{ 'active-tab' if request.endpoint == 'dashboard' else 'text-slate-500' }}">
-                <i class="fa-solid fa-house-user text-xl"></i>
-            </a>
+            <div class="flex gap-3 mt-10">
+                <a href="/withdraw" class="shimmer-btn flex-1 text-center py-4 rounded-2xl text-white text-[11px] font-black uppercase tracking-widest shadow-xl shadow-emerald-500/20">Withdraw</a>
+                <a href="/tasks" class="flex-1 text-center py-4 rounded-2xl bg-slate-900 text-white text-[11px] font-black uppercase tracking-widest">Execute Tasks</a>
+            </div>
+        </div>
 
-            <a href="/history" class="flex flex-col items-center justify-center w-12 transition-all {{ 'active-tab' if request.endpoint == 'history' else 'text-slate-500' }}">
-                <i class="fa-solid fa-chart-line text-xl"></i>
-            </a>
-
-            <!-- Central Task Bolt -->
-            <a href="/tasks" class="w-16 h-16 btn-ai-main rounded-full flex items-center justify-center text-white text-2xl shadow-xl -translate-y-8 border-4 border-slate-950 hover:scale-105 active:scale-90 transition-all">
+        <!-- Medium Card: Today's Income -->
+        <div class="col-span-2 md:col-span-1 clean-card p-6 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute -right-4 top-2 text-6xl font-black text-slate-950/[0.02]">02</div>
+            <div class="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center text-lg mb-4">
                 <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
+            <div>
+                <p class="micro-label mb-1">Today's Net</p>
+                <h4 class="text-2xl font-black text-slate-800">৳{{ today_income }}</h4>
+            </div>
+        </div>
+
+        <!-- Medium Card: VIP Yield -->
+        <div class="col-span-2 md:col-span-1 clean-card p-6 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute -right-4 top-2 text-6xl font-black text-slate-950/[0.02]">03</div>
+            <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-lg mb-4">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+            <div>
+                <p class="micro-label mb-1">Elite Pool</p>
+                <h4 class="text-2xl font-black text-slate-800">৳{{ user.vip_balance or 0 }}</h4>
+            </div>
+        </div>
+
+        <!-- Wide Card: Team Growth -->
+        <div class="col-span-4 md:col-span-2 clean-card p-6 flex items-center justify-between group">
+            <div class="flex items-center gap-5">
+                <div class="h-14 w-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                    <i class="fa-solid fa-users-rays"></i>
+                </div>
+                <div>
+                    <p class="micro-label mb-0.5">Network Nodes</p>
+                    <h4 class="text-xl font-black text-slate-800">{{ ref_count }} Active Referrals</h4>
+                </div>
+            </div>
+            <a href="/referrals" class="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                <i class="fa-solid fa-arrow-right"></i>
             </a>
-
-            <a href="/withdraw" class="flex flex-col items-center justify-center w-12 transition-all {{ 'active-tab' if request.endpoint == 'withdraw' else 'text-slate-500' }}">
-                <i class="fa-solid fa-wallet text-xl"></i>
-            </a>
-
-            <button onclick="toggleSidebar()" class="flex flex-col items-center justify-center w-12 text-slate-500">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
-
         </div>
     </div>
-    {% endif %}
 
-    <!-- ================= 7. PWA INSTALL PROMPT ================= -->
-    <div id="installCard" class="fixed bottom-28 left-6 right-6 ai-card p-5 hidden z-[100] reveal border-violet-500/40">
-        <div class="flex items-center gap-4">
-            <div class="w-14 h-14 bg-violet-500/20 rounded-2xl flex items-center justify-center text-violet-400 text-2xl">
-                <i class="fa-solid fa-mobile-screen-button"></i>
-            </div>
-            <div class="flex-grow">
-                <h4 class="text-white font-bold text-sm">অ্যাপটি ইনস্টল করুন</h4>
-                <p class="text-xs text-slate-400">দ্রুত এক্সেস এবং সেরা অভিজ্ঞতার জন্য</p>
-            </div>
-            <button id="installBtn" class="bg-violet-600 text-white px-5 py-2 rounded-xl text-xs font-black shadow-lg shadow-violet-600/20 active:scale-95 transition-all">ইনস্টল</button>
+    <!-- ৩. কুইক নেভিগেশন নোডস -->
+    <div>
+        <h3 class="micro-label px-2 mb-4">Operational Nodes</h3>
+        <div class="grid grid-cols-4 gap-4">
+            {% set navs = [
+                ('/income', 'fa-chart-pie', 'Stats', 'bg-emerald-50 text-emerald-600'),
+                ('/history', 'fa-list-ul', 'Logs', 'bg-sky-50 text-sky-600'),
+                ('/vip', 'fa-gem', 'Elite', 'bg-purple-50 text-purple-600'),
+                ('/tutorial', 'fa-play', 'Guide', 'bg-rose-50 text-rose-600')
+            ] %}
+            {% for url, icon, name, color in navs %}
+            <a href="{{ url }}" class="clean-card p-4 flex flex-col items-center gap-3">
+                <div class="h-10 w-10 {{ color }} rounded-xl flex items-center justify-center text-lg shadow-sm">
+                    <i class="fa-solid {{ icon }}"></i>
+                </div>
+                <span class="text-[10px] font-black text-slate-500 uppercase tracking-tighter">{{ name }}</span>
+            </a>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- ================= SCRIPTS ================= -->
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const installCard = document.getElementById('installCard');
-        const installBtn = document.getElementById('installBtn');
+    <!-- ৪. লাইভ পেমেন্ট ফিড (Trust Builder) -->
+    <div class="clean-card p-7">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></div>
+                <h3 class="micro-label !text-slate-900">Live Yield Distribution</h3>
+            </div>
+            <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest px-2 py-0.5 bg-emerald-50 rounded">Real-time</span>
+        </div>
+        
+        <div class="space-y-4" id="live-payouts">
+            <!-- JS will inject payouts here -->
+            <div class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 animate-pulse">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+                    <div class="h-3 w-24 bg-slate-200 rounded"></div>
+                </div>
+                <div class="h-3 w-12 bg-slate-200 rounded"></div>
+            </div>
+        </div>
+    </div>
 
-        // Sidebar Toggle
-        function toggleSidebar() {
-            const isOpen = sidebar.classList.contains('sidebar-open');
-            if (!isOpen) {
-                sidebar.classList.remove('sidebar-closed');
-                sidebar.classList.add('sidebar-open');
-                overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.add('opacity-100'), 10);
-            } else {
-                sidebar.classList.remove('sidebar-open');
-                sidebar.classList.add('sidebar-closed');
-                overlay.classList.remove('opacity-100');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
-            }
+    <!-- ৫. প্ল্যাটফর্ম ইউptime -->
+    <div class="text-center py-6">
+        <p class="micro-label opacity-40 mb-4">System Uptime Monitor</p>
+        <div class="flex justify-center gap-3" id="site-age">
+            <div class="bg-white px-4 py-2 rounded-xl border border-slate-100 min-w-[60px]">
+                <span class="block text-lg font-black text-slate-800" id="days">00</span>
+                <span class="text-[8px] font-bold text-slate-400 uppercase">Days</span>
+            </div>
+            <div class="bg-white px-4 py-2 rounded-xl border border-slate-100 min-w-[60px]">
+                <span class="block text-lg font-black text-slate-800" id="hours">00</span>
+                <span class="text-[8px] font-bold text-slate-400 uppercase">Hours</span>
+            </div>
+            <div class="bg-white px-4 py-2 rounded-xl border border-slate-100 min-w-[60px]">
+                <span class="block text-lg font-black text-slate-800" id="min">00</span>
+                <span class="text-[8px] font-bold text-slate-400 uppercase">Min</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- স্ক্রিপ্টস -->
+<script>
+    // ১. লাইভ পেমেন্ট জেনারেটর (মক ডাটা)
+    const payoutContainer = document.getElementById('live-payouts');
+    const prefixes = ['017', '019', '018', '016', '013'];
+    const gateways = ['bKash', 'Nagad', 'Rocket'];
+
+    function createPayout() {
+        const num = prefixes[Math.floor(Math.random()*prefixes.length)] + "****" + Math.floor(1000+Math.random()*9000);
+        const amount = Math.floor(Math.random() * (500 - 100) + 100);
+        const gw = gateways[Math.floor(Math.random()*gateways.length)];
+        
+        const html = `
+            <div class="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-50 shadow-sm transition-all hover:border-emerald-200 dashboard-reveal">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-wallet text-sm"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-black text-slate-800 tracking-wide">${num}</p>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Received via ${gw}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-black text-emerald-600">+৳${amount}</p>
+                    <p class="text-[8px] font-black text-slate-300 uppercase">Success</p>
+                </div>
+            </div>
+        `;
+        
+        payoutContainer.innerHTML = html + payoutContainer.innerHTML;
+        if(payoutContainer.children.length > 3) payoutContainer.lastElementChild.remove();
+        
+        setTimeout(createPayout, Math.random() * (15000 - 5000) + 5000);
+    }
+    setTimeout(createPayout, 2000);
+
+    // ২. সাইট আপটাইম লজিক
+    function updateUptime() {
+        const start = new Date(2025, 11, 19).getTime(); // Dec 19, 2025
+        const now = new Date().getTime();
+        const diff = now - start;
+        if(diff > 0) {
+            document.getElementById('days').innerText = Math.floor(diff / 86400000);
+            document.getElementById('hours').innerText = Math.floor((diff % 86400000) / 3600000);
+            document.getElementById('min').innerText = Math.floor((diff % 3600000) / 60000);
         }
+    }
+    setInterval(updateUptime, 1000);
+    updateUptime();
+</script>
 
-        // Auto-hide Flash Messages
-        setTimeout(() => {
-            const messages = document.querySelectorAll('.ai-card.reveal');
-            messages.forEach(msg => {
-                msg.style.opacity = '0';
-                msg.style.transform = 'translateY(-20px)';
-                setTimeout(() => msg.remove(), 500);
-            });
-        }, 4000);
-
-        // PWA Installation Logic
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installCard.classList.remove('hidden');
-        });
-
-        installBtn?.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installCard.classList.add('hidden');
-                }
-                deferredPrompt = null;
-            }
-        });
-
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(reg => {
-                    console.log('SW Registered');
-                }).catch(err => console.log('SW Failed', err));
-            });
-        }
-    </script>
-</body>
-</html>
+{% endblock %}
