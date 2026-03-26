@@ -2,202 +2,276 @@
 {% block content %}
 
 <style>
-    /* --- ১. স্পেশাল এনিমেশন ও গ্লাস কার্ড --- */
-    .reveal { animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-    @keyframes revealUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    .clean-card {
-        background: #ffffff;
-        border-radius: 20px;
-        border: 1px solid rgba(15, 23, 42, 0.05);
-        box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.02);
+    /* --- ১. অ্যাডভান্সড এনিমেশন প্রোফাইল --- */
+    .premium-reveal { 
+        animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        opacity: 0; 
     }
-    
-    .micro-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; }
-    .heading-massive { font-weight: 900; letter-spacing: -0.03em; }
+    @keyframes revealUp { 
+        from { opacity: 0; transform: translateY(40px); filter: blur(10px); } 
+        to { opacity: 1; transform: translateY(0); filter: blur(0); } 
+    }
 
-    /* পেমেন্ট লগের জন্য ছোট এনিমেশন */
-    .payout-item { animation: slideIn 0.4s ease-out forwards; }
-    @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+    /* --- ২. আল্ট্রা-ক্লিন কার্ড স্টাইলিং --- */
+    .bento-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
+        border-radius: 24px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .bento-card:hover {
+        transform: translateY(-5px) scale(1.01);
+        box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.12);
+        border-color: rgba(16, 185, 129, 0.2);
+    }
+
+    /* --- ৩. ফিনটেক টাইপোগ্রাফি --- */
+    .heading-black { font-weight: 900; letter-spacing: -0.04em; line-height: 0.9; }
+    .label-caps { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: #94a3b8; }
     
-    .blur-mode { filter: blur(8px); transition: 0.3s; }
+    .emerald-glow-text {
+        background: linear-gradient(135deg, #0f172a 30%, #10b981 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* --- ৪. কাস্টম কম্পোনেন্টস --- */
+    .glass-icon {
+        background: rgba(16, 185, 129, 0.08);
+        border: 1px solid rgba(16, 185, 129, 0.1);
+        border-radius: 16px;
+    }
+    .active-status {
+        background: #10b981;
+        box-shadow: 0 0 12px #10b981;
+    }
+
+    /* ব্যালেন্স হাইড ইফেক্ট (Premium) */
+    .stealth-blur { filter: blur(12px); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
 </style>
 
-<div class="space-y-5 pb-24 pt-2 reveal">
+<div class="space-y-8 pb-32 pt-4 premium-reveal">
 
-    <!-- ১. মিনি প্রোফাইল (Header) -->
-    <div class="flex justify-between items-center px-1">
-        <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white font-black shadow-lg">
-                {{ user.email[0] | upper }}
+    <!-- ১. প্রোফাইল HUD (Top Console) -->
+    <div class="flex justify-between items-center px-2">
+        <div class="flex items-center gap-4">
+            <div class="relative">
+                <div class="h-12 w-12 rounded-2xl bg-white shadow-xl flex items-center justify-center border border-slate-100 p-1">
+                    <div class="w-full h-full rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white font-black text-xl">
+                        {{ user.email[0] | upper }}
+                    </div>
+                </div>
+                <div class="absolute -bottom-1 -right-1 h-4 w-4 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <div class="h-2 w-2 active-status rounded-full animate-pulse"></div>
+                </div>
             </div>
             <div>
-                <p class="micro-label" id="greeting">HELLO</p>
-                <h2 class="text-sm font-bold text-navy">{{ user.email.split('@')[0] | title }}</h2>
+                <p class="label-caps mb-1" id="greeting">System Ready</p>
+                <h2 class="text-lg font-black text-navy">{{ user.email.split('@')[0] | title }}</h2>
+                <div class="flex gap-2 mt-1">
+                    <span class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
+                        UID: {{ user.id }}
+                    </span>
+                </div>
             </div>
         </div>
-        <a href="/notice" class="h-9 w-9 bg-white rounded-full flex items-center justify-center text-slate-400 border border-slate-100 relative">
-            <i class="fa-regular fa-bell"></i>
-            {% if settings.notice_text %}<span class="absolute top-2 right-2.5 h-2 w-2 bg-emerald-500 rounded-full border-2 border-white"></span>{% endif %}
+        <a href="/notice" class="h-12 w-12 bento-card flex items-center justify-center text-slate-400 hover:text-emerald-500 transition-colors relative">
+            <i class="fa-solid fa-bell-concierge text-lg"></i>
+            {% if settings.notice_text %}
+            <span class="absolute top-3.5 right-4 h-2 w-2 bg-rose-500 rounded-full border-2 border-white"></span>
+            {% endif %}
         </a>
     </div>
 
-    <!-- ২. কম্প্যাক্ট ব্যালেন্স কার্ড (Massive Typography) -->
-    <div class="clean-card p-6 bg-gradient-to-br from-white to-slate-50 relative overflow-hidden">
-        <div class="absolute -right-4 -top-4 text-7xl font-black text-slate-950/[0.02] pointer-events-none">01</div>
+    <!-- ২. মেইন অ্যাসেট নোড (Total Balance Card) -->
+    <div class="bento-card p-8 relative overflow-hidden bg-white">
+        <!-- Watermark -->
+        <div class="absolute -right-6 -top-6 text-[140px] font-black text-slate-950/[0.02] pointer-events-none">01</div>
         
-        <p class="micro-label mb-2">Total Balance</p>
-        <div class="flex items-end gap-3 cursor-pointer" onclick="toggleBalance()">
-            <h1 id="balanceText" class="text-4xl heading-massive text-navy blur-mode">৳{{ user.balance }}</h1>
-            <i id="eyeIcon" class="fa-solid fa-eye-slash text-slate-300 mb-2 text-xs"></i>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mt-6">
-            <div class="p-3 bg-emerald-50/50 rounded-2xl border border-emerald-100/50">
-                <p class="micro-label text-emerald-600">Today</p>
-                <p class="text-sm font-black text-emerald-700">+৳{{ today_income }}</p>
+        <div class="relative z-10">
+            <div class="flex justify-between items-start mb-10">
+                <div class="space-y-1">
+                    <p class="label-caps !text-emerald-600">Total Asset Value</p>
+                    <div class="flex items-center gap-4 cursor-pointer group" onclick="toggleStealth()">
+                        <h1 id="balance" class="text-5xl heading-black emerald-glow-text">৳{{ user.balance }}</h1>
+                        <div class="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-emerald-500 transition-colors">
+                            <i id="eyeIco" class="fa-solid fa-eye-low-vision text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="label-caps">Elite status</p>
+                    <span class="text-[10px] font-black text-amber-500 flex items-center justify-end gap-1 mt-1">
+                        <i class="fa-solid fa-crown"></i> LEVEL {{ user.current_level }}
+                    </span>
+                </div>
             </div>
-            <div class="p-3 bg-amber-50/50 rounded-2xl border border-amber-100/50">
-                <p class="micro-label text-amber-600">VIP Assets</p>
-                <p class="text-sm font-black text-amber-700">৳{{ user.vip_balance or 0 }}</p>
+
+            <!-- Dashboard Action Hub -->
+            <div class="grid grid-cols-2 gap-4">
+                <a href="/withdraw" class="flex items-center justify-center gap-3 bg-navy text-white py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">
+                    Withdraw <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-emerald-400"></i>
+                </a>
+                <a href="/tasks" class="flex items-center justify-center gap-3 bg-gradient-to-br from-emerald-400 to-teal-600 text-white py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all">
+                    Execute <i class="fa-solid fa-bolt-lightning text-[10px]"></i>
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- ৩. নোটিশ টিকার (Compact) -->
-    {% if settings.notice_text %}
-    <div class="clean-card p-2 flex items-center bg-white/50 backdrop-blur-md">
-        <span class="bg-navy text-white text-[8px] font-black px-2 py-1 rounded-lg mr-3 shadow-sm uppercase">Notice</span>
-        <marquee class="text-[11px] font-semibold text-slate-600" scrollamount="4">{{ settings.notice_text }}</marquee>
+    <!-- ৩. মেট্রিক্স গ্রিড (Today's Stats) -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="bento-card p-5">
+            <p class="label-caps mb-3">Daily Yield</p>
+            <div class="flex items-end justify-between">
+                <h3 class="text-2xl font-black text-navy tracking-tighter">+৳{{ today_income }}</h3>
+                <div class="text-emerald-500 text-xs font-bold mb-1">
+                    <i class="fa-solid fa-caret-up"></i> 12%
+                </div>
+            </div>
+            <div class="mt-4 h-1 w-full bg-slate-50 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 w-2/3"></div>
+            </div>
+        </div>
+        <div class="bento-card p-5">
+            <p class="label-caps mb-3">Escrow Assets</p>
+            <div class="flex items-end justify-between">
+                <h3 class="text-2xl font-black text-slate-400 tracking-tighter">৳{{ pending_income }}</h3>
+                <i class="fa-solid fa-shield-halved text-slate-200 text-lg mb-1"></i>
+            </div>
+            <p class="text-[8px] font-bold text-slate-400 uppercase mt-4">Verifying Node...</p>
+        </div>
     </div>
-    {% endif %}
 
-    <!-- ৪. সার্ভিস গ্রিড (Quick Menu - Small Icons) -->
+    <!-- ৪. অপারেশনাল গ্রিড (Quick Navigation) -->
     <div class="grid grid-cols-4 gap-3">
         {% set navs = [
-            ('/tasks', 'fa-bolt-lightning', 'টাস্ক', 'bg-emerald-100 text-emerald-600'),
-            ('/withdraw', 'fa-wallet', 'উইথড্র', 'bg-blue-100 text-blue-600'),
-            ('/vip', 'fa-crown', 'VIP', 'bg-amber-100 text-amber-600'),
-            ('/referrals', 'fa-users', 'রেফার', 'bg-indigo-100 text-indigo-600'),
-            ('/income', 'fa-chart-pie', 'আয়', 'bg-teal-100 text-teal-600'),
-            ('/proofs', 'fa-receipt', 'প্রুফ', 'bg-rose-100 text-rose-600'),
-            ('/tutorial', 'fa-play', 'ভিডিও', 'bg-purple-100 text-purple-600'),
-            ('https://wa.me/8801894577178', 'fa-headset', 'সাপোর্ট', 'bg-green-100 text-green-600')
+            ('/vip', 'fa-gem', 'Elite', 'text-amber-500'),
+            ('/referrals', 'fa-share-nodes', 'Nodes', 'text-blue-500'),
+            ('/income', 'fa-chart-pie', 'Stats', 'text-indigo-500'),
+            ('/history', 'fa-receipt', 'Logs', 'text-teal-500'),
+            ('/proofs', 'fa-fingerprint', 'Verify', 'text-rose-500'),
+            ('/tutorial', 'fa-video', 'Guide', 'text-purple-500'),
+            ('/account', 'fa-user-gear', 'Config', 'text-slate-500'),
+            ('https://wa.me/8801624175616', 'fa-headset', 'Help', 'text-emerald-500')
         ] %}
-        {% for url, icon, name, style in navs %}
-        <a href="{{ url }}" class="clean-card p-3 flex flex-col items-center gap-2 hover:scale-105 transition-transform">
-            <div class="h-9 w-9 {{ style }} rounded-xl flex items-center justify-center text-sm shadow-sm">
+        {% for url, icon, name, color in navs %}
+        <a href="{{ url }}" class="bento-card p-3 flex flex-col items-center gap-2 group">
+            <div class="h-10 w-10 glass-icon flex items-center justify-center text-lg {{ color }} group-hover:scale-110 transition-transform">
                 <i class="fa-solid {{ icon }}"></i>
             </div>
-            <span class="text-[9px] font-bold text-slate-500">{{ name }}</span>
+            <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">{{ name }}</span>
         </a>
         {% endfor %}
     </div>
 
-    <!-- ৫. ডেইলি বোনাস এবং প্রোগ্রেস (Bento Mix) -->
-    <div class="grid grid-cols-2 gap-4">
-        <!-- Daily Check-in -->
-        <div class="clean-card p-4 flex flex-col justify-between">
-            <p class="micro-label mb-2">Daily Bonus</p>
-            <div class="flex gap-1 mb-3">
-                {% for i in range(1, 6) %}
-                <div class="h-1.5 flex-1 rounded-full {{ 'bg-emerald-500' if user.streak_count >= i else 'bg-slate-100' }}"></div>
-                {% endfor %}
+    <!-- ৫. রিয়েল-টাইম ট্রানজেকশন টার্মিনাল -->
+    <div class="bento-card p-6">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></div>
+                <h3 class="label-caps !text-navy">Live Yield Distribution</h3>
             </div>
-            <a href="/daily-checkin" class="text-[10px] font-black text-white bg-navy py-2 rounded-lg text-center uppercase tracking-wider">Claim ৳</a>
+            <span class="text-[8px] font-black text-emerald-600 uppercase tracking-widest px-2 py-1 bg-emerald-50 rounded-lg">Real-time</span>
         </div>
         
-        <!-- PWA/Tutorial Banner -->
-        <a href="/tutorial" class="clean-card p-4 bg-emerald-500 text-white flex flex-col justify-between">
-            <p class="text-[9px] font-black uppercase opacity-80">Training Node</p>
-            <h4 class="text-xs font-bold leading-tight">কিভাবে কাজ করবেন দেখুন →</h4>
-        </a>
-    </div>
-
-    <!-- ৬. লাইভ পেমেন্ট ও লিডারবোর্ড (Compact) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Live Feed -->
-        <div class="clean-card p-4 h-48 overflow-hidden flex flex-col">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="micro-label">Live Distribution</h3>
-                <span class="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-            </div>
-            <div id="payoutFeed" class="space-y-2">
-                <!-- JS Data -->
-            </div>
-        </div>
-
-        <!-- Mini Leaderboard -->
-        <div class="clean-card p-4">
-            <h3 class="micro-label mb-3">Top Nodes</h3>
-            <div class="space-y-2">
-                {% for winner in leaderboard[:3] %}
-                <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 p-2 bg-slate-50 rounded-xl">
-                    <span>{{ winner.email.split('@')[0][:4] }}***</span>
-                    <span class="text-emerald-600">৳{{ winner.balance }}</span>
-                </div>
-                {% endfor %}
-            </div>
+        <div class="space-y-3" id="live-ledger">
+            <!-- Data will be injected here -->
         </div>
     </div>
 
-    <!-- ৭. সার্ভার আপটাইম (Small row) -->
-    <div class="flex justify-center items-center gap-4 py-2 opacity-60">
-        <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">System Age:</p>
-        <div class="flex gap-2 text-[10px] font-black text-navy font-mono" id="uptime">
-            <span id="days">00</span>D : <span id="hours">00</span>H : <span id="min">00</span>M
+    <!-- ৬. সিস্টেম আপটাইম ও ফুটার -->
+    <div class="text-center py-6">
+        <p class="label-caps opacity-50 mb-5">System Uptime Monitor</p>
+        <div class="flex justify-center gap-4" id="uptime-display">
+            <div class="text-center">
+                <span class="block text-xl font-black text-navy tracking-tighter" id="d">00</span>
+                <span class="text-[8px] font-bold text-slate-400 uppercase">Days</span>
+            </div>
+            <span class="text-slate-200 font-black mt-0.5">:</span>
+            <div class="text-center">
+                <span class="block text-xl font-black text-navy tracking-tighter" id="h">00</span>
+                <span class="text-[8px] font-bold text-slate-400 uppercase">Hours</span>
+            </div>
+            <span class="text-slate-200 font-black mt-0.5">:</span>
+            <div class="text-center">
+                <span class="block text-xl font-black text-navy tracking-tighter" id="m">00</span>
+                <span class="text-[8px] font-bold text-slate-400 uppercase">Mins</span>
+            </div>
         </div>
+        <p class="mt-8 text-[9px] font-mono text-slate-400 uppercase tracking-[3px]">Pay-R Quantum Ledger • Since 2025</p>
     </div>
 
 </div>
 
 <!-- স্ক্রিপ্টস -->
 <script>
-    // ব্যালেন্স হাইড
-    function toggleBalance() {
-        const text = document.getElementById('balanceText');
-        const icon = document.getElementById('eyeIcon');
-        text.classList.toggle('blur-mode');
-        icon.classList.toggle('fa-eye-slash');
-        icon.classList.toggle('fa-eye');
+    // ১. স্টিলথ মোড (Balance Hide)
+    function toggleStealth() {
+        const bal = document.getElementById('balance');
+        const ico = document.getElementById('eyeIco');
+        bal.classList.toggle('stealth-blur');
+        ico.classList.toggle('fa-eye-low-vision');
+        ico.classList.toggle('fa-eye');
     }
 
-    // লাইভ পেমেন্ট (ছোট সাইজ)
-    const feed = document.getElementById('payoutFeed');
-    function addPayout() {
-        const num = "01" + Math.floor(Math.random()*9) + "****" + Math.floor(10+Math.random()*90);
-        const amt = Math.floor(Math.random()*(500-100)+100);
-        const div = document.createElement('div');
-        div.className = "flex justify-between items-center p-2.5 bg-slate-50 rounded-xl payout-item border border-slate-100";
-        div.innerHTML = `
-            <span class="text-[10px] font-mono text-slate-500">${num}</span>
-            <span class="text-[10px] font-black text-emerald-600">+৳${amt}</span>
+    // ২. লাইভ পেমেন্ট লেজার (Realistic mock)
+    const ledger = document.getElementById('live-ledger');
+    const nodes = ['017', '019', '018', '016', '013'];
+    const systems = ['bKash', 'Nagad', 'Rocket'];
+
+    function pushTransaction() {
+        const node = nodes[Math.floor(Math.random()*nodes.length)] + "****" + Math.floor(1000+Math.random()*9000);
+        const yield = Math.floor(Math.random()*(600-100)+100);
+        const via = systems[Math.floor(Math.random()*systems.length)];
+        
+        const html = `
+            <div class="flex items-center justify-between p-3.5 bg-slate-50/50 rounded-2xl border border-slate-100 transition-all premium-reveal">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm text-slate-400">
+                        <i class="fa-solid fa-server text-[10px]"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-black text-navy font-mono tracking-wider">${node}</p>
+                        <p class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Processed via ${via}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-[11px] font-black text-emerald-600">+৳${yield}</p>
+                    <p class="text-[7px] font-bold text-emerald-300 uppercase">Verified</p>
+                </div>
+            </div>
         `;
-        feed.prepend(div);
-        if(feed.children.length > 4) feed.lastElementChild.remove();
-        setTimeout(addPayout, 5000);
+        
+        ledger.insertAdjacentHTML('afterbegin', html);
+        if(ledger.children.length > 3) ledger.lastElementChild.remove();
+        
+        setTimeout(pushTransaction, Math.random() * (12000 - 5000) + 5000);
     }
-    addPayout();
+    setTimeout(pushTransaction, 2000);
 
-    // সাইট বয়স
-    function updateUptime() {
-        const start = new Date(2025, 11, 19).getTime();
+    // ৩. আপটাইম ক্লক
+    function syncUptime() {
+        const start = new Date(2025, 11, 19).getTime(); // Dec 19, 2025
         const diff = new Date().getTime() - start;
         if(diff > 0) {
-            document.getElementById('days').innerText = Math.floor(diff / 86400000);
-            document.getElementById('hours').innerText = Math.floor((diff % 86400000) / 3600000);
-            document.getElementById('min').innerText = Math.floor((diff % 3600000) / 60000);
+            document.getElementById('d').innerText = Math.floor(diff / 86400000).toString().padStart(2, '0');
+            document.getElementById('h').innerText = Math.floor((diff % 86400000) / 3600000).toString().padStart(2, '0');
+            document.getElementById('m').innerText = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
         }
     }
-    setInterval(updateUptime, 1000);
-    updateUptime();
+    setInterval(syncUptime, 1000);
+    syncUptime();
 
-    // গ্রিটিং
-    const hr = new Date().getHours();
-    const greet = document.getElementById('greeting');
-    if(hr < 12) greet.innerText = "GOOD MORNING";
-    else if(hr < 18) greet.innerText = "GOOD AFTERNOON";
-    else greet.innerText = "GOOD EVENING";
+    // ৪. ডাইনামিক গ্রিটিং
+    const h = new Date().getHours();
+    const g = document.getElementById('greeting');
+    if(h < 12) g.innerText = "Morning Protocol";
+    else if(h < 18) g.innerText = "Afternoon Sync";
+    else g.innerText = "Evening Session";
 </script>
 
 {% endblock %}
