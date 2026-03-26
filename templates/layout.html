@@ -238,10 +238,11 @@
             <a href="/tutorial" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'tutorial' }}">
                 <i class="fa-brands fa-youtube w-5 text-center"></i> টিউটোরিয়াল
             </a>
-            
-            <a href="https://t.me/PayRsupprt" target="_blank" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-sky-50 text-slate-600 hover:text-sky-500 transition font-semibold text-sm">
-                <i class="fa-brands fa-telegram w-5 text-center text-lg"></i> লাইভ সাপোর্ট
-            </a>
+            <a href="https://wa.me/qr/B52RK6CSXGUTL1" target="_blank" 
+   class="flex items-center gap-3 p-3 rounded-2xl hover:bg-green-50 text-slate-600 hover:text-green-600 transition font-semibold text-sm">
+    <i class="fa-brands fa-whatsapp w-5 text-center text-lg"></i> লাইভ সাপোর্ট
+</a>
+
             
             {% if session.get('user_id') %}
             <div class="border-t border-slate-100 my-4"></div>
@@ -267,31 +268,32 @@
           {% endif %}
         {% endwith %}
     </div>
+<div class="fixed bottom-[95px] right-4 md:bottom-10 md:right-10 z-40 group">
+    <a href="https://wa.me/qr/B52RK6CSXGUTL1" target="_blank" class="relative block">
+        <div class="absolute right-16 top-3 bg-slate-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap shadow-lg flex items-center gap-1 font-bold border border-slate-700">
+            <span>লাইভ সাপোর্ট</span>
+            <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+        </div>
+        
+        <div class="h-14 w-14 bg-[#25D366] rounded-full flex items-center justify-center text-white text-3xl shadow-lg shadow-green-500/40 whatsapp-pulse transition transform hover:scale-110 hover:rotate-12 border-2 border-white">
+            <i class="fa-brands fa-whatsapp"></i>
+        </div>
+        
+        <div class="absolute bottom-0 right-0 h-4 w-4 bg-emerald-500 rounded-full border-2 border-white shadow-sm"></div>
+    </a>
+</div>
 
-    <!-- ================= 4. MAIN CONTENT ================= -->
-    <main class="flex-grow container mx-auto px-4 pb-32">
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- ================= 5. FLOATING TELEGRAM WIDGET ================= -->
-    <div class="fixed bottom-[95px] right-4 md:bottom-10 md:right-10 z-40 group">
-        <a href="https://t.me/PayRsupprt" target="_blank" class="relative block">
-            <!-- Tooltip -->
-            <div class="absolute right-16 top-3 bg-slate-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap shadow-lg flex items-center gap-1 font-bold border border-slate-700">
-                <span>লাইভ সাপোর্ট</span>
-                <i class="fa-solid fa-headset text-emerald-400"></i>
-            </div>
-            
-            <!-- Pulse Circle (Telegram Blue) -->
-            <div class="h-14 w-14 bg-[#2AABEE] rounded-full flex items-center justify-center text-white text-3xl shadow-lg shadow-sky-500/40 telegram-pulse transition transform hover:scale-110 hover:-rotate-12 border-2 border-white">
-                <i class="fa-brands fa-telegram" style="margin-right: 2px;"></i>
-            </div>
-            
-            <!-- Online Dot -->
-            <div class="absolute bottom-0 right-0 h-4 w-4 bg-emerald-500 rounded-full border-2 border-white shadow-sm"></div>
-        </a>
-    </div>
-
+<style>
+/* হোয়াটসঅ্যাপের জন্য পালস অ্যানিমেশন */
+@keyframes whatsapp-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+.whatsapp-pulse {
+    animation: whatsapp-pulse 2s infinite;
+}
+</style>
     <!-- ================= 6. BOTTOM NAVIGATION (Glassmorphism) ================= -->
     {% if session.get('user_id') %}
     <div class="fixed bottom-6 left-4 right-4 glass-bottom-nav z-40 rounded-[28px]">
