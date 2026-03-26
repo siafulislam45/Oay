@@ -1,1 +1,87 @@
+{% extends "layout.html" %}
+{% block content %}
 
+<style>
+    .fade-up { animation: fadeUp 0.5s ease-out forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    /* Method Cards */
+    .method-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 2px solid transparent; }
+    
+    /* Input Checked Styles */
+    input:checked + .bkash-card { border-color: #E2136E; background-color: #fdf2f8; color: #E2136E; box-shadow: 0 10px 20px -5px rgba(226, 19, 110, 0.2); }
+    input:checked + .nagad-card { border-color: #F7931A; background-color: #fff7ed; color: #F7931A; box-shadow: 0 10px 20px -5px rgba(247, 147, 26, 0.2); }
+    input:checked + .rocket-card { border-color: #8C3494; background-color: #faf5ff; color: #8C3494; box-shadow: 0 10px 20px -5px rgba(140, 52, 148, 0.2); }
+</style>
+
+<div class="max-w-md mx-auto space-y-6 fade-up pb-32 pt-6">
+
+    <!-- 1. HEADER -->
+    <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center h-20 w-20 rounded-[24px] bg-emerald-50 text-emerald-500 text-4xl shadow-sm mb-4 transform -rotate-6">
+            <i class="fa-solid fa-sliders"></i>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">পেমেন্ট সেটআপ</h2>
+        <p class="text-xs text-slate-500 font-medium mt-1">টাকা তোলার জন্য আপনার রিসিভার নাম্বার সেট করুন</p>
+    </div>
+
+    <!-- 2. SETUP FORM -->
+    <div class="clean-card p-6 md:p-8">
+        <form method="POST" action="/adm" class="space-y-6">
+            
+            <!-- Method Select -->
+            <div>
+                <label class="block text-[11px] font-black text-slate-400 mb-3 uppercase tracking-widest">Select Method</label>
+                <div class="grid grid-cols-3 gap-3">
+                    <label class="cursor-pointer group">
+                        <input type="radio" name="method" value="bKash" class="peer sr-only" {{ 'checked' if user.wallet_method == 'bKash' }}>
+                        <div class="method-card bkash-card py-4 rounded-2xl text-center bg-slate-50 text-slate-400 hover:bg-slate-100">
+                            <span class="block text-xs font-bold tracking-wide">bKash</span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer group">
+                        <input type="radio" name="method" value="Nagad" class="peer sr-only" {{ 'checked' if user.wallet_method == 'Nagad' }}>
+                        <div class="method-card nagad-card py-4 rounded-2xl text-center bg-slate-50 text-slate-400 hover:bg-slate-100">
+                            <span class="block text-xs font-bold tracking-wide">Nagad</span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer group">
+                        <input type="radio" name="method" value="Rocket" class="peer sr-only" {{ 'checked' if user.wallet_method == 'Rocket' }}>
+                        <div class="method-card rocket-card py-4 rounded-2xl text-center bg-slate-50 text-slate-400 hover:bg-slate-100">
+                            <span class="block text-xs font-bold tracking-wide">Rocket</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Number Input -->
+            <div>
+                <label class="block text-[11px] font-black text-slate-400 mb-2 uppercase tracking-widest">Wallet Number</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-300 group-focus-within:text-emerald-500 transition-colors">
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                    <input type="number" name="number" required placeholder="017xxxxxxxx" value="{{ user.wallet_number or '' }}"
+                           class="w-full pl-11 p-4 border border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 bg-slate-50 focus:bg-white transition text-lg font-bold text-slate-800 tracking-wider font-mono shadow-inner">
+                </div>
+                
+                <!-- Security Note -->
+                <div class="mt-4 flex gap-3 p-3 rounded-xl bg-orange-50 border border-orange-100 items-start">
+                    <i class="fa-solid fa-shield-halved text-orange-500 mt-0.5"></i>
+                    <p class="text-[10px] text-orange-700 font-medium leading-relaxed">
+                        <b>সতর্কবার্তা:</b> নাম্বারটি ভালো করে চেক করে সেভ করুন। ভুল নাম্বারে টাকা গেলে আমরা দায়ী থাকব না।
+                    </p>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-emerald w-full text-white py-4 rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2 mt-4 text-sm tracking-wide">
+                <span>Save Settings</span>
+                <i class="fa-solid fa-check-circle"></i>
+            </button>
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}
