@@ -10,7 +10,7 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+    <link rel="apple-touch-icon" href="https://i.ibb.co.com/Ngmr6bCY/images.png">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -58,7 +58,7 @@
 
         /* --- GLASSMORPHISM UI --- */
         .glass-nav {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border-bottom: 1px solid rgba(15, 23, 42, 0.05);
@@ -105,7 +105,6 @@
         .sidebar-open { transform: translateX(0) !important; }
         .sidebar-closed { transform: translateX(-100%); }
 
-        .tracking-micro { letter-spacing: 0.15em; }
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -119,32 +118,46 @@
 
     <!-- ================= 1. TOP NAVBAR ================= -->
     <nav class="glass-nav fixed top-0 w-full z-40 transition-all duration-300">
-        <div class="container mx-auto px-5 h-16 flex justify-between items-center">
+        <div class="container mx-auto px-4 sm:px-5 h-16 flex justify-between items-center">
             
+            <!-- Hamburger Toggle -->
             <button onclick="toggleSidebar()" class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-100 transition text-[#0F172A]">
                 <i class="fa-solid fa-bars-staggered text-lg"></i>
             </button>
 
+            <!-- Logo -->
             <a href="/" class="flex items-center gap-2 group absolute left-1/2 transform -translate-x-1/2">
-                <div class="bg-[#0F172A] text-white h-8 w-8 flex items-center justify-center rounded-xl shadow-lg">
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white h-8 w-8 flex items-center justify-center rounded-xl shadow-lg shadow-emerald-500/30">
                     <i class="fa-solid fa-bolt text-sm"></i>
                 </div>
-                <span class="text-xl font-black tracking-tight text-[#0F172A]">Pay<span class="text-[#10B981]">R</span></span>
+                <span class="text-xl font-black tracking-tight text-slate-900">Pay<span class="text-emerald-500">R</span></span>
             </a>
 
-            <a href="/notice" class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-100 transition text-slate-500 relative">
-                <i class="fa-regular fa-bell text-lg"></i>
-                {% if settings and settings.notice_text %}
-                <span class="absolute top-2.5 right-2.5 h-2 w-2 bg-emerald-500 rounded-full border border-white animate-pulse"></span>
-                {% endif %}
-            </a>
+            <!-- Right Actions -->
+            <div class="flex items-center gap-2">
+                <!-- App Install Button (Always Visible) -->
+                <button id="navInstallBtn" onclick="triggerInstall()" class="hidden sm:flex items-center gap-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm hover:bg-emerald-500 hover:text-white transition">
+                    <i class="fa-solid fa-download"></i> <span>Install App</span>
+                </button>
+                <button onclick="triggerInstall()" class="sm:hidden h-8 w-8 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-xs shadow-sm">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+
+                <!-- Notification -->
+                <a href="/notice" class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-100 transition text-slate-500 relative">
+                    <i class="fa-regular fa-bell text-lg"></i>
+                    {% if settings and settings.notice_text %}
+                    <span class="absolute top-2.5 right-2.5 h-2 w-2 bg-red-500 rounded-full border border-white animate-pulse"></span>
+                    {% endif %}
+                </a>
+            </div>
         </div>
     </nav>
 
     <div class="h-16"></div> <!-- Spacer -->
 
     <!-- ================= 2. SIDEBAR MENU ================= -->
-    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
     
     <div id="sidebar" class="fixed top-0 left-0 h-full w-[280px] bg-white/95 backdrop-blur-3xl z-[60] sidebar-closed flex flex-col shadow-2xl border-r border-slate-100">
         
@@ -177,7 +190,7 @@
         <!-- Menu Links -->
         <div class="flex-grow overflow-y-auto p-4 space-y-1 pb-24">
             
-            <p class="text-[9px] font-black text-slate-400 tracking-micro px-3 mb-2 mt-2 uppercase">Platform</p>
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-3 mb-1 mt-2">Platform</p>
             <a href="/dashboard" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'dashboard' }}">
                 <i class="fa-solid fa-grid-2 w-5 text-center"></i> ড্যাশবোর্ড
             </a>
@@ -192,18 +205,18 @@
                 <i class="fa-solid fa-crown w-5 text-center text-yellow-500"></i> এলিট মেম্বারশিপ
             </a>
 
-            <p class="text-[9px] font-black text-slate-400 tracking-micro px-3 mb-2 mt-4 uppercase">Finance</p>
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-3 mb-1 mt-4">Finance & Records</p>
             <a href="/withdraw" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'withdraw' }}">
                 <i class="fa-solid fa-arrow-right-arrow-left w-5 text-center"></i> ফান্ড উইথড্র
             </a>
             <a href="/history" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'history' }}">
-                <i class="fa-solid fa-receipt w-5 text-center"></i> ট্রানজেকশন
+                <i class="fa-solid fa-clock-rotate-left w-5 text-center"></i> ট্রানজেকশন
             </a>
             <a href="/proofs" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'proofs' }}">
-                <i class="fa-solid fa-image w-5 text-center"></i> পেমেন্ট প্রুফ
+                <i class="fa-solid fa-receipt w-5 text-center"></i> পেমেন্ট প্রুফ
             </a>
 
-            <p class="text-[9px] font-black text-slate-400 tracking-micro px-3 mb-2 mt-4 uppercase">Account & Support</p>
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-3 mb-1 mt-4">Support & Config</p>
             <a href="/account" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'account' }}">
                 <i class="fa-solid fa-user-gear w-5 text-center"></i> প্রোফাইল সেটিংস
             </a>
@@ -213,14 +226,14 @@
             <a href="/tutorial" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'tutorial' }}">
                 <i class="fa-brands fa-youtube w-5 text-center"></i> টিউটোরিয়াল
             </a>
-            <a href="https://wa.me/qr/B52RK6CSXGUTL1" target="_blank" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-green-50 text-slate-600 hover:text-green-600 transition font-semibold text-sm">
+            <a href="https://wa.me/qr/B52RK6CSXGUTL1" target="_blank" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-emerald-50 text-emerald-600 transition font-semibold text-sm">
                 <i class="fa-brands fa-whatsapp w-5 text-center text-lg"></i> লাইভ সাপোর্ট
             </a>
             
             <!-- Admin / Staff Menu -->
             {% if user and user.role == 'admin' %}
             <div class="border-t border-slate-100 my-4"></div>
-            <p class="text-[9px] font-black text-slate-400 tracking-micro px-3 mb-2 uppercase">Administration</p>
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-3 mb-2">Administration</p>
             <a href="/admin" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-900 text-white hover:bg-slate-800 transition font-semibold text-sm shadow-md">
                 <i class="fa-solid fa-user-shield w-5 text-center"></i> এডমিন প্যানেল
             </a>
@@ -229,13 +242,13 @@
             {% if user and (user.role == 'admin' or user.email == 'fatemaaktersamiya2@gmail.com') %}
             <a href="/aw/newbie-check" class="flex items-center gap-3 p-3 rounded-2xl bg-orange-50 text-orange-600 hover:bg-orange-100 transition font-semibold text-sm mt-2">
                 <i class="fa-solid fa-user-graduate w-5 text-center text-lg"></i> 
-                <span>Newbie Check <span class="bg-red-500 text-white text-[8px] px-1.5 rounded ml-1 font-black tracking-widest uppercase">Hot</span></span>
+                <span>Newbie Check <span class="bg-red-500 text-white text-[8px] px-1.5 rounded ml-1 font-black uppercase tracking-widest">Hot</span></span>
             </a>
             {% endif %}
 
             {% if session.get('user_id') %}
             <div class="border-t border-slate-100 my-4"></div>
-            <a href="/logout" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-red-50 text-slate-600 hover:text-red-500 transition font-semibold text-sm">
+            <a href="/logout" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-rose-50 text-slate-600 hover:text-rose-500 transition font-semibold text-sm">
                 <i class="fa-solid fa-power-off w-5 text-center"></i> লগ আউট
             </a>
             {% endif %}
@@ -247,8 +260,8 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
-              <div class="bg-white/80 backdrop-blur-md p-4 mb-3 rounded-2xl shadow-lg border border-slate-100 fade-in flex items-center gap-3">
-                <div class="h-8 w-8 rounded-full flex items-center justify-center {{ 'bg-red-100 text-red-600' if category == 'error' else 'bg-emerald-100 text-emerald-600' }}">
+              <div class="bg-white/90 backdrop-blur-md p-4 mb-3 rounded-2xl shadow-lg border border-slate-100 fade-in flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full flex items-center justify-center {{ 'bg-rose-100 text-rose-600' if category == 'error' else 'bg-emerald-100 text-emerald-600' }}">
                     <i class="fa-solid {{ 'fa-xmark' if category == 'error' else 'fa-check' }}"></i>
                 </div>
                 <span class="font-semibold text-sm text-slate-700">{{ message }}</span>
@@ -258,45 +271,61 @@
         {% endwith %}
     </div>
 
-    <!-- ================= 4. MAIN CONTENT ================= -->
+    <!-- ================= 4. EMERGENCY POPUP (Daily 3 Times) ================= -->
+    <div id="emergencyPopup" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closePopup()"></div>
+        <div class="relative bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl text-center overflow-hidden transform scale-95 transition-all duration-300" id="popupCard">
+            <div class="mx-auto h-20 w-20 bg-rose-100 rounded-full flex items-center justify-center mb-5 animate-bounce shadow-inner border border-rose-200">
+                <i class="fa-solid fa-triangle-exclamation text-4xl text-rose-500"></i>
+            </div>
+            <h2 class="text-2xl font-black text-rose-600 mb-2 tracking-tight">ইমারজেন্সি নোটিশ!</h2>
+            <div class="text-slate-600 text-sm mb-6 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 font-medium">
+                "দেখুন তাড়াতাড়ি, মিয়া আপনার অবস্থা যে এতটা খারাপ হতে পারে?" 😳
+            </div>
+            <div class="space-y-3">
+                <a href="/notice" onclick="closePopup()" class="block w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg hover:scale-[1.02] transition">
+                    নোটিশটি পড়ুন <i class="fa-solid fa-arrow-right ml-1"></i>
+                </a>
+                <button onclick="closePopup()" class="text-xs text-slate-400 font-bold hover:text-slate-600 transition w-full py-2">
+                    এখন না (Close)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 5. MAIN CONTENT ================= -->
     <main class="flex-grow container mx-auto px-4 pb-32">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- ================= 5. FLOATING WHATSAPP WIDGET ================= -->
-    <!-- Added z-40 and fixed bottom-24 so it hovers above the bottom nav -->
+    <!-- ================= 6. FLOATING WHATSAPP WIDGET ================= -->
     <div class="fixed bottom-[95px] right-4 md:bottom-10 md:right-10 z-40 group">
         <a href="https://wa.me/qr/B52RK6CSXGUTL1" target="_blank" class="relative block">
-            <!-- Tooltip -->
-            <div class="absolute right-16 top-3 bg-slate-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap shadow-lg flex items-center gap-1 font-bold">
+            <div class="absolute right-16 top-3 bg-slate-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap shadow-lg flex items-center gap-1 font-bold border border-slate-700">
                 <span>লাইভ সাপোর্ট</span>
                 <i class="fa-solid fa-headset text-emerald-400"></i>
             </div>
-            
-            <!-- Pulse Circle (WhatsApp Green) -->
             <div class="h-14 w-14 bg-[#25D366] rounded-full flex items-center justify-center text-white text-3xl shadow-lg shadow-green-500/40 whatsapp-pulse transition transform hover:scale-110 hover:-rotate-12 border-2 border-white">
                 <i class="fa-brands fa-whatsapp"></i>
             </div>
-            
-            <!-- Online Dot -->
             <div class="absolute bottom-1 right-0 h-4 w-4 bg-emerald-400 rounded-full border-2 border-white shadow-sm"></div>
         </a>
     </div>
 
-    <!-- ================= 6. BOTTOM NAVIGATION (Glass) ================= -->
+    <!-- ================= 7. BOTTOM NAVIGATION ================= -->
     {% if session.get('user_id') %}
-    <div class="fixed bottom-6 left-4 right-4 glass-bottom-nav z-40 rounded-[28px]">
+    <div class="fixed bottom-6 left-4 right-4 glass-bottom-nav z-40 pb-safe rounded-[32px]">
         <div class="flex justify-between items-center px-4 h-[70px]">
             
             <a href="/dashboard" class="flex flex-col items-center justify-center w-12 group">
-                <i class="fa-solid fa-house text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md -translate-y-1' if request.endpoint == 'dashboard' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
+                <i class="fa-solid fa-layer-group text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md -translate-y-1' if request.endpoint == 'dashboard' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
             </a>
 
             <a href="/history" class="flex flex-col items-center justify-center w-12 group">
                 <i class="fa-solid fa-clock-rotate-left text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md -translate-y-1' if request.endpoint == 'history' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
             </a>
 
-            <!-- Action Button -->
+            <!-- Center Action Button -->
             <div class="relative -top-6">
                 <a href="/tasks" class="h-16 w-16 rounded-[22px] btn-emerald flex items-center justify-center text-white text-2xl border-[3px] border-[#F8FAFC]">
                     <i class="fa-solid fa-bolt"></i>
@@ -317,42 +346,76 @@
 
     <!-- ================= SCRIPTS ================= -->
     <script>
-        // PWA Service Worker Registration
+        // 1. PWA Setup
+        let deferredPrompt = null;
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(reg => {
-                    console.log('Service Worker Registered');
-                }).catch(err => {
-                    console.log('Service Worker Failed', err);
-                });
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js'); });
+        }
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+        function triggerInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => { deferredPrompt = null; });
+            } else {
+                alert("অ্যাপটি ইনস্টল করার অপশন সাপোর্টেড নয় অথবা আগেই ইনস্টল করা আছে। (Chrome ব্যবহার করুন)");
+            }
         }
 
-        // Sidebar Logic
+        // 2. Sidebar Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-
         function toggleSidebar() {
             if (sidebar.style.transform === 'translateX(0px)') {
-                // Close
                 sidebar.style.transform = 'translateX(-100%)';
                 overlay.classList.add('opacity-0');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
             } else {
-                // Open
                 sidebar.style.transform = 'translateX(0px)';
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.remove('opacity-0'), 10);
             }
         }
-        
-        // Auto Hide Flash Message
+
+        // 3. Flash Message Auto Hide
         setTimeout(() => {
             document.querySelectorAll('.flash-msg').forEach(alert => {
                 alert.style.opacity = '0';
                 setTimeout(() => alert.remove(), 500);
             });
         }, 3500);
+
+        // 4. Emergency Popup Logic (Daily 3 Times)
+        document.addEventListener("DOMContentLoaded", () => {
+            const popup = document.getElementById('emergencyPopup');
+            const card = document.getElementById('popupCard');
+            const today = new Date().toISOString().split('T')[0];
+            let storageData = JSON.parse(localStorage.getItem('payr_popup_data')) || {};
+
+            if (storageData.date !== today) { storageData = { date: today, count: 0 }; }
+
+            if (storageData.count < 3) {
+                setTimeout(() => {
+                    popup.classList.remove('hidden');
+                    card.classList.remove('scale-95');
+                    card.classList.add('scale-100');
+                }, 2000);
+            }
+        });
+
+        function closePopup() {
+            const popup = document.getElementById('emergencyPopup');
+            popup.classList.add('hidden');
+            
+            let storageData = JSON.parse(localStorage.getItem('payr_popup_data')) || {};
+            const today = new Date().toISOString().split('T')[0];
+            if (storageData.date !== today) { storageData = { date: today, count: 0 }; }
+
+            storageData.count += 1;
+            localStorage.setItem('payr_popup_data', JSON.stringify(storageData));
+        }
     </script>
 </body>
 </html>
