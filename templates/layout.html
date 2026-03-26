@@ -271,27 +271,7 @@
         {% endwith %}
     </div>
 
-    <!-- ================= 4. EMERGENCY POPUP (Daily 3 Times) ================= -->
-    <div id="emergencyPopup" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closePopup()"></div>
-        <div class="relative bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl text-center overflow-hidden transform scale-95 transition-all duration-300" id="popupCard">
-            <div class="mx-auto h-20 w-20 bg-rose-100 rounded-full flex items-center justify-center mb-5 animate-bounce shadow-inner border border-rose-200">
-                <i class="fa-solid fa-triangle-exclamation text-4xl text-rose-500"></i>
-            </div>
-            <h2 class="text-2xl font-black text-rose-600 mb-2 tracking-tight">ইমারজেন্সি নোটিশ!</h2>
-            <div class="text-slate-600 text-sm mb-6 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 font-medium">
-                "দেখুন তাড়াতাড়ি, মিয়া আপনার অবস্থা যে এতটা খারাপ হতে পারে?" 😳
-            </div>
-            <div class="space-y-3">
-                <a href="/notice" onclick="closePopup()" class="block w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg hover:scale-[1.02] transition">
-                    নোটিশটি পড়ুন <i class="fa-solid fa-arrow-right ml-1"></i>
-                </a>
-                <button onclick="closePopup()" class="text-xs text-slate-400 font-bold hover:text-slate-600 transition w-full py-2">
-                    এখন না (Close)
-                </button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- ================= 5. MAIN CONTENT ================= -->
     <main class="flex-grow container mx-auto px-4 pb-32">
@@ -387,35 +367,7 @@
             });
         }, 3500);
 
-        // 4. Emergency Popup Logic (Daily 3 Times)
-        document.addEventListener("DOMContentLoaded", () => {
-            const popup = document.getElementById('emergencyPopup');
-            const card = document.getElementById('popupCard');
-            const today = new Date().toISOString().split('T')[0];
-            let storageData = JSON.parse(localStorage.getItem('payr_popup_data')) || {};
-
-            if (storageData.date !== today) { storageData = { date: today, count: 0 }; }
-
-            if (storageData.count < 3) {
-                setTimeout(() => {
-                    popup.classList.remove('hidden');
-                    card.classList.remove('scale-95');
-                    card.classList.add('scale-100');
-                }, 2000);
-            }
-        });
-
-        function closePopup() {
-            const popup = document.getElementById('emergencyPopup');
-            popup.classList.add('hidden');
-            
-            let storageData = JSON.parse(localStorage.getItem('payr_popup_data')) || {};
-            const today = new Date().toISOString().split('T')[0];
-            if (storageData.date !== today) { storageData = { date: today, count: 0 }; }
-
-            storageData.count += 1;
-            localStorage.setItem('payr_popup_data', JSON.stringify(storageData));
-        }
+    
     </script>
 </body>
 </html>
