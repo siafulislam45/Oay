@@ -3,281 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#10b981">
-    <title>Pay-R | Next-Gen Earning</title>
+    <meta name="theme-color" content="#10B981">
+    <title>Pay-R | Premium Earning Platform</title>
     
-    <!-- Fonts: Inter for Geometric Sans-serif -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Pro Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
+    <!-- Google Fonts (Inter for Fintech Look) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Custom Fintech Styles -->
     <style>
         :root {
-            --bg-base: #f8fafc;
-            --emerald: #10b981;
-            --teal: #14b8a6;
-            --navy: #0f172a;
-            --slate-muted: #64748b;
+            --emerald: #10B981;
+            --teal: #14B8A6;
+            --slate-dark: #0F172A;
+            --slate-muted: #64748B;
+            --bg-light: #F8FAFC;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-base);
-            color: var(--navy);
-            overflow-x: hidden;
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-light);
+            color: var(--slate-dark);
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
-        /* --- Animated Mesh Gradient Background --- */
+        /* --- ANIMATED MESH GRADIENT BACKGROUND --- */
         .mesh-bg {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1;
-            background-color: var(--bg-base);
+            background-color: #F8FAFC;
             overflow: hidden;
         }
+        .orb-1 { position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw; background: #10B981; filter: blur(120px); opacity: 0.15; animation: float 20s infinite alternate ease-in-out; }
+        .orb-2 { position: absolute; bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: #14B8A6; filter: blur(130px); opacity: 0.15; animation: float 25s infinite alternate-reverse ease-in-out; }
+        .orb-3 { position: absolute; top: 40%; left: 60%; width: 40vw; height: 40vw; background: #BAE6FD; filter: blur(100px); opacity: 0.3; animation: float 18s infinite alternate ease-in-out; }
 
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
-            animation: move 20s infinite alternate;
-        }
-        .orb-1 { width: 400px; height: 400px; background: #10b981; top: -10%; left: -10%; }
-        .orb-2 { width: 500px; height: 500px; background: #14b8a6; bottom: -10%; right: -5%; animation-delay: -5s; }
-        .orb-3 { width: 300px; height: 300px; background: #60a5fa; top: 30%; left: 50%; animation-delay: -10s; }
-
-        @keyframes move {
-            from { transform: translate(0, 0) scale(1); }
-            to { transform: translate(100px, 100px) scale(1.1); }
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 50px) scale(1.1); }
         }
 
-        /* --- Glassmorphism UI --- */
+        /* --- UI COMPONENTS --- */
         .glass-nav {
             background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+        }
+        
+        .glass-bottom-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
         }
 
         .clean-card {
-            background: #ffffff;
+            background: #FFFFFF;
             border-radius: 24px;
             border: 1px solid rgba(15, 23, 42, 0.05);
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .clean-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.15);
+            border-color: rgba(20, 184, 166, 0.2);
         }
 
-        /* --- Massive Typography --- */
-        .heading-massive {
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            line-height: 0.9;
-        }
-        .micro-label {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--slate-muted);
-        }
-
-        /* --- Shimmer Button --- */
+        /* Buttons with Glossy Inner Shadow & Shimmer */
         .btn-emerald {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 10px 20px -5px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 8px 16px rgba(16, 185, 129, 0.25);
             position: relative;
             overflow: hidden;
+            border: none;
+            transition: all 0.3s ease;
         }
         .btn-emerald::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -150%; width: 50%; height: 200%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(25deg);
-            animation: shimmer 4s infinite;
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-25deg); animation: btnShimmer 3s infinite;
         }
-        @keyframes shimmer { 100% { left: 250%; } }
+        @keyframes btnShimmer { 100% { left: 200%; } }
+        .btn-emerald:active { transform: scale(0.96); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
 
-        /* --- Floating Elements --- */
-        .float-1 { animation: float 6s infinite ease-in-out; }
-        .float-2 { animation: float 8s infinite ease-in-out reverse; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        /* Typography Gradients */
+        .text-gradient {
+            background: linear-gradient(to right, #0F172A, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Watermark inside cards */
-        .card-watermark {
-            position: absolute;
-            bottom: -10px; right: 5px;
-            font-size: 80px; font-weight: 900;
-            color: rgba(15, 23, 42, 0.02);
-            pointer-events: none;
-        }
-
-        /* Sidebar Transition */
-        #sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .sidebar-open { transform: translateX(0) !important; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        /* Utilities */
+        .tracking-micro { letter-spacing: 0.15em; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen">
 
-    <!-- Animated Mesh Orbs -->
+    <!-- Background Mesh -->
     <div class="mesh-bg">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+        <div class="orb-1"></div><div class="orb-2"></div><div class="orb-3"></div>
     </div>
 
-    <!-- ================= NAVBAR ================= -->
-    <nav class="glass-nav fixed top-0 w-full z-50 h-20 flex items-center">
-        <div class="container mx-auto px-6 flex justify-between items-center">
+    <!-- ================= TOP NAVBAR ================= -->
+    <nav class="glass-nav fixed top-0 w-full z-40 transition-all duration-300">
+        <div class="container mx-auto px-5 h-16 flex justify-between items-center">
             
-            <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100/50 hover:bg-emerald-50 transition-colors">
-                <i class="fa-solid fa-bars-staggered text-navy"></i>
+            <button onclick="toggleSidebar()" class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-100 transition text-[#0F172A]">
+                <i class="fa-solid fa-bars-staggered text-lg"></i>
             </button>
 
-            <a href="/" class="flex items-center gap-2 group">
-                <div class="w-9 h-9 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-                    <i class="fa-solid fa-bolt-lightning text-white text-sm"></i>
+            <a href="/" class="flex items-center gap-2 group absolute left-1/2 transform -translate-x-1/2">
+                <div class="bg-[#0F172A] text-white h-8 w-8 flex items-center justify-center rounded-xl shadow-lg">
+                    <i class="fa-solid fa-bolt"></i>
                 </div>
-                <span class="text-xl font-black tracking-tighter uppercase text-navy">Pay<span class="text-emerald-500">-R</span></span>
+                <span class="text-xl font-black tracking-tight text-[#0F172A]">Pay<span class="text-[#10B981]">R</span></span>
             </a>
 
-            <div class="flex items-center gap-3">
-                <a href="/notice" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100/50 relative hover:bg-emerald-50 transition-colors">
-                    <i class="fa-regular fa-bell text-lg"></i>
-                    <span class="absolute top-2.5 right-3 h-2 w-2 bg-emerald-500 rounded-full border-2 border-white"></span>
-                </a>
-            </div>
+            <a href="/notice" class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-100 transition text-slate-500 relative">
+                <i class="fa-regular fa-bell text-lg"></i>
+                {% if settings and settings.notice_text %}
+                <span class="absolute top-2.5 right-2.5 h-2 w-2 bg-emerald-500 rounded-full border border-white animate-pulse"></span>
+                {% endif %}
+            </a>
         </div>
     </nav>
 
+    <div class="h-16"></div> <!-- Spacer -->
+
     <!-- ================= SIDEBAR ================= -->
-    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-navy/20 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
     
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-80 bg-white/90 backdrop-blur-2xl z-[70] -translate-x-full border-r border-slate-100 flex flex-col shadow-2xl">
-        <div class="p-8 pb-4">
-            <p class="micro-label mb-2">Authenticated User</p>
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-[280px] bg-white/95 backdrop-blur-3xl z-[60] -translate-x-full transition-transform duration-400 ease-out flex flex-col shadow-2xl border-r border-slate-100">
+        
+        <!-- Header -->
+        <div class="p-6 pt-10 border-b border-slate-100">
             {% if session.get('user_id') %}
-            <div class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <div class="h-12 w-12 rounded-xl bg-emerald-500 flex items-center justify-center text-white font-black shadow-lg">
-                    {{ session.get('email', 'U')[0] | upper }}
+                <div class="flex items-center gap-4">
+                    <div class="h-12 w-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xl font-black">
+                        {{ session.get('email', 'U')[0] | upper }}
+                    </div>
+                    <div>
+                        <p class="font-black text-sm text-slate-900 leading-tight truncate w-32">
+                            {{ session.get('email', 'User').split('@')[0] }}
+                        </p>
+                        <p class="text-[10px] text-slate-500 font-mono font-semibold tracking-wider mt-1">UID: {{ user.referral_code if user else '0000' }}</p>
+                    </div>
                 </div>
-                <div class="overflow-hidden">
-                    <p class="font-bold text-navy truncate">{{ session.get('email', 'User').split('@')[0] }}</p>
-                    <p class="text-[10px] text-emerald-600 font-black uppercase tracking-widest">Premium Node</p>
-                </div>
-            </div>
+            {% else %}
+                <h2 class="text-xl font-black text-slate-900">Welcome Guest</h2>
+                <a href="/login" class="text-emerald-600 font-semibold text-xs">Login to continue</a>
             {% endif %}
         </div>
 
-        <nav class="flex-grow p-6 space-y-2 overflow-y-auto">
-            <p class="micro-label px-4 mb-4">Core Modules</p>
-            <a href="/dashboard" class="flex items-center gap-4 px-6 py-4 rounded-2xl text-navy hover:bg-emerald-50 hover:text-emerald-600 transition-all font-semibold">
-                <i class="fa-solid fa-grid-2 text-lg"></i> ড্যাশবোর্ড
+        <!-- Menu Links -->
+        <div class="flex-grow overflow-y-auto p-4 space-y-1">
+            <p class="text-[9px] font-black text-slate-400 tracking-micro px-3 mb-2 mt-2">Platform</p>
+            <a href="/dashboard" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
+                <i class="fa-solid fa-grid-2 w-5 text-center"></i> ড্যাশবোর্ড
             </a>
-            <a href="/tasks" class="flex items-center gap-4 px-6 py-4 rounded-2xl text-navy hover:bg-emerald-50 hover:text-emerald-600 transition-all font-semibold">
-                <i class="fa-solid fa-circle-play text-lg"></i> মাইক্রো-টাস্ক
+            <a href="/tasks" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
+                <i class="fa-solid fa-bolt w-5 text-center"></i> মাইক্রো টাস্ক
             </a>
-            <a href="/withdraw" class="flex items-center gap-4 px-6 py-4 rounded-2xl text-navy hover:bg-emerald-50 hover:text-emerald-600 transition-all font-semibold">
-                <i class="fa-solid fa-wallet text-lg"></i> টাকা উত্তোলন
+            <a href="/vip" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
+                <i class="fa-solid fa-crown w-5 text-center"></i> এলিট মেম্বারশিপ
             </a>
-            <a href="/vip" class="flex items-center gap-4 px-6 py-4 rounded-2xl text-navy hover:bg-emerald-50 hover:text-emerald-600 transition-all font-semibold">
-                <i class="fa-solid fa-gem text-lg"></i> এলিট মেম্বারশিপ
-            </a>
-            
-            <div class="h-px bg-slate-100 my-4 mx-4"></div>
-            
-            <a href="https://t.me/PayRsupprt" target="_blank" class="flex items-center gap-4 px-6 py-4 rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-200 transition-all font-bold">
-                <i class="fa-brands fa-telegram text-xl"></i> লাইভ সাপোর্ট
-            </a>
-        </nav>
 
-        <div class="p-8 border-t border-slate-100">
-            <a href="/logout" class="flex items-center gap-4 text-slate-400 hover:text-rose-500 transition-colors font-bold text-sm uppercase tracking-widest">
-                <i class="fa-solid fa-power-off"></i> সেশন আউট
+            <p class="text-[9px] font-black text-slate-400 tracking-micro px-3 mb-2 mt-4">Finance</p>
+            <a href="/withdraw" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
+                <i class="fa-solid fa-arrow-right-arrow-left w-5 text-center"></i> ফান্ড উইথড্র
             </a>
+            <a href="/history" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
+                <i class="fa-solid fa-receipt w-5 text-center"></i> ট্রানজেকশন
+            </a>
+
+            <p class="text-[9px] font-bold text-slate-400 tracking-micro px-3 mb-2 mt-4">Support</p>
+            <a href="https://wa.me/8801894577178" target="_blank" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-emerald-50 text-emerald-600 transition font-semibold text-sm">
+                <i class="fa-brands fa-whatsapp w-5 text-center text-lg"></i> লাইভ চ্যাট
+            </a>
+            
+            {% if session.get('user_id') %}
+            <a href="/logout" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-red-50 text-red-500 transition mt-4 font-semibold text-sm">
+                <i class="fa-solid fa-power-off w-5 text-center"></i> লগ আউট
+            </a>
+            {% endif %}
         </div>
-    </aside>
+    </div>
 
-    <div class="h-20"></div>
-
-    <!-- ================= MAIN CONTENT ================= -->
-    <main class="container mx-auto px-6 py-8">
+    <!-- FLASH MSG -->
+    <div class="container mx-auto px-4 mt-2 relative z-30">
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
-              <div class="mb-6 p-4 rounded-2xl glass-nav border-l-4 {{ 'border-emerald-500' if category != 'error' else 'border-rose-500' }} animate-bounce">
-                <p class="text-sm font-bold {{ 'text-emerald-700' if category != 'error' else 'text-rose-700' }}">{{ message }}</p>
+              <div class="bg-white/80 backdrop-blur-md p-4 mb-3 rounded-2xl shadow-lg border border-slate-100 fade-in flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full flex items-center justify-center {{ 'bg-red-100 text-red-600' if category == 'error' else 'bg-emerald-100 text-emerald-600' }}">
+                    <i class="fa-solid {{ 'fa-xmark' if category == 'error' else 'fa-check' }}"></i>
+                </div>
+                <span class="font-semibold text-sm text-slate-700">{{ message }}</span>
               </div>
             {% endfor %}
           {% endif %}
         {% endwith %}
+    </div>
 
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow container mx-auto px-4 pb-32">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- ================= BOTTOM NAVIGATION (Mobile Only) ================= -->
-    <div class="md:hidden fixed bottom-0 left-0 w-full glass-nav px-6 pb-8 pt-4 z-50 rounded-t-[30px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-        <div class="flex justify-between items-center">
-            <a href="/dashboard" class="flex flex-col items-center gap-1 {{ 'text-emerald-500' if request.endpoint == 'dashboard' else 'text-slate-400' }}">
-                <i class="fa-solid fa-house-chimney text-xl"></i>
-                <span class="text-[9px] font-black uppercase tracking-tighter">Home</span>
-            </a>
-            <a href="/tasks" class="flex flex-col items-center gap-1 {{ 'text-emerald-500' if request.endpoint == 'tasks' else 'text-slate-400' }}">
-                <i class="fa-solid fa-rocket text-xl"></i>
-                <span class="text-[9px] font-black uppercase tracking-tighter">Missions</span>
-            </a>
+    <!-- ================= BOTTOM NAVIGATION (Floating Glass) ================= -->
+    {% if session.get('user_id') %}
+    <div class="fixed bottom-6 left-4 right-4 glass-bottom-nav z-40 rounded-[28px]">
+        <div class="flex justify-between items-center px-4 h-[70px]">
             
-            <!-- Center Floating Button -->
-            <div class="relative -top-8">
-                <a href="/vip" class="w-16 h-16 btn-emerald rounded-full flex items-center justify-center shadow-2xl border-4 border-white">
-                    <i class="fa-solid fa-crown text-2xl"></i>
+            <a href="/dashboard" class="flex flex-col items-center justify-center w-12 group">
+                <i class="fa-solid fa-layer-group text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md' if request.endpoint == 'dashboard' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
+            </a>
+
+            <a href="/history" class="flex flex-col items-center justify-center w-12 group">
+                <i class="fa-solid fa-clock-rotate-left text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md' if request.endpoint == 'history' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
+            </a>
+
+            <!-- Action Button -->
+            <div class="relative -top-6">
+                <a href="/tasks" class="h-16 w-16 rounded-[22px] btn-emerald flex items-center justify-center text-white text-2xl border-[3px] border-[#F8FAFC]">
+                    <i class="fa-solid fa-bolt"></i>
                 </a>
             </div>
 
-            <a href="/withdraw" class="flex flex-col items-center gap-1 {{ 'text-emerald-500' if request.endpoint == 'withdraw' else 'text-slate-400' }}">
-                <i class="fa-solid fa-wallet text-xl"></i>
-                <span class="text-[9px] font-black uppercase tracking-tighter">Payout</span>
+            <a href="/withdraw" class="flex flex-col items-center justify-center w-12 group">
+                <i class="fa-solid fa-arrow-right-arrow-left text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md' if request.endpoint == 'withdraw' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
             </a>
-            <button onclick="toggleSidebar()" class="flex flex-col items-center gap-1 text-slate-400">
-                <i class="fa-solid fa-user-astronaut text-xl"></i>
-                <span class="text-[9px] font-black uppercase tracking-tighter">Profile</span>
-            </button>
+
+            <a href="/account" class="flex flex-col items-center justify-center w-12 group">
+                <i class="fa-regular fa-user text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md' if request.endpoint == 'account' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
+            </a>
+
         </div>
     </div>
+    {% endif %}
 
     <!-- Scripts -->
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const isOpen = sidebar.classList.contains('sidebar-open');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
 
-            if (!isOpen) {
-                sidebar.classList.add('sidebar-open');
-                overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.add('opacity-100'), 10);
-            } else {
-                sidebar.classList.remove('sidebar-open');
-                overlay.classList.remove('opacity-100');
+        function toggleSidebar() {
+            if (sidebar.style.transform === 'translateX(0px)') {
+                sidebar.style.transform = 'translateX(-100%)';
+                overlay.classList.add('opacity-0');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
+            } else {
+                sidebar.style.transform = 'translateX(0px)';
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
             }
         }
+        
+        setTimeout(() => {
+            document.querySelectorAll('.flash-msg').forEach(alert => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 3500);
     </script>
 </body>
 </html>
