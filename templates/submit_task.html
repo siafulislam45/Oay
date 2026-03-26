@@ -2,171 +2,165 @@
 {% block content %}
 
 <style>
-    /* AI Page Reveal */
-    .submit-reveal { animation: revealIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Premium AI Card */
-    .ai-card {
-        background: rgba(15, 23, 42, 0.7);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(139, 92, 246, 0.15);
-        border-radius: 32px;
-    }
-
-    /* Step Indicators */
-    .step-badge {
-        background: rgba(139, 92, 246, 0.1);
-        color: #a78bfa;
-        border: 1px solid rgba(139, 92, 246, 0.2);
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-size: 10px;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    /* Cyber Link Button */
-    .link-node {
-        background: rgba(255, 255, 255, 0.03);
-        border: 2px dashed rgba(139, 92, 246, 0.3);
-        transition: all 0.3s ease;
-    }
-    .link-node:hover {
-        background: rgba(139, 92, 246, 0.1);
-        border-style: solid;
-        border-color: #8B5CF6;
-    }
-
-    /* Upload Area */
-    .upload-zone {
-        background: rgba(0, 0, 0, 0.3);
-        border: 2px dashed rgba(255, 255, 255, 0.1);
-        border-radius: 24px;
-        transition: all 0.3s ease;
-    }
-    .upload-active {
-        border-color: #10b981;
-        background: rgba(16, 185, 129, 0.05);
-    }
-
-    /* Bottom Sticky Button */
-    .btn-submit-fixed {
-        background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
-        box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    .clean-card {
+        background: #FFFFFF; border-radius: 24px; border: 1px solid rgba(15, 23, 42, 0.05);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02); transition: all 0.3s ease;
     }
 </style>
 
-<div class="max-w-xl mx-auto space-y-6 submit-reveal pb-48 pt-4 px-2">
+<div class="max-w-lg mx-auto space-y-6 fade-up pb-32 pt-4 px-2">
 
-    <!-- 1. টাস্ক ডিটেইলস কার্ড -->
-    <div class="ai-card p-8 text-center relative overflow-hidden">
-        <!-- Background Glow -->
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-violet-600/10 rounded-full blur-3xl"></div>
+    <!-- 1. TASK HEADER CARD -->
+    <div class="clean-card p-8 text-center relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
         
-        <div class="relative z-10">
-            <div class="h-16 w-16 bg-violet-500/10 border border-violet-500/20 rounded-2xl flex items-center justify-center text-3xl text-violet-400 mx-auto mb-5 shadow-2xl">
-                {% if 'YouTube' in task.category %} <i class="fa-brands fa-youtube"></i>
-                {% elif 'Facebook' in task.category %} <i class="fa-brands fa-facebook"></i>
-                {% else %} <i class="fa-solid fa-rocket"></i> {% endif %}
-            </div>
-            
-            <h2 class="text-2xl font-black text-white leading-tight mb-2">{{ task.title }}</h2>
-            <p class="text-slate-400 text-xs px-4 leading-relaxed">{{ task.description }}</p>
-            
-            <!-- Reward Badge -->
-            <div class="mt-6 inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-6 py-2 rounded-2xl font-black text-lg shadow-lg">
-                <i class="fa-solid fa-coins text-amber-500"></i> ৳ {{ task.reward }}
-            </div>
+        <div class="h-16 w-16 bg-slate-50 text-slate-800 rounded-[20px] flex items-center justify-center text-3xl mx-auto mb-5 shadow-sm border border-slate-100">
+            {% if 'YouTube' in task.category %} <i class="fa-brands fa-youtube text-red-500"></i>
+            {% elif 'Facebook' in task.category %} <i class="fa-brands fa-facebook text-blue-600"></i>
+            {% else %} <i class="fa-solid fa-bolt text-emerald-500"></i> {% endif %}
+        </div>
+        
+        <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">{{ task.category }} TASK</p>
+        <h2 class="text-2xl font-black text-slate-900 mb-3 tracking-tight leading-tight">{{ task.title }}</h2>
+        <p class="text-slate-500 text-sm leading-relaxed px-2">{{ task.description }}</p>
+        
+        <div class="mt-6 inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 text-emerald-700 px-5 py-2 rounded-full font-black text-sm tracking-wide">
+            <i class="fa-solid fa-coins"></i> Reward: ৳{{ task.reward }}
         </div>
     </div>
 
-    <!-- 2. ধাপ ১: কাজ শুরু করুন -->
-    <div class="ai-card p-6 relative">
-        <div class="absolute top-4 left-6">
-            <span class="step-badge">ধাপ ০১</span>
+    <!-- ================= FB POST TASK EXTRA UI ================= -->
+    {% if task.task_type == 'fb_post' %}
+    <div class="clean-card p-6 border-blue-100 bg-blue-50/30">
+        <h3 class="font-black text-slate-800 mb-4 flex items-center gap-2 text-sm tracking-tight">
+            <i class="fa-brands fa-facebook text-blue-600 text-lg"></i> Post on your Timeline
+        </h3>
+
+        {% if task.image_url %}
+        <div class="relative rounded-2xl overflow-hidden mb-5 border border-slate-200 group">
+            <img src="{{ task.image_url }}" alt="Post Image" class="w-full h-48 object-cover">
+            <div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition backdrop-blur-sm">
+                <a href="{{ task.image_url }}" download="PayR_Task.jpg" class="bg-white text-slate-900 px-5 py-2.5 rounded-xl font-bold text-xs shadow-xl flex items-center gap-2 hover:scale-105 transition">
+                    <i class="fa-solid fa-download"></i> Download Image
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if task.caption %}
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 relative group shadow-sm">
+            <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Caption Text</p>
+            <p id="captionText" class="text-sm text-slate-700 whitespace-pre-line font-medium">{{ task.caption }}</p>
+            <button onclick="copyCaption(this)" class="absolute top-4 right-4 bg-slate-100 text-slate-600 hover:bg-emerald-500 hover:text-white h-8 w-8 rounded-lg flex items-center justify-center transition shadow-sm">
+                <i class="fa-regular fa-copy"></i>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    
+    <script>
+        function copyCaption(btn) {
+            const text = document.getElementById("captionText").innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                btn.classList.add('bg-emerald-500', 'text-white');
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+                    btn.classList.remove('bg-emerald-500', 'text-white');
+                }, 2000);
+            });
+        }
+    </script>
+    {% endif %}
+    <!-- ================================================= -->
+
+    <!-- 3. STEP 1: ACTION -->
+    {% if task.task_type != 'fb_post' %}
+    <div class="clean-card p-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 bg-slate-50 text-slate-400 px-3 py-1.5 rounded-bl-2xl text-[9px] font-black tracking-widest uppercase border-b border-l border-slate-100">
+            Step 01
         </div>
         
-        <div class="mt-8 text-center">
-            <h3 class="font-bold text-white text-base mb-2">নিচের লিঙ্কে ক্লিক করে কাজটি করুন</h3>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-6">Open the link & complete the job</p>
+        <div class="mt-2 text-center">
+            <div class="h-12 w-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 mx-auto mb-3">
+                <i class="fa-solid fa-link text-xl"></i>
+            </div>
+            <h3 class="font-black text-slate-800 text-sm mb-1 tracking-tight">Visit Target Link</h3>
+            <p class="text-[11px] text-slate-500 mb-6 font-medium">Click the button below to complete the required action (Like/Follow/Watch).</p>
             
-            <a href="{{ task.link }}" target="_blank" class="link-node flex items-center justify-center gap-3 w-full py-5 rounded-2xl text-slate-300 font-black text-sm uppercase tracking-[2px] hover:text-white group">
-                <span class="group-hover:translate-x-1 transition-transform">লিংক ওপেন করুন</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            <a href="{{ task.link }}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-slate-900 text-white py-3.5 rounded-2xl font-bold shadow-lg hover:bg-slate-800 active:scale-95 transition">
+                <span>Open Task Link</span>
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
         </div>
     </div>
+    {% endif %}
 
-    <!-- 3. ধাপ ২: প্রমাণ আপলোড করুন -->
-    <form method="POST" enctype="multipart/form-data" id="taskForm" onsubmit="handleFormSubmit(event)">
-        <div class="ai-card p-6 relative">
-            <div class="absolute top-4 left-6">
-                <span class="step-badge">ধাপ ০২</span>
+    <!-- 4. STEP 2: UPLOAD PROOF -->
+    <form method="POST" enctype="multipart/form-data" onsubmit="preventDoubleSubmit()">
+        <div class="clean-card p-6 relative overflow-hidden mb-6">
+            <div class="absolute top-0 right-0 bg-slate-50 text-slate-400 px-3 py-1.5 rounded-bl-2xl text-[9px] font-black tracking-widest uppercase border-b border-l border-slate-100">
+                Step 02
             </div>
 
-            <div class="mt-8">
-                <h3 class="font-bold text-white text-base mb-2 text-center">স্ক্রিনশট জমা দিন</h3>
-                <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-6 text-center">Upload task completion proof</p>
+            <div class="mt-2">
+                <h3 class="font-black text-slate-800 text-sm mb-1 tracking-tight text-center">Submit Proof</h3>
+                <p class="text-[11px] text-slate-500 mb-5 text-center font-medium">Upload a clear screenshot of your completed work.</p>
 
-                <!-- Custom Upload Area -->
+                <!-- Custom Upload Box -->
                 <div class="relative w-full group">
                     <input type="file" name="screenshot" id="fileInput" accept="image/*" required 
                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                           onchange="previewFile(this)">
+                           onchange="updateFileName(this)">
                     
-                    <div id="uploadZone" class="upload-zone p-10 text-center border-white/5 group-hover:border-violet-500/30 transition-all">
-                        <div id="uploadIcon" class="h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-violet-400 text-2xl mx-auto mb-4 border border-white/5 group-hover:scale-110 transition-transform">
+                    <div id="uploadBox" class="border-2 border-dashed border-slate-200 bg-slate-50 rounded-3xl p-8 text-center transition duration-300 group-hover:border-emerald-400 group-hover:bg-emerald-50">
+                        <div id="uploadIcon" class="h-14 w-14 bg-white rounded-2xl flex items-center justify-center text-slate-400 text-2xl mx-auto mb-3 shadow-sm group-hover:text-emerald-500 transition-colors border border-slate-100">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                         </div>
-                        <p id="uploadText" class="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                            ছবি সিলেক্ট করুন
+                        <p id="uploadText" class="text-xs font-black text-slate-600 tracking-wide group-hover:text-emerald-700">
+                            Tap to select screenshot
                         </p>
-                        <p class="text-[9px] text-slate-600 mt-2 font-mono uppercase tracking-tighter">Max: 5MB • JPG/PNG</p>
+                        <p class="text-[9px] text-slate-400 mt-2 font-bold tracking-widest uppercase">Max Size: 5MB</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ৪. সাবমিট বাটন (Fixed at Bottom for Mobile) -->
-        <div class="fixed bottom-24 left-0 w-full px-6 z-[60]">
-            <button type="submit" id="submitBtn" class="btn-submit-fixed w-full py-5 rounded-2xl text-white font-black text-sm uppercase tracking-[3px] shadow-2xl flex items-center justify-center gap-3 active:scale-95 transition-all">
-                <span>কাজটি জমা দিন</span>
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
-        </div>
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" id="submitBtn" class="btn-emerald w-full text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2">
+            <span>Submit Verification</span>
+            <i class="fa-solid fa-check-double"></i>
+        </button>
     </form>
-
-    <!-- Footer Tagline -->
-    <div class="text-center opacity-30">
-        <p class="text-[9px] font-mono text-slate-600 tracking-widest uppercase">Encryption Mode: Active • Pay-R Task Ledger</p>
-    </div>
 
 </div>
 
-<!-- Scripts -->
 <script>
-    function previewFile(input) {
-        const zone = document.getElementById('uploadZone');
-        const icon = document.getElementById('uploadIcon');
-        const text = document.getElementById('uploadText');
+    function updateFileName(input) {
+        const uploadBox = document.getElementById('uploadBox');
+        const uploadIcon = document.getElementById('uploadIcon');
+        const uploadText = document.getElementById('uploadText');
 
         if (input.files && input.files[0]) {
-            zone.classList.add('upload-active');
-            icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
-            icon.classList.replace('bg-white/5', 'bg-emerald-500/10');
-            icon.classList.add('border-emerald-500/20');
-            text.textContent = "সিলেক্ট হয়েছে: " + input.files[0].name.substring(0, 15) + "...";
-            text.classList.replace('text-slate-400', 'text-emerald-400');
+            uploadBox.classList.remove('border-slate-200', 'bg-slate-50', 'group-hover:border-emerald-400');
+            uploadBox.classList.add('border-emerald-500', 'bg-emerald-50');
+            
+            uploadIcon.className = "h-14 w-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-lg shadow-emerald-200";
+            uploadIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            
+            uploadText.textContent = input.files[0].name;
+            uploadText.className = 'text-xs font-black text-emerald-700 truncate px-4';
         }
     }
 
-    function handleFormSubmit(e) {
+    function preventDoubleSubmit() {
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> আপলোড হচ্ছে...';
-        btn.classList.add('opacity-70', 'cursor-not-allowed');
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Uploading...';
+        btn.classList.add('opacity-80', 'cursor-not-allowed');
         return true;
     }
 </script>
