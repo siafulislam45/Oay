@@ -6,6 +6,12 @@
     <meta name="theme-color" content="#10B981">
     <title>Pay-R | Premium Earning Platform</title>
     
+    <!-- PWA Required Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/192/3135/3135715.png">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -63,7 +69,7 @@
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
         }
 
         .clean-card {
@@ -103,10 +109,26 @@
             -webkit-text-fill-color: transparent;
         }
 
+        /* Support Widget Pulse */
+        .telegram-pulse {
+            box-shadow: 0 0 0 0 rgba(42, 171, 238, 0.7);
+            animation: pulse-blue 2s infinite;
+        }
+        @keyframes pulse-blue {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(42, 171, 238, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(42, 171, 238, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(42, 171, 238, 0); }
+        }
+
         /* Utilities */
         .tracking-micro { letter-spacing: 0.15em; }
         .fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Sidebar Transition */
+        #sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .sidebar-open { transform: translateX(0) !important; }
+        .sidebar-closed { transform: translateX(-100%); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -116,25 +138,25 @@
         <div class="orb-1"></div><div class="orb-2"></div><div class="orb-3"></div>
     </div>
 
-    <!-- ================= TOP NAVBAR ================= -->
+    <!-- ================= 1. TOP NAVBAR ================= -->
     <nav class="glass-nav fixed top-0 w-full z-40 transition-all duration-300">
         <div class="container mx-auto px-5 h-16 flex justify-between items-center">
             
-            <button onclick="toggleSidebar()" class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-100 transition text-[#0F172A]">
+            <button onclick="toggleSidebar()" class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-100 transition text-slate-800">
                 <i class="fa-solid fa-bars-staggered text-lg"></i>
             </button>
 
             <a href="/" class="flex items-center gap-2 group absolute left-1/2 transform -translate-x-1/2">
-                <div class="bg-[#0F172A] text-white h-8 w-8 flex items-center justify-center rounded-xl shadow-lg">
-                    <i class="fa-solid fa-bolt"></i>
+                <div class="bg-slate-900 text-white h-8 w-8 flex items-center justify-center rounded-xl shadow-lg border border-slate-700">
+                    <i class="fa-solid fa-bolt text-sm"></i>
                 </div>
-                <span class="text-xl font-black tracking-tight text-[#0F172A]">Pay<span class="text-[#10B981]">R</span></span>
+                <span class="text-xl font-black tracking-tight text-slate-900">Pay<span class="text-emerald-500">R</span></span>
             </a>
 
-            <a href="/notice" class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-100 transition text-slate-500 relative">
+            <a href="/notice" class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-slate-100 transition text-slate-600 relative">
                 <i class="fa-regular fa-bell text-lg"></i>
                 {% if settings and settings.notice_text %}
-                <span class="absolute top-2.5 right-2.5 h-2 w-2 bg-emerald-500 rounded-full border border-white animate-pulse"></span>
+                <span class="absolute top-2.5 right-2.5 h-2 w-2 bg-rose-500 rounded-full border border-white animate-pulse"></span>
                 {% endif %}
             </a>
         </div>
@@ -142,72 +164,101 @@
 
     <div class="h-16"></div> <!-- Spacer -->
 
-    <!-- ================= SIDEBAR ================= -->
-    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <!-- ================= 2. SIDEBAR MENU ================= -->
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
     
-    <div id="sidebar" class="fixed top-0 left-0 h-full w-[280px] bg-white/95 backdrop-blur-3xl z-[60] -translate-x-full transition-transform duration-400 ease-out flex flex-col shadow-2xl border-r border-slate-100">
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-[280px] bg-white/95 backdrop-blur-3xl z-[60] sidebar-closed flex flex-col shadow-2xl border-r border-slate-100">
         
-        <!-- Header -->
-        <div class="p-6 pt-10 border-b border-slate-100">
+        <!-- Sidebar Header -->
+        <div class="p-6 pt-10 border-b border-slate-100 relative overflow-hidden bg-slate-900 text-white">
+            <!-- Decor -->
+            <div class="absolute top-[-20px] right-[-20px] w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl"></div>
+            
             {% if session.get('user_id') %}
-                <div class="flex items-center gap-4">
-                    <div class="h-12 w-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xl font-black">
+                <div class="relative z-10 flex items-center gap-4">
+                    <div class="h-12 w-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-xl font-black shadow-lg border border-emerald-400">
                         {{ session.get('email', 'U')[0] | upper }}
                     </div>
                     <div>
-                        <p class="font-black text-sm text-slate-900 leading-tight truncate w-32">
+                        <p class="font-black text-sm text-white leading-tight truncate w-32">
                             {{ session.get('email', 'User').split('@')[0] }}
                         </p>
-                        <p class="text-[10px] text-slate-500 font-mono font-semibold tracking-wider mt-1">UID: {{ user.referral_code if user else '0000' }}</p>
+                        {% if user and user.referral_code %}
+                        <p class="text-[10px] text-emerald-300 font-mono font-semibold tracking-wider mt-1 bg-white/10 px-2 py-0.5 rounded inline-block border border-white/10">
+                            UID: {{ user.referral_code }}
+                        </p>
+                        {% endif %}
                     </div>
                 </div>
             {% else %}
-                <h2 class="text-xl font-black text-slate-900">Welcome Guest</h2>
-                <a href="/login" class="text-emerald-600 font-semibold text-xs">Login to continue</a>
+                <h2 class="text-xl font-black text-white relative z-10">Welcome Guest</h2>
+                <a href="/login" class="text-emerald-400 font-semibold text-xs relative z-10">Login to continue</a>
             {% endif %}
         </div>
 
         <!-- Menu Links -->
         <div class="flex-grow overflow-y-auto p-4 space-y-1">
+            
             <p class="text-[9px] font-black text-slate-400 tracking-micro px-3 mb-2 mt-2">Platform</p>
-            <a href="/dashboard" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
+            
+            <a href="/dashboard" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'dashboard' }}">
                 <i class="fa-solid fa-grid-2 w-5 text-center"></i> ড্যাশবোর্ড
             </a>
-            <a href="/tasks" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
+            <a href="/tasks" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'tasks' }}">
                 <i class="fa-solid fa-bolt w-5 text-center"></i> মাইক্রো টাস্ক
             </a>
-            <a href="/vip" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
-                <i class="fa-solid fa-crown w-5 text-center"></i> এলিট মেম্বারশিপ
+            <a href="/drive" class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'drive_store' }}">
+                <div class="flex items-center gap-3"><i class="fa-solid fa-wifi w-5 text-center"></i> ড্রাইভ অফার</div>
+                <span class="text-[8px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full font-black uppercase tracking-widest animate-pulse">Hot</span>
+            </a>
+            <a href="/vip" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'vip_page' }}">
+                <i class="fa-solid fa-crown w-5 text-center text-yellow-500"></i> এলিট মেম্বারশিপ
             </a>
 
-            <p class="text-[9px] font-black text-slate-400 tracking-micro px-3 mb-2 mt-4">Finance</p>
-            <a href="/withdraw" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
+            <p class="text-[9px] font-black text-slate-400 tracking-micro px-3 mb-2 mt-4">Finance & Records</p>
+
+            <a href="/withdraw" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'withdraw' }}">
                 <i class="fa-solid fa-arrow-right-arrow-left w-5 text-center"></i> ফান্ড উইথড্র
             </a>
-            <a href="/history" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm">
-                <i class="fa-solid fa-receipt w-5 text-center"></i> ট্রানজেকশন
+            <a href="/history" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'history' }}">
+                <i class="fa-solid fa-clock-rotate-left w-5 text-center"></i> ট্রানজেকশন হিস্টোরি
+            </a>
+            <a href="/proofs" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'proofs' }}">
+                <i class="fa-solid fa-receipt w-5 text-center"></i> পেমেন্ট প্রুফ
+            </a>
+            <a href="/referrals" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'referrals' }}">
+                <i class="fa-solid fa-users-viewfinder w-5 text-center"></i> অ্যাফিলিয়েট
             </a>
 
-            <p class="text-[9px] font-bold text-slate-400 tracking-micro px-3 mb-2 mt-4">Support</p>
-            <a href="https://wa.me/8801894577178" target="_blank" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-emerald-50 text-emerald-600 transition font-semibold text-sm">
-                <i class="fa-brands fa-whatsapp w-5 text-center text-lg"></i> লাইভ চ্যাট
+            <p class="text-[9px] font-bold text-slate-400 tracking-micro px-3 mb-2 mt-4">Support & Config</p>
+
+            <a href="/account" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'account' }}">
+                <i class="fa-solid fa-user-gear w-5 text-center"></i> প্রোফাইল সেটিংস
+            </a>
+            <a href="/tutorial" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-slate-600 hover:text-emerald-600 transition font-semibold text-sm {{ 'bg-emerald-50 text-emerald-600' if request.endpoint == 'tutorial' }}">
+                <i class="fa-brands fa-youtube w-5 text-center"></i> টিউটোরিয়াল
+            </a>
+            
+            <a href="https://t.me/PayRsupprt" target="_blank" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-sky-50 text-slate-600 hover:text-sky-500 transition font-semibold text-sm">
+                <i class="fa-brands fa-telegram w-5 text-center text-lg"></i> লাইভ সাপোর্ট
             </a>
             
             {% if session.get('user_id') %}
-            <a href="/logout" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-red-50 text-red-500 transition mt-4 font-semibold text-sm">
+            <div class="border-t border-slate-100 my-4"></div>
+            <a href="/logout" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-rose-50 text-slate-600 hover:text-rose-500 transition font-semibold text-sm">
                 <i class="fa-solid fa-power-off w-5 text-center"></i> লগ আউট
             </a>
             {% endif %}
         </div>
     </div>
 
-    <!-- FLASH MSG -->
+    <!-- ================= 3. FLASH MESSAGES ================= -->
     <div class="container mx-auto px-4 mt-2 relative z-30">
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
-              <div class="bg-white/80 backdrop-blur-md p-4 mb-3 rounded-2xl shadow-lg border border-slate-100 fade-in flex items-center gap-3">
-                <div class="h-8 w-8 rounded-full flex items-center justify-center {{ 'bg-red-100 text-red-600' if category == 'error' else 'bg-emerald-100 text-emerald-600' }}">
+              <div class="bg-white/90 backdrop-blur-md p-4 mb-3 rounded-2xl shadow-lg border border-slate-100 fade-in flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full flex items-center justify-center {{ 'bg-rose-100 text-rose-600' if category == 'error' else 'bg-emerald-100 text-emerald-600' }}">
                     <i class="fa-solid {{ 'fa-xmark' if category == 'error' else 'fa-check' }}"></i>
                 </div>
                 <span class="font-semibold text-sm text-slate-700">{{ message }}</span>
@@ -217,25 +268,44 @@
         {% endwith %}
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- ================= 4. MAIN CONTENT ================= -->
     <main class="flex-grow container mx-auto px-4 pb-32">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- ================= BOTTOM NAVIGATION (Floating Glass) ================= -->
+    <!-- ================= 5. FLOATING TELEGRAM WIDGET ================= -->
+    <div class="fixed bottom-[95px] right-4 md:bottom-10 md:right-10 z-40 group">
+        <a href="https://t.me/PayRsupprt" target="_blank" class="relative block">
+            <!-- Tooltip -->
+            <div class="absolute right-16 top-3 bg-slate-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap shadow-lg flex items-center gap-1 font-bold border border-slate-700">
+                <span>লাইভ সাপোর্ট</span>
+                <i class="fa-solid fa-headset text-emerald-400"></i>
+            </div>
+            
+            <!-- Pulse Circle (Telegram Blue) -->
+            <div class="h-14 w-14 bg-[#2AABEE] rounded-full flex items-center justify-center text-white text-3xl shadow-lg shadow-sky-500/40 telegram-pulse transition transform hover:scale-110 hover:-rotate-12 border-2 border-white">
+                <i class="fa-brands fa-telegram" style="margin-right: 2px;"></i>
+            </div>
+            
+            <!-- Online Dot -->
+            <div class="absolute bottom-0 right-0 h-4 w-4 bg-emerald-500 rounded-full border-2 border-white shadow-sm"></div>
+        </a>
+    </div>
+
+    <!-- ================= 6. BOTTOM NAVIGATION (Glassmorphism) ================= -->
     {% if session.get('user_id') %}
     <div class="fixed bottom-6 left-4 right-4 glass-bottom-nav z-40 rounded-[28px]">
         <div class="flex justify-between items-center px-4 h-[70px]">
             
             <a href="/dashboard" class="flex flex-col items-center justify-center w-12 group">
-                <i class="fa-solid fa-layer-group text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md' if request.endpoint == 'dashboard' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
+                <i class="fa-solid fa-layer-group text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md -translate-y-1' if request.endpoint == 'dashboard' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
             </a>
 
             <a href="/history" class="flex flex-col items-center justify-center w-12 group">
-                <i class="fa-solid fa-clock-rotate-left text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md' if request.endpoint == 'history' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
+                <i class="fa-solid fa-clock-rotate-left text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md -translate-y-1' if request.endpoint == 'history' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
             </a>
 
-            <!-- Action Button -->
+            <!-- Center Action Button (Floating Emerald) -->
             <div class="relative -top-6">
                 <a href="/tasks" class="h-16 w-16 rounded-[22px] btn-emerald flex items-center justify-center text-white text-2xl border-[3px] border-[#F8FAFC]">
                     <i class="fa-solid fa-bolt"></i>
@@ -243,11 +313,11 @@
             </div>
 
             <a href="/withdraw" class="flex flex-col items-center justify-center w-12 group">
-                <i class="fa-solid fa-arrow-right-arrow-left text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md' if request.endpoint == 'withdraw' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
+                <i class="fa-solid fa-arrow-right-arrow-left text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md -translate-y-1' if request.endpoint == 'withdraw' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
             </a>
 
             <a href="/account" class="flex flex-col items-center justify-center w-12 group">
-                <i class="fa-regular fa-user text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md' if request.endpoint == 'account' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
+                <i class="fa-regular fa-user text-xl transition-all duration-300 {{ 'text-emerald-500 drop-shadow-md -translate-y-1' if request.endpoint == 'account' else 'text-slate-400 group-hover:text-slate-700' }}"></i>
             </a>
 
         </div>
@@ -256,6 +326,14 @@
 
     <!-- Scripts -->
     <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js');
+            });
+        }
+
+        // Sidebar Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
 
@@ -270,10 +348,14 @@
                 setTimeout(() => overlay.classList.remove('opacity-0'), 10);
             }
         }
-        
-        setTimeout(() => {
-            document.querySelectorAll('.flash-msg').forEach(alert => {
+
+        // Flash Message Auto Hide
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.flash-msg');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
                 alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-10px) scale(0.95)';
                 setTimeout(() => alert.remove(), 500);
             });
         }, 3500);
