@@ -2,168 +2,193 @@
 {% block content %}
 
 <style>
-    /* AI Reveal Animation */
-    .drive-reveal { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Glassmorphic Cards */
-    .offer-card {
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(139, 92, 246, 0.1);
-        border-radius: 28px;
-        transition: all 0.3s ease;
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    .premium-dark-card {
+        background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.15);
+        position: relative;
+        overflow: hidden;
     }
-    .offer-card:hover {
-        border-color: rgba(139, 92, 246, 0.4);
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Operator Node Icons */
-    .op-node {
-        width: 48px;
-        height: 48px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        font-weight: 900;
-        text-transform: uppercase;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Custom Badges */
-    .cyber-badge {
-        background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
-        color: white;
-        font-size: 9px;
-        font-weight: 900;
-        padding: 4px 12px;
-        border-radius: 0 20px 0 20px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    /* Filter Tabs */
-    .tab-pill {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        color: #94a3b8;
-        padding: 8px 18px;
-        border-radius: 14px;
-        font-size: 11px;
-        font-weight: 700;
-        white-space: nowrap;
-        transition: all 0.3s ease;
-    }
-    .tab-pill.active {
-        background: rgba(139, 92, 246, 0.1);
-        border-color: rgba(139, 92, 246, 0.4);
-        color: #a78bfa;
-        box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
-    }
-
-    .buy-btn {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: #cbd5e1;
-        transition: all 0.3s ease;
-    }
-    .buy-btn:hover {
-        background: #8B5CF6;
-        color: white;
-        border-color: #8B5CF6;
-        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    
+    .gold-gradient {
+        background: linear-gradient(to right, #FDE047, #F59E0B);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 </style>
 
-<div class="max-w-4xl mx-auto drive-reveal pb-32 pt-4 px-2">
+<div class="max-w-3xl mx-auto space-y-6 fade-up pb-32 pt-4">
 
-    <!-- হেডার সেকশন -->
-    <div class="ai-panel p-6 mb-8 relative overflow-hidden bg-gradient-to-br from-violet-900/20 to-transparent border border-violet-500/10 rounded-[32px]">
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-violet-600/10 rounded-full blur-3xl"></div>
-        
-        <h2 class="text-2xl font-black ai-gradient-text uppercase tracking-tight">Quantum Drive Hub</h2>
-        <p class="text-xs text-slate-400 mt-1 font-medium italic">কম দামে সেরা অফারগুলো লোড করা হচ্ছে...</p>
-    </div>
+    <!-- 1. CAMPAIGN BANNER (Dark Premium) -->
+    <div class="premium-dark-card rounded-[32px] p-8 text-white text-center">
+        <!-- Ambient Glow -->
+        <div class="absolute top-0 right-0 w-48 h-48 bg-emerald-500/20 rounded-full blur-[60px] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-teal-500/20 rounded-full blur-[50px] pointer-events-none"></div>
 
-    <!-- ফিল্টার ট্যাবসমূহ -->
-    <div class="flex gap-3 overflow-x-auto pb-6 scrollbar-hide">
-        <button class="tab-pill active">All Offers</button>
-        <button class="tab-pill">Internet</button>
-        <button class="tab-pill">Minutes</button>
-        <button class="tab-pill">Combo Pack</button>
-        <button class="tab-pill">Family Pack</button>
-    </div>
-
-    <!-- অফার গ্রিড -->
-    <div class="grid md:grid-cols-2 gap-5">
-        {% for pack in packs %}
-        <div class="offer-card p-6 flex flex-col justify-between">
+        <div class="relative z-10">
+            <div class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-500/30 mb-4 shadow-sm">
+                <i class="fa-solid fa-fire animate-pulse"></i> Special Bounty
+            </div>
             
-            <div class="flex justify-between items-start mb-4">
-                <!-- Operator Node -->
-                <div class="op-node 
-                    {% if pack.operator == 'Grameenphone' %} bg-sky-500/10 text-sky-400 border border-sky-500/20
-                    {% elif pack.operator == 'Robi' %} bg-rose-600/10 text-rose-500 border border-rose-600/20
-                    {% elif pack.operator == 'Airtel' %} bg-red-500/10 text-red-500 border border-red-500/20
-                    {% elif pack.operator == 'Banglalink' %} bg-orange-500/10 text-orange-400 border border-orange-500/20
-                    {% else %} bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 {% endif %}">
-                    {{ pack.operator[:2] }}
-                </div>
+            <h2 class="text-3xl font-black mb-2 tracking-tight">৫০ জন এক্টিভ রেফার</h2>
+            <p class="text-sm text-slate-400 font-medium mb-6">করলেই পেয়ে যাবেন <span class="gold-gradient font-black text-lg">৳১০০০</span> বোনাস!</p>
 
-                <!-- Discount Badge -->
-                <div class="cyber-badge shadow-lg shadow-rose-950/20">
-                    ৳{{ pack.commission }} ছাড়
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-800 rounded-full h-3 mb-3 border border-slate-700 overflow-hidden shadow-inner">
+                <div class="bg-gradient-to-r from-emerald-400 to-teal-400 h-full rounded-full transition-all duration-1000 ease-out relative"
+                     style="width: {{ (active_count / 50) * 100 }}%">
+                     <!-- Shine effect on bar -->
+                     <div class="absolute top-0 left-0 w-full h-full bg-white/20 animate-[shimmer_2s_infinite]"></div>
                 </div>
             </div>
-
-            <!-- Content Area -->
-            <div class="mb-6">
-                <h3 class="text-base font-bold text-slate-100 leading-snug mb-2">{{ pack.title }}</h3>
-                <div class="flex items-center gap-4 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                    <span><i class="fa-regular fa-clock text-violet-500 mr-1.5"></i> মেয়াদ: {{ pack.validity }}</span>
-                    <span class="h-1 w-1 bg-slate-700 rounded-full"></span>
-                    <span><i class="fa-solid fa-bolt text-amber-500 mr-1.5"></i> ইনস্ট্যান্ট</span>
-                </div>
+            
+            <div class="flex justify-between text-[11px] font-black text-slate-400 uppercase tracking-wider mb-6">
+                <span class="text-emerald-400">{{ active_count }} Active</span>
+                <span>Target: 50</span>
             </div>
 
-            <!-- Pricing Section -->
-            <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-                <div class="flex flex-col">
-                    <span class="text-[9px] text-slate-500 font-black uppercase tracking-tighter mb-0.5">Offer Price</span>
-                    <div class="flex items-end gap-2">
-                        <span class="text-2xl font-black text-white tracking-tighter">৳{{ pack.offer_price }}</span>
-                        <span class="text-xs text-slate-500 line-through mb-1">৳{{ pack.regular_price }}</span>
+            {% if active_count >= 50 %}
+                <a href="https://wa.me/8801894577178" target="_blank" class="btn-emerald text-white px-8 py-3 rounded-xl text-sm font-black shadow-lg inline-flex items-center gap-2 animate-bounce">
+                    <i class="fa-solid fa-gift"></i> পুরস্কার দাবি করুন
+                </a>
+            {% else %}
+                <button disabled class="bg-slate-800 text-slate-500 border border-slate-700 px-8 py-3 rounded-xl text-xs font-black cursor-not-allowed uppercase tracking-wider">
+                    আরও {{ 50 - active_count }} জন প্রয়োজন
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 2. COPY LINK SECTION -->
+    <div class="clean-card p-6">
+        <label class="text-[10px] font-black text-slate-400 mb-3 block uppercase tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-link text-emerald-500"></i> Your Invite Link
+        </label>
+        
+        <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+            <div class="h-12 w-12 bg-white text-slate-700 rounded-xl flex items-center justify-center shadow-sm border border-slate-200 flex-shrink-0">
+                <i class="fa-solid fa-share-nodes"></i>
+            </div>
+            <input type="text" id="refLink" value="..." class="bg-transparent text-xs font-bold text-slate-700 w-full outline-none font-mono truncate px-2" readonly>
+            <button onclick="copyRef(this)" class="btn-emerald text-white px-5 py-3 rounded-xl text-xs font-black shadow-md active:scale-95 transition flex-shrink-0">
+                Copy
+            </button>
+        </div>
+        <p class="text-[10px] text-slate-400 mt-3 font-medium">
+            <i class="fa-solid fa-circle-info text-slate-300"></i> প্রতি এক্টিভ রেফারে পাবেন <b class="text-emerald-600">১০ টাকা</b> বোনাস।
+        </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+        <!-- 3. TOP REFERRERS (Leaderboard) -->
+        <div class="clean-card p-6">
+            <h3 class="font-black text-slate-800 text-sm mb-5 tracking-tight flex items-center gap-2">
+                <i class="fa-solid fa-trophy text-yellow-500"></i> সেরা রেফারার
+            </h3>
+            <div class="space-y-3">
+                {% for top in leaderboard %}
+                <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition border border-transparent hover:border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center font-black text-xs shadow-sm
+                            {% if loop.index == 1 %} bg-yellow-100 text-yellow-600 border border-yellow-200
+                            {% elif loop.index == 2 %} bg-slate-200 text-slate-600 border border-slate-300
+                            {% elif loop.index == 3 %} bg-orange-100 text-orange-600 border border-orange-200
+                            {% else %} bg-slate-50 text-slate-400 border border-slate-100 {% endif %}">
+                            {{ loop.index }}
+                        </div>
+                        <p class="text-xs font-bold text-slate-700 font-mono">{{ top.email.split('@')[0][:3] }}***</p>
+                    </div>
+                    <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-1 rounded-lg">
+                        {{ top.count }} Refs
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 4. MY TEAM LIST -->
+        <div class="clean-card p-6 flex flex-col h-full">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-black text-slate-800 text-sm tracking-tight flex items-center gap-2">
+                    <i class="fa-solid fa-users text-teal-500"></i> আমার টিম
+                </h3>
+                <span class="text-[9px] bg-slate-100 text-slate-500 px-2 py-1 rounded-md font-black uppercase tracking-widest border border-slate-200">
+                    Total: {{ total_count }}
+                </span>
+            </div>
+
+            <div class="space-y-3 overflow-y-auto pr-1 flex-grow" style="max-height: 300px;">
+                {% for ref in referrals %}
+                <div class="flex items-center justify-between p-3 rounded-2xl border border-slate-100 hover:shadow-md transition bg-slate-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 rounded-full flex items-center justify-center text-lg shadow-sm border border-white
+                            {{ 'bg-emerald-100 text-emerald-600' if ref.is_active else 'bg-slate-200 text-slate-400' }}">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800 truncate w-24 sm:w-auto">{{ ref.email.split('@')[0] }}</p>
+                            <p class="text-[9px] text-slate-400 font-mono mt-0.5">{{ ref.created_at[:10] }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-right">
+                        {% if ref.is_active %}
+                            <span class="text-[9px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-1 rounded-lg uppercase tracking-wider">
+                                Active
+                            </span>
+                            <p class="text-[9px] text-emerald-500 font-bold mt-1">+৳10 Earned</p>
+                        {% else %}
+                            <span class="text-[9px] font-black bg-slate-100 text-slate-500 border border-slate-200 px-2 py-1 rounded-lg uppercase tracking-wider">
+                                Unpaid
+                            </span>
+                        {% endif %}
                     </div>
                 </div>
-
-                <!-- Buy Action -->
-                <a href="/drive/buy/{{ pack.id }}" class="buy-btn px-6 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest">
-                    অর্ডার করুন
-                </a>
+                {% else %}
+                <div class="text-center py-10">
+                    <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-slate-300">
+                        <i class="fa-solid fa-user-xmark"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-500">টিম মেম্বার নেই</p>
+                </div>
+                {% endfor %}
             </div>
-
         </div>
-        {% else %}
-        <!-- Empty Hub State -->
-        <div class="col-span-full py-20 text-center ai-panel border-dashed border-white/5">
-            <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600">
-                <i class="fa-solid fa-satellite-dish text-2xl"></i>
-            </div>
-            <p class="text-slate-500 text-sm font-bold">বর্তমানে কোনো ড্রাইভ অফার এভেইলেবল নেই।</p>
-        </div>
-        {% endfor %}
     </div>
 
 </div>
 
-<!-- স্ক্রলবার হাইড করার স্ক্রিপ্ট -->
-<style>
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-</style>
+<!-- Scripts -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const domain = window.location.origin;
+        const uniqueCode = "{{ user.referral_code if user.referral_code else 'GenerateID' }}";
+        const fullLink = `${domain}/register?ref=${uniqueCode}`;
+        
+        const inputField = document.getElementById("refLink");
+        if(inputField) {
+            inputField.value = fullLink;
+        }
+    });
+
+    function copyRef(btnElement) {
+        const copyText = document.getElementById("refLink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); 
+        navigator.clipboard.writeText(copyText.value);
+        
+        const originalText = btnElement.innerText;
+        btnElement.innerHTML = '<i class="fa-solid fa-check"></i>';
+        btnElement.classList.add("bg-slate-800");
+        
+        setTimeout(() => {
+            btnElement.innerText = originalText;
+            btnElement.classList.remove("bg-slate-800");
+        }, 2000);
+    }
+</script>
 
 {% endblock %}
