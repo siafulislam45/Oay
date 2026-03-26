@@ -2,257 +2,160 @@
 {% block content %}
 
 <style>
-    /* AI Animation Effects */
-    .reveal-page { animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes reveal { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* AI Premium Cards */
-    .ai-profile-card {
-        background: rgba(15, 23, 42, 0.7);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(139, 92, 246, 0.2);
-        border-radius: 32px;
-        position: relative;
+    .fade-up { animation: fadeUp 0.5s ease-out forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+        box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.4);
+    }
+    
+    /* iOS Style Menu List */
+    .menu-group {
+        background: white;
+        border-radius: 24px;
+        border: 1px solid rgba(15, 23, 42, 0.05);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
         overflow: hidden;
     }
-
-    .vip-glow-border {
-        border: 1px solid rgba(234, 179, 8, 0.4) !important;
-        box-shadow: 0 0 25px rgba(234, 179, 8, 0.1);
-    }
-
-    .ai-stat-card {
-        background: rgba(30, 41, 59, 0.4);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 24px;
-        transition: all 0.3s ease;
-    }
-    .ai-stat-card:active { transform: scale(0.95); background: rgba(139, 92, 246, 0.1); }
-
-    .ai-list-item {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 20px;
-        padding: 14px 18px;
+    .menu-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 10px;
-        transition: all 0.2s ease;
+        padding: 16px 20px;
+        background: white;
+        transition: background-color 0.2s;
     }
-    .ai-list-item:active { transform: translateX(8px); background: rgba(255, 255, 255, 0.07); }
-
-    /* Avatar Glow */
-    .avatar-container {
-        position: relative;
-        width: 100px;
-        height: 100px;
-        margin: 0 auto;
-    }
-    .avatar-glow {
-        position: absolute;
-        inset: -4px;
-        background: linear-gradient(135deg, #8B5CF6, #D946EF);
-        border-radius: 50%;
-        opacity: 0.6;
-        filter: blur(8px);
-    }
-    .vip-avatar-glow {
-        background: linear-gradient(135deg, #FBBF24, #F59E0B) !important;
-    }
+    .menu-item:active { background-color: #F8FAFC; }
+    .menu-item:not(:last-child) { border-bottom: 1px solid #F1F5F9; }
 </style>
 
-<div class="max-w-md mx-auto space-y-6 reveal-page pb-32 pt-4">
+<div class="max-w-md mx-auto space-y-6 fade-up pb-32 pt-4">
 
-    <!-- 1. AI PROFILE HEADER -->
-    <div class="ai-profile-card p-8 text-center {% if user.current_level > 0 %} vip-glow-border {% endif %}">
-        
-        <!-- Decorative Background Glow -->
-        <div class="absolute -top-10 -right-10 w-32 h-32 bg-violet-600/10 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl"></div>
+    <!-- 1. PROFILE HEADER CARD -->
+    <div class="profile-header rounded-[32px] p-8 text-white relative overflow-hidden text-center">
+        <!-- Abstract Glows -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500 opacity-20 rounded-full blur-[50px] -mr-10 -mt-10"></div>
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-teal-500 opacity-20 rounded-full blur-[50px] -ml-10 -mb-10"></div>
 
         <div class="relative z-10">
-            <!-- Avatar with dynamic glow -->
-            <div class="avatar-container mb-4">
-                <div class="avatar-glow {% if user.current_level > 0 %} vip-avatar-glow {% endif %}"></div>
-                <div class="relative w-full h-full bg-slate-900 rounded-full border-2 border-white/10 flex items-center justify-center text-3xl font-bold text-white shadow-2xl">
+            <!-- Avatar -->
+            <div class="relative inline-block mb-4">
+                <div class="h-24 w-24 bg-white rounded-[24px] flex items-center justify-center text-slate-900 text-4xl font-black shadow-2xl mx-auto transform rotate-3">
                     {{ user.email[0] | upper }}
                 </div>
-                
-                <!-- Level Badge -->
-                <div class="absolute -bottom-1 -right-1 h-8 w-8 rounded-full border-2 border-slate-900 flex items-center justify-center shadow-lg
-                    {% if user.current_level > 0 %} bg-amber-500 text-slate-900 {% else %} bg-violet-600 text-white {% endif %}">
-                    {% if user.current_level > 0 %}
-                        <i class="fa-solid fa-crown text-[10px]"></i>
-                    {% else %}
-                        <i class="fa-solid fa-check text-[10px]"></i>
-                    {% endif %}
+                <!-- Verification Badge -->
+                {% if user.is_active %}
+                <div class="absolute -bottom-2 -right-2 bg-emerald-500 text-white h-8 w-8 rounded-full flex items-center justify-center border-4 border-[#0F172A] shadow-sm" title="Verified">
+                    <i class="fa-solid fa-check text-[10px]"></i>
                 </div>
-            </div>
-
-            <h2 class="text-2xl font-bold tracking-tight text-white mb-1">
-                {{ user.full_name or user.email.split('@')[0] | title }}
-            </h2>
-            <p class="text-[11px] text-slate-400 font-mono tracking-widest uppercase mb-5">{{ user.email }}</p>
-
-            <div class="flex items-center justify-center gap-2">
-                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[10px] font-mono text-slate-300">
-                    ID: {{ user.referral_code }}
-                </span>
-                {% if user.current_level > 0 %}
-                <span class="px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full text-[10px] font-black text-amber-500 uppercase tracking-tighter">
-                    VIP NODE ACTIVE
-                </span>
                 {% endif %}
             </div>
+
+            <!-- Info -->
+            <h2 class="text-2xl font-black tracking-tight">{{ user.full_name or user.email.split('@')[0] | title }}</h2>
+            <p class="text-slate-400 text-xs mt-1 font-medium">{{ user.email }}</p>
             
-            {% if user.current_level > 0 %}
-            <p class="text-[9px] text-amber-500/60 mt-3 font-mono">
-                <i class="fa-regular fa-clock mr-1"></i> Valid Till: {{ user.vip_expiry[:10] if user.vip_expiry else 'N/A' }}
-            </p>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- 2. AI STATS GRID -->
-    <div class="grid {{ 'grid-cols-3' if user.current_level > 0 else 'grid-cols-2' }} gap-3 px-1">
-        
-        <div class="ai-stat-card p-4 text-center">
-            <div class="text-violet-400 mb-1 opacity-70"><i class="fa-solid fa-wallet text-sm"></i></div>
-            <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider mb-1">Total Assets</p>
-            <h3 class="text-lg font-bold text-white tracking-tighter">৳{{ user.balance }}</h3>
-        </div>
-
-        {% if user.current_level > 0 %}
-        <div class="ai-stat-card p-4 text-center border-amber-500/10 bg-amber-500/5">
-            <div class="text-amber-500 mb-1 opacity-70"><i class="fa-solid fa-bolt text-sm"></i></div>
-            <p class="text-[9px] text-amber-500/70 font-bold uppercase tracking-wider mb-1">VIP Earn</p>
-            <h3 class="text-lg font-bold text-amber-500 tracking-tighter">৳{{ user.vip_balance or 0 }}</h3>
-        </div>
-        {% endif %}
-
-        <div class="ai-stat-card p-4 text-center">
-            <div class="text-blue-400 mb-1 opacity-70"><i class="fa-solid fa-network-wired text-sm"></i></div>
-            <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider mb-1">Nodes</p>
-            <h3 class="text-lg font-bold text-white tracking-tighter">{{ ref_count }}</h3>
-        </div>
-    </div>
-
-    <!-- 3. REFERRAL LINK (Encrypted Link Style) -->
-    <div class="ai-card p-5 border border-white/5">
-        <label class="text-[10px] font-bold text-slate-500 mb-3 block uppercase tracking-[2px]"><i class="fa-solid fa-link text-violet-500 mr-2"></i> Referral Access Link</label>
-        
-        <div class="flex items-center gap-2 p-1.5 bg-black/40 rounded-2xl border border-white/5">
-            <div class="h-10 w-10 bg-violet-600/10 text-violet-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-fingerprint"></i>
+            <!-- Badges Row -->
+            <div class="mt-6 flex items-center justify-center gap-2">
+                <div class="bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 text-[10px] font-bold tracking-wider uppercase text-slate-300">
+                    UID: <span class="text-white">{{ user.referral_code }}</span>
+                </div>
+                {% if user.current_level > 0 %}
+                <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 px-3 py-1.5 rounded-lg text-[10px] font-black tracking-widest uppercase shadow-md shadow-yellow-500/20">
+                    VIP LVL {{ user.current_level }}
+                </div>
+                {% endif %}
             </div>
-            <input type="text" id="refLink" value="..." class="bg-transparent text-xs font-mono text-slate-400 w-full outline-none truncate px-2" readonly>
-            <button onclick="copyRef(this)" class="bg-violet-600 text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-lg shadow-violet-600/20 active:scale-90 transition-all">
-                COPY
+        </div>
+    </div>
+
+    <!-- 2. QUICK STATS -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="clean-card p-5 text-center">
+            <div class="h-10 w-10 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-wallet"></i></div>
+            <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-0.5">Main Bal</p>
+            <h3 class="text-xl font-black text-slate-800 font-mono tracking-tight">৳{{ user.balance }}</h3>
+        </div>
+        <div class="clean-card p-5 text-center">
+            <div class="h-10 w-10 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-users"></i></div>
+            <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-0.5">Team</p>
+            <h3 class="text-xl font-black text-slate-800 font-mono tracking-tight">{{ ref_count }}</h3>
+        </div>
+    </div>
+
+    <!-- 3. REFERRAL COPY BOX -->
+    <div class="clean-card p-5 relative overflow-hidden">
+        <div class="absolute right-0 top-0 opacity-5 text-6xl transform translate-x-4 -translate-y-4"><i class="fa-solid fa-gift"></i></div>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Invite Link</p>
+        
+        <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100 relative z-10">
+            <input type="text" id="refLink" value="..." class="bg-transparent text-xs font-bold text-slate-600 w-full outline-none font-mono pl-2 truncate" readonly>
+            <button onclick="copyRef(this)" class="btn-emerald text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md active:scale-95 transition flex-shrink-0">
+                Copy
             </button>
         </div>
     </div>
 
-    <!-- 4. NAVIGATION LIST -->
-    <div class="space-y-2">
-        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 ml-4">System Operations</p>
+    <!-- 4. SETTINGS LIST (iOS Style) -->
+    <div>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-4">Account</p>
         
-        {% if user.current_level == 0 %}
-        <a href="/vip" class="ai-list-item group border-amber-500/20 bg-amber-500/5">
-            <div class="flex items-center gap-4">
-                <div class="h-11 w-11 bg-amber-500 text-slate-900 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:rotate-12 transition-transform">
-                    <i class="fa-solid fa-crown text-lg"></i>
+        <div class="menu-group">
+            <a href="/withdraw" class="menu-item group">
+                <div class="flex items-center gap-4">
+                    <div class="h-8 w-8 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition"><i class="fa-solid fa-money-bill-transfer text-sm"></i></div>
+                    <span class="font-bold text-slate-700 text-sm">উইথড্র ফান্ড</span>
                 </div>
-                <div>
-                    <h4 class="font-bold text-amber-500 text-sm">VIP আপগ্রেড করুন</h4>
-                    <p class="text-[10px] text-amber-600/70">অটোমেটিক ইনকাম শুরু করুন</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-chevron-right text-amber-600/50 text-xs"></i>
-        </a>
-        {% endif %}
+                <i class="fa-solid fa-chevron-right text-slate-300 text-[10px] group-hover:text-emerald-500 transition transform group-hover:translate-x-1"></i>
+            </a>
 
-        <a href="/withdraw" class="ai-list-item group">
-            <div class="flex items-center gap-4">
-                <div class="h-11 w-11 bg-slate-800 text-violet-400 rounded-2xl flex items-center justify-center group-hover:bg-violet-600 group-hover:text-white transition-all">
-                    <i class="fa-solid fa-money-bill-transfer"></i>
+            <a href="/history" class="menu-item group">
+                <div class="flex items-center gap-4">
+                    <div class="h-8 w-8 bg-slate-50 text-slate-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition"><i class="fa-solid fa-clock-rotate-left text-sm"></i></div>
+                    <span class="font-bold text-slate-700 text-sm">ট্রানজেকশন হিস্টোরি</span>
                 </div>
-                <div>
-                    <h4 class="font-bold text-slate-200 text-sm">টাকা উত্তোলন</h4>
-                    <p class="text-[10px] text-slate-500">বিকাশ / নগদ / রকেট</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-chevron-right text-slate-700 text-xs"></i>
-        </a>
+                <i class="fa-solid fa-chevron-right text-slate-300 text-[10px] group-hover:text-emerald-500 transition transform group-hover:translate-x-1"></i>
+            </a>
 
-        <a href="/history" class="ai-list-item group">
-            <div class="flex items-center gap-4">
-                <div class="h-11 w-11 bg-slate-800 text-blue-400 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
-                    <i class="fa-solid fa-database"></i>
+            <a href="/adm" class="menu-item group">
+                <div class="flex items-center gap-4">
+                    <div class="h-8 w-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition"><i class="fa-solid fa-sliders text-sm"></i></div>
+                    <span class="font-bold text-slate-700 text-sm">পেমেন্ট মেথড সেটআপ</span>
                 </div>
-                <div>
-                    <h4 class="font-bold text-slate-200 text-sm">লেনদেন হিস্টোরি</h4>
-                    <p class="text-[10px] text-slate-500">সকল রেকর্ডের তালিকা</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-chevron-right text-slate-700 text-xs"></i>
-        </a>
+                <i class="fa-solid fa-chevron-right text-slate-300 text-[10px] group-hover:text-emerald-500 transition transform group-hover:translate-x-1"></i>
+            </a>
+        </div>
 
-        <a href="/drive" class="ai-list-item group">
-            <div class="flex items-center gap-4">
-                <div class="h-11 w-11 bg-slate-800 text-emerald-400 rounded-2xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all">
-                    <i class="fa-solid fa-tower-broadcast"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-200 text-sm">ড্রাইভ অফার</h4>
-                    <p class="text-[10px] text-slate-500">স্পেশাল প্যাকেজ কিনুন</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-chevron-right text-slate-700 text-xs"></i>
-        </a>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-4 mt-6">System</p>
 
-        {% if user.role == 'admin' %}
-        <a href="/admin" class="ai-list-item group border-violet-500/30 bg-violet-500/5">
-            <div class="flex items-center gap-4">
-                <div class="h-11 w-11 bg-white text-slate-950 rounded-2xl flex items-center justify-center">
-                    <i class="fa-solid fa-shield-halved"></i>
+        <div class="menu-group">
+            {% if user.role == 'admin' %}
+            <a href="/admin" class="menu-item group">
+                <div class="flex items-center gap-4">
+                    <div class="h-8 w-8 bg-slate-900 text-white rounded-lg flex items-center justify-center group-hover:scale-110 transition"><i class="fa-solid fa-shield-halved text-sm"></i></div>
+                    <span class="font-bold text-slate-900 text-sm">এডমিন প্যানেল</span>
                 </div>
-                <div>
-                    <h4 class="font-bold text-white text-sm">অ্যাডমিন প্যানেল</h4>
-                    <p class="text-[10px] text-violet-400">সিস্টেম কন্ট্রোল করুন</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-arrow-right-to-bracket text-violet-500 text-xs"></i>
-        </a>
-        {% endif %}
+                <i class="fa-solid fa-chevron-right text-slate-300 text-[10px] group-hover:text-slate-900 transition transform group-hover:translate-x-1"></i>
+            </a>
+            {% endif %}
 
-        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 ml-4 mt-8">Support & Security</p>
+            <a href="https://wa.me/8801894577178" target="_blank" class="menu-item group">
+                <div class="flex items-center gap-4">
+                    <div class="h-8 w-8 bg-[#25D366]/10 text-[#25D366] rounded-lg flex items-center justify-center group-hover:scale-110 transition"><i class="fa-brands fa-whatsapp text-sm"></i></div>
+                    <span class="font-bold text-slate-700 text-sm">সাপোর্ট চ্যাট</span>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-slate-300 text-[10px] group-hover:text-[#25D366] transition transform group-hover:translate-x-1"></i>
+            </a>
 
-        <a href="https://t.me/PayRsupprt" target="_blank" class="ai-list-item group">
-            <div class="flex items-center gap-4">
-                <div class="h-11 w-11 bg-sky-500/10 text-sky-400 rounded-2xl flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white transition-all">
-                    <i class="fa-brands fa-telegram text-xl"></i>
+            <a href="/logout" class="menu-item group">
+                <div class="flex items-center gap-4">
+                    <div class="h-8 w-8 bg-red-50 text-red-500 rounded-lg flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition"><i class="fa-solid fa-power-off text-sm"></i></div>
+                    <span class="font-bold text-red-600 text-sm">লগ আউট</span>
                 </div>
-                <div>
-                    <h4 class="font-bold text-slate-200 text-sm">লাইভ সাপোর্ট</h4>
-                    <p class="text-[10px] text-slate-500">২৪/৭ কাস্টমার সার্ভিস</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-arrow-up-right-from-square text-slate-700 text-[10px]"></i>
-        </a>
-
-        <a href="/logout" class="ai-list-item group hover:bg-rose-500/5">
-            <div class="flex items-center gap-4">
-                <div class="h-11 w-11 bg-rose-500/10 text-rose-500 rounded-2xl flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white transition-all">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-rose-500 text-sm">লগ আউট</h4>
-                    <p class="text-[10px] text-rose-500/60">একাউন্ট নিরাপদ রাখুন</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-chevron-right text-rose-500/20 text-xs"></i>
-        </a>
+                <i class="fa-solid fa-chevron-right text-slate-300 text-[10px] group-hover:text-red-500 transition transform group-hover:translate-x-1"></i>
+            </a>
+        </div>
     </div>
 
 </div>
@@ -261,7 +164,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const domain = window.location.origin;
-        const uniqueCode = "{{ user.referral_code if user.referral_code else 'NODE_X' }}";
+        const uniqueCode = "{{ user.referral_code if user.referral_code else 'GenerateID' }}";
         const fullLink = `${domain}/register?ref=${uniqueCode}`;
         
         const inputField = document.getElementById("refLink");
@@ -270,25 +173,21 @@
         }
     });
 
-    function copyRef(btnElement) {
+    function copyRef(btn) {
         const copyText = document.getElementById("refLink");
         copyText.select();
         copyText.setSelectionRange(0, 99999); 
 
-        try {
-            navigator.clipboard.writeText(copyText.value).then(() => {
-                const originalContent = btnElement.innerText;
-                btnElement.innerText = 'COPIED';
-                btnElement.classList.replace("bg-violet-600", "bg-emerald-600");
-                
-                setTimeout(() => {
-                    btnElement.innerText = originalContent;
-                    btnElement.classList.replace("bg-emerald-600", "bg-violet-600");
-                }, 2000);
-            });
-        } catch (err) {
-            console.error('Copy Failed', err);
-        }
+        navigator.clipboard.writeText(copyText.value).then(() => {
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            btn.classList.add("bg-slate-800");
+            
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.classList.remove("bg-slate-800");
+            }, 2000);
+        });
     }
 </script>
 
