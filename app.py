@@ -1422,6 +1422,7 @@ def delete_notice(id):
         
     return redirect(url_for('notice'))
 
+# --- ADMIN: ADD TASK (WITH FB POST SUPPORT) ---
 @app.route('/adtask', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -1430,19 +1431,28 @@ def add_task():
         title = request.form.get('title')
         description = request.form.get('description')
         link = request.form.get('link') or '#'
-        reward = float(request.form.get('reward', 0))
+        try:
+            reward = float(request.form.get('reward', 0))
+        except:
+            reward = 0.0
+        
         category = request.form.get('category')
         task_type = request.form.get('task_type')
-        caption = request.form.get('caption')
+        caption = request.form.get('caption') # FB Post Caption
         
         image_url = None
+        
         # যদি FB Post টাস্ক হয় এবং ছবি আপলোড করে
         if task_type == 'fb_post' and 'task_image' in request.files:
             file = request.files['task_image']
             if file.filename != '':
-                # Smart ImgBB Upload (আপনার আগের ফাংশনটি ব্যবহার করা হচ্ছে)
+                # Smart ImgBB Upload (আপনার আগের তৈরি করা ফাংশনটি)
                 img_url, err = smart_imgbb_upload(file)
-                if img_url: image_url = img_url
+                if img_url: 
+                    image_url = img_url
+                else:
+                    flash(f"Image Upload Failed: {err}", "error")
+                    return redirect(url_for('add_task'))
         
         try:
             supabase.table('tasks').insert({
@@ -1452,22 +1462,25 @@ def add_task():
                 'reward': reward,
                 'category': category,
                 'task_type': task_type,
-                'image_url': image_url,
-                'caption': caption,
+                'image_url': image_url, # ছবি লিংক সেভ
+                'caption': caption,     # ক্যাপশন সেভ
                 'is_active': True
             }).execute()
             flash("✅ টাস্ক সফলভাবে যোগ করা হয়েছে!", "success")
         except Exception as e:
+            print(f"Task Add Error: {e}")
             flash(f"Error: {str(e)}", "error")
             
         return redirect(url_for('add_task'))
 
+    # GET Method: সব টাস্কের লিস্ট আনা
     try:
-        all_tasks = supabase.table('tasks').select('*').order('id', desc=True).execute().data
-    except: all_tasks =[]
+        res = supabase.table('tasks').select('*').order('id', desc=True).execute()
+        all_tasks = res.data
+    except:
+        all_tasks =[]
         
     return render_template('adtask.html', user=g.user, tasks=all_tasks)
-
 @app.route('/spin', methods=['GET', 'POST'])
 @login_required
 def lucky_spin():
