@@ -2,210 +2,202 @@
 {% block content %}
 
 <style>
-    /* --- Dashboard Specific Animations --- */
-    .reveal { animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-    @keyframes revealUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    /* --- ১. স্পেশাল এনিমেশন ও গ্লাস কার্ড --- */
+    .reveal { animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+    @keyframes revealUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* VIP Claim Glow Effect */
-    .vip-glow {
-        position: relative;
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        border: 1px solid rgba(251, 191, 36, 0.3);
+    .clean-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid rgba(15, 23, 42, 0.05);
+        box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.02);
     }
-    .vip-glow::before {
-        content: ''; position: absolute; inset: -2px;
-        background: linear-gradient(45deg, #f59e0b, transparent, #fbbf24);
-        filter: blur(10px); opacity: 0.15; z-index: -1;
-        border-radius: 26px;
-    }
+    
+    .micro-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; }
+    .heading-massive { font-weight: 900; letter-spacing: -0.03em; }
 
-    /* Bento Grid Adjustment */
-    .bento-grid-dashboard {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-auto-rows: minmax(110px, auto);
-        gap: 1.5rem;
-    }
-    @media (max-width: 768px) {
-        .bento-grid-dashboard { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-    }
-
-    .stat-value { font-family: 'Inter', sans-serif; font-weight: 900; letter-spacing: -0.03em; }
+    /* পেমেন্ট লগের জন্য ছোট এনিমেশন */
+    .payout-item { animation: slideIn 0.4s ease-out forwards; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+    
+    .blur-mode { filter: blur(8px); transition: 0.3s; }
 </style>
 
-<div class="space-y-10 pb-20">
-    
-    <!-- ================= 1. GREETING & IDENTITY HUD ================= -->
-    <header class="flex justify-between items-end reveal" style="animation-delay: 0.1s;">
-        <div>
-            <p class="micro-label mb-1">Accessing Quantum Node</p>
-            <h1 class="text-4xl font-black text-navy tracking-tighter">
-                Hello, <span class="text-emerald-500">{{ user.email.split('@')[0] | title }}</span>
-            </h1>
-        </div>
-        <div class="hidden md:block text-right">
-            <p class="micro-label">Server Status</p>
-            <p class="text-xs font-bold text-emerald-600 flex items-center gap-2">
-                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span> Encrypted & Online
-            </p>
-        </div>
-    </header>
+<div class="space-y-5 pb-24 pt-2 reveal">
 
-    <!-- ================= 2. MAIN BENTO GRID ================= -->
-    <div class="bento-grid-dashboard">
-        
-        <!-- LARGE CARD: MAIN ASSETS -->
-        <div class="col-span-4 md:col-span-2 row-span-2 clean-card p-10 flex flex-col justify-between reveal" style="animation-delay: 0.2s;">
-            <div class="card-watermark">01</div>
+    <!-- ১. মিনি প্রোফাইল (Header) -->
+    <div class="flex justify-between items-center px-1">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white font-black shadow-lg">
+                {{ user.email[0] | upper }}
+            </div>
             <div>
-                <p class="micro-label mb-4 tracking-[0.3em]">Total Vault Assets</p>
-                <h2 class="text-6xl font-black text-navy tracking-tighter mb-2">৳ {{ user.balance }}</h2>
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-arrow-trend-up text-emerald-500 text-xs"></i>
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">+12% from last cycle</span>
-                </div>
-            </div>
-            <div class="flex gap-4 mt-10">
-                <a href="/withdraw" class="btn-emerald flex-1 py-4 rounded-2xl text-center text-xs font-black uppercase tracking-widest">Withdraw</a>
-                <a href="/tasks" class="flex-1 py-4 rounded-2xl bg-navy text-white text-center text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-colors">Execute Tasks</a>
+                <p class="micro-label" id="greeting">HELLO</p>
+                <h2 class="text-sm font-bold text-navy">{{ user.email.split('@')[0] | title }}</h2>
             </div>
         </div>
+        <a href="/notice" class="h-9 w-9 bg-white rounded-full flex items-center justify-center text-slate-400 border border-slate-100 relative">
+            <i class="fa-regular fa-bell"></i>
+            {% if settings.notice_text %}<span class="absolute top-2 right-2.5 h-2 w-2 bg-emerald-500 rounded-full border-2 border-white"></span>{% endif %}
+        </a>
+    </div>
 
-        <!-- VIP CLAIM NODE (Interactive) -->
-        <div class="col-span-4 md:col-span-2 row-span-2 vip-glow rounded-[32px] p-10 flex flex-col justify-between reveal" style="animation-delay: 0.3s;">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="micro-label text-amber-500/80 mb-1">Elite Yield Pool</p>
-                    <h3 class="text-3xl font-black text-white tracking-tight">VIP Earnings</h3>
-                </div>
-                <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center">
-                    <i class="fa-solid fa-crown text-amber-500 text-xl"></i>
-                </div>
-            </div>
-
-            <div class="my-6">
-                <h4 class="text-5xl font-black text-amber-400 stat-value">৳ {{ user.vip_balance or 0 }}</h4>
-                <p class="text-[10px] text-slate-500 font-bold uppercase mt-2">Auto-yield generated from VIP Level {{ user.current_level }}</p>
-            </div>
-
-            {% if user.current_level > 0 %}
-            <form action="/vip/claim" method="POST">
-                <button type="submit" class="w-full py-4 bg-gradient-to-r from-amber-400 to-orange-600 rounded-2xl text-navy font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-500/20 hover:scale-[1.02] transition-transform active:scale-95">
-                    Claim Rewards Now
-                </button>
-            </form>
-            {% else %}
-            <a href="/vip" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-white text-center font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-colors">
-                Upgrade to Unlock VIP
-            </a>
-            {% endif %}
+    <!-- ২. কম্প্যাক্ট ব্যালেন্স কার্ড (Massive Typography) -->
+    <div class="clean-card p-6 bg-gradient-to-br from-white to-slate-50 relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 text-7xl font-black text-slate-950/[0.02] pointer-events-none">01</div>
+        
+        <p class="micro-label mb-2">Total Balance</p>
+        <div class="flex items-end gap-3 cursor-pointer" onclick="toggleBalance()">
+            <h1 id="balanceText" class="text-4xl heading-massive text-navy blur-mode">৳{{ user.balance }}</h1>
+            <i id="eyeIcon" class="fa-solid fa-eye-slash text-slate-300 mb-2 text-xs"></i>
         </div>
 
-        <!-- SMALL CARD: TODAY'S INCOME -->
-        <div class="col-span-2 md:col-span-1 clean-card p-6 flex flex-col justify-between reveal" style="animation-delay: 0.4s;">
-            <p class="micro-label">Daily Net</p>
-            <h4 class="text-2xl font-black text-navy">৳ {{ today_income }}</h4>
-            <div class="h-1 w-full bg-emerald-50 rounded-full mt-4 overflow-hidden">
-                <div class="h-full bg-emerald-500 w-2/3"></div>
+        <div class="grid grid-cols-2 gap-3 mt-6">
+            <div class="p-3 bg-emerald-50/50 rounded-2xl border border-emerald-100/50">
+                <p class="micro-label text-emerald-600">Today</p>
+                <p class="text-sm font-black text-emerald-700">+৳{{ today_income }}</p>
             </div>
-        </div>
-
-        <!-- SMALL CARD: PENDING ASSETS -->
-        <div class="col-span-2 md:col-span-1 clean-card p-6 flex flex-col justify-between reveal" style="animation-delay: 0.5s;">
-            <p class="micro-label">Escrow Lock</p>
-            <h4 class="text-2xl font-black text-slate-400">৳ {{ pending_income }}</h4>
-            <p class="text-[9px] font-bold text-slate-400 uppercase mt-2">Awaiting verification</p>
-        </div>
-
-        <!-- WIDE CARD: NETWORK STATS -->
-        <div class="col-span-4 md:col-span-2 clean-card p-8 flex items-center justify-between reveal" style="animation-delay: 0.6s;">
-            <div class="flex items-center gap-6">
-                <div class="w-14 h-14 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center text-3xl">
-                    <i class="fa-solid fa-users-rays"></i>
-                </div>
-                <div>
-                    <p class="micro-label mb-0.5">Active Network Nodes</p>
-                    <h3 class="text-2xl font-black text-navy">{{ ref_count }} Referrals</h3>
-                </div>
+            <div class="p-3 bg-amber-50/50 rounded-2xl border border-amber-100/50">
+                <p class="micro-label text-amber-600">VIP Assets</p>
+                <p class="text-sm font-black text-amber-700">৳{{ user.vip_balance or 0 }}</p>
             </div>
-            <a href="/referrals" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-emerald-500 transition-colors">
-                <i class="fa-solid fa-chevron-right"></i>
-            </a>
         </div>
     </div>
 
-    <!-- ================= 3. QUICK MENU GRID ================= -->
-    <section class="reveal" style="animation-delay: 0.7s;">
-        <p class="micro-label mb-6 px-2">Operational Command Center</p>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            
-            <a href="/tasks" class="clean-card p-6 group hover:border-emerald-500/20 transition-all">
-                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl mb-4 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm">
-                    <i class="fa-solid fa-list-check"></i>
-                </div>
-                <h5 class="text-sm font-black text-navy uppercase tracking-tight">Active Tasks</h5>
-                <p class="text-[10px] text-slate-400 font-bold mt-1">Start earning now</p>
-            </a>
+    <!-- ৩. নোটিশ টিকার (Compact) -->
+    {% if settings.notice_text %}
+    <div class="clean-card p-2 flex items-center bg-white/50 backdrop-blur-md">
+        <span class="bg-navy text-white text-[8px] font-black px-2 py-1 rounded-lg mr-3 shadow-sm uppercase">Notice</span>
+        <marquee class="text-[11px] font-semibold text-slate-600" scrollamount="4">{{ settings.notice_text }}</marquee>
+    </div>
+    {% endif %}
 
-            <a href="/history" class="clean-card p-6 group transition-all">
-                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl mb-4 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                </div>
-                <h5 class="text-sm font-black text-navy uppercase tracking-tight">Ledger Logs</h5>
-                <p class="text-[10px] text-slate-400 font-bold mt-1">Transaction history</p>
-            </a>
+    <!-- ৪. সার্ভিস গ্রিড (Quick Menu - Small Icons) -->
+    <div class="grid grid-cols-4 gap-3">
+        {% set navs = [
+            ('/tasks', 'fa-bolt-lightning', 'টাস্ক', 'bg-emerald-100 text-emerald-600'),
+            ('/withdraw', 'fa-wallet', 'উইথড্র', 'bg-blue-100 text-blue-600'),
+            ('/vip', 'fa-crown', 'VIP', 'bg-amber-100 text-amber-600'),
+            ('/referrals', 'fa-users', 'রেফার', 'bg-indigo-100 text-indigo-600'),
+            ('/income', 'fa-chart-pie', 'আয়', 'bg-teal-100 text-teal-600'),
+            ('/proofs', 'fa-receipt', 'প্রুফ', 'bg-rose-100 text-rose-600'),
+            ('/tutorial', 'fa-play', 'ভিডিও', 'bg-purple-100 text-purple-600'),
+            ('https://wa.me/8801894577178', 'fa-headset', 'সাপোর্ট', 'bg-green-100 text-green-600')
+        ] %}
+        {% for url, icon, name, style in navs %}
+        <a href="{{ url }}" class="clean-card p-3 flex flex-col items-center gap-2 hover:scale-105 transition-transform">
+            <div class="h-9 w-9 {{ style }} rounded-xl flex items-center justify-center text-sm shadow-sm">
+                <i class="fa-solid {{ icon }}"></i>
+            </div>
+            <span class="text-[9px] font-bold text-slate-500">{{ name }}</span>
+        </a>
+        {% endfor %}
+    </div>
 
-            <a href="/proofs" class="clean-card p-6 group transition-all">
-                <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-xl mb-4 group-hover:bg-purple-600 group-hover:text-white transition-all shadow-sm">
-                    <i class="fa-solid fa-shield-check"></i>
-                </div>
-                <h5 class="text-sm font-black text-navy uppercase tracking-tight">Verified Proofs</h5>
-                <p class="text-[10px] text-slate-400 font-bold mt-1">Payment gallery</p>
-            </a>
-
-            <a href="/referrals" class="clean-card p-6 group transition-all">
-                <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-xl mb-4 group-hover:bg-orange-600 group-hover:text-white transition-all shadow-sm">
-                    <i class="fa-solid fa-share-nodes"></i>
-                </div>
-                <h5 class="text-sm font-black text-navy uppercase tracking-tight">Network Hub</h5>
-                <p class="text-[10px] text-slate-400 font-bold mt-1">Invite and earn</p>
-            </a>
-
-            <a href="/tutorial" class="clean-card p-6 group transition-all">
-                <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-xl mb-4 group-hover:bg-rose-600 group-hover:text-white transition-all shadow-sm">
-                    <i class="fa-solid fa-circle-play"></i>
-                </div>
-                <h5 class="text-sm font-black text-navy uppercase tracking-tight">Training</h5>
-                <p class="text-[10px] text-slate-400 font-bold mt-1">Video tutorials</p>
-            </a>
-
-            <a href="/withdraw" class="clean-card p-6 group transition-all">
-                <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center text-xl mb-4 group-hover:bg-teal-600 group-hover:text-white transition-all shadow-sm">
-                    <i class="fa-solid fa-wallet"></i>
-                </div>
-                <h5 class="text-sm font-black text-navy uppercase tracking-tight">Payouts</h5>
-                <p class="text-[10px] text-slate-400 font-bold mt-1">Collect your cash</p>
-            </a>
-
-            <a href="/account" class="clean-card p-6 group transition-all">
-                <div class="w-12 h-12 bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center text-xl mb-4 group-hover:bg-navy group-hover:text-white transition-all shadow-sm">
-                    <i class="fa-solid fa-user-gear"></i>
-                </div>
-                <h5 class="text-sm font-black text-navy uppercase tracking-tight">Node Settings</h5>
-                <p class="text-[10px] text-slate-400 font-bold mt-1">Profile management</p>
-            </a>
-
-            <a href="https://t.me/PayRsupprt" target="_blank" class="clean-card p-6 group border-emerald-500/10 bg-emerald-50/20">
-                <div class="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-xl mb-4 shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform">
-                    <i class="fa-brands fa-telegram"></i>
-                </div>
-                <h5 class="text-sm font-black text-emerald-600 uppercase tracking-tight">Live Console</h5>
-                <p class="text-[10px] text-emerald-700 font-bold mt-1">Telegram Support</p>
-            </a>
-
+    <!-- ৫. ডেইলি বোনাস এবং প্রোগ্রেস (Bento Mix) -->
+    <div class="grid grid-cols-2 gap-4">
+        <!-- Daily Check-in -->
+        <div class="clean-card p-4 flex flex-col justify-between">
+            <p class="micro-label mb-2">Daily Bonus</p>
+            <div class="flex gap-1 mb-3">
+                {% for i in range(1, 6) %}
+                <div class="h-1.5 flex-1 rounded-full {{ 'bg-emerald-500' if user.streak_count >= i else 'bg-slate-100' }}"></div>
+                {% endfor %}
+            </div>
+            <a href="/daily-checkin" class="text-[10px] font-black text-white bg-navy py-2 rounded-lg text-center uppercase tracking-wider">Claim ৳</a>
         </div>
-    </section>
+        
+        <!-- PWA/Tutorial Banner -->
+        <a href="/tutorial" class="clean-card p-4 bg-emerald-500 text-white flex flex-col justify-between">
+            <p class="text-[9px] font-black uppercase opacity-80">Training Node</p>
+            <h4 class="text-xs font-bold leading-tight">কিভাবে কাজ করবেন দেখুন →</h4>
+        </a>
+    </div>
+
+    <!-- ৬. লাইভ পেমেন্ট ও লিডারবোর্ড (Compact) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Live Feed -->
+        <div class="clean-card p-4 h-48 overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="micro-label">Live Distribution</h3>
+                <span class="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+            </div>
+            <div id="payoutFeed" class="space-y-2">
+                <!-- JS Data -->
+            </div>
+        </div>
+
+        <!-- Mini Leaderboard -->
+        <div class="clean-card p-4">
+            <h3 class="micro-label mb-3">Top Nodes</h3>
+            <div class="space-y-2">
+                {% for winner in leaderboard[:3] %}
+                <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 p-2 bg-slate-50 rounded-xl">
+                    <span>{{ winner.email.split('@')[0][:4] }}***</span>
+                    <span class="text-emerald-600">৳{{ winner.balance }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ৭. সার্ভার আপটাইম (Small row) -->
+    <div class="flex justify-center items-center gap-4 py-2 opacity-60">
+        <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">System Age:</p>
+        <div class="flex gap-2 text-[10px] font-black text-navy font-mono" id="uptime">
+            <span id="days">00</span>D : <span id="hours">00</span>H : <span id="min">00</span>M
+        </div>
+    </div>
 
 </div>
+
+<!-- স্ক্রিপ্টস -->
+<script>
+    // ব্যালেন্স হাইড
+    function toggleBalance() {
+        const text = document.getElementById('balanceText');
+        const icon = document.getElementById('eyeIcon');
+        text.classList.toggle('blur-mode');
+        icon.classList.toggle('fa-eye-slash');
+        icon.classList.toggle('fa-eye');
+    }
+
+    // লাইভ পেমেন্ট (ছোট সাইজ)
+    const feed = document.getElementById('payoutFeed');
+    function addPayout() {
+        const num = "01" + Math.floor(Math.random()*9) + "****" + Math.floor(10+Math.random()*90);
+        const amt = Math.floor(Math.random()*(500-100)+100);
+        const div = document.createElement('div');
+        div.className = "flex justify-between items-center p-2.5 bg-slate-50 rounded-xl payout-item border border-slate-100";
+        div.innerHTML = `
+            <span class="text-[10px] font-mono text-slate-500">${num}</span>
+            <span class="text-[10px] font-black text-emerald-600">+৳${amt}</span>
+        `;
+        feed.prepend(div);
+        if(feed.children.length > 4) feed.lastElementChild.remove();
+        setTimeout(addPayout, 5000);
+    }
+    addPayout();
+
+    // সাইট বয়স
+    function updateUptime() {
+        const start = new Date(2025, 11, 19).getTime();
+        const diff = new Date().getTime() - start;
+        if(diff > 0) {
+            document.getElementById('days').innerText = Math.floor(diff / 86400000);
+            document.getElementById('hours').innerText = Math.floor((diff % 86400000) / 3600000);
+            document.getElementById('min').innerText = Math.floor((diff % 3600000) / 60000);
+        }
+    }
+    setInterval(updateUptime, 1000);
+    updateUptime();
+
+    // গ্রিটিং
+    const hr = new Date().getHours();
+    const greet = document.getElementById('greeting');
+    if(hr < 12) greet.innerText = "GOOD MORNING";
+    else if(hr < 18) greet.innerText = "GOOD AFTERNOON";
+    else greet.innerText = "GOOD EVENING";
+</script>
 
 {% endblock %}
