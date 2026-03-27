@@ -374,16 +374,18 @@ def newbie_action(action, sub_id):
 
     return redirect(url_for('newbie_check'))
     
-# --- ADMIN: DANGER ZONE (MASS CLEANUP & HISTORY WIPE) ---# --- ADMIN: DANGER ZONE (FACTORY RESET / MASS WIPE) ---
+# --- ADMIN: DANGER ZONE (FACTORY RESET / MASS WIPE) ---
 @app.route('/admin/danger-zone', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def danger_zone():
-    # ১. কতজন সাধারণ ইউজার আছে তার কাউন্ট বের করা
+    # ১. কতজন সাধারণ ইউজার আছে তার কাউন্ট বের করা (১০০% নির্ভুল পদ্ধতি)
     try:
-        res = supabase.table('profiles').select('id', count='exact', head=True).neq('role', 'admin').execute()
-        user_count = res.count if res.count else 0
-    except:
+        # আমরা শুধু সাধারণ ইউজারদের আইডিগুলো আনছি এবং Python দিয়ে গুনছি
+        res = supabase.table('profiles').select('id').neq('role', 'admin').execute()
+        user_count = len(res.data) if res.data else 0
+    except Exception as e:
+        print(f"User Count Error: {e}")
         user_count = 0
 
     if request.method == 'POST':
@@ -411,9 +413,9 @@ def danger_zone():
                     supabase.table('profiles').update({'referred_by': None}).in_('referred_by', chunk).execute()
                     
                     # B. ইউজারের সমস্ত এক্টিভিটি ডিলিট করা
+                    supabase.table('withdrawals').delete().in_('user_id', chunk).execute()
                     supabase.table('submissions').delete().in_('user_id', chunk).execute()
                     supabase.table('special_submissions').delete().in_('user_id', chunk).execute()
-                    supabase.table('withdrawals').delete().in_('user_id', chunk).execute()
                     supabase.table('activation_requests').delete().in_('user_id', chunk).execute()
                     supabase.table('vip_requests').delete().in_('user_id', chunk).execute()
                     supabase.table('user_vips').delete().in_('user_id', chunk).execute()
@@ -435,7 +437,7 @@ def danger_zone():
             return redirect(url_for('danger_zone'))
 
     return render_template('danger_zone.html', user_count=user_count)
-@app.route('/admin/drive/manage', methods=['GET', 'POST'])
+    @app.route('/admin/drive/manage', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_drive_manage():
