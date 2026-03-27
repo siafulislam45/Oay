@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto space-y-6 pb-24 pt-4">
+
+    <!-- 1. ADD TASK FORM -->
+    <div class="clean-card p-6 border-l-4 border-emerald-500">
+        <h2 class="text-lg font-black text-slate-800 mb-4"><i class="fa-solid fa-plus text-emerald-500"></i> নতুন জিমেইল টাস্ক তৈরি</h2>
+        <form method="POST" action="/admin/gmails" class="grid md:grid-cols-2 gap-4">
+            <input type="text" name="first_name" required placeholder="First Name (ex: Rahim)" class="p-3 border rounded-xl bg-slate-50 text-sm">
+            <input type="text" name="last_name" required placeholder="Last Name (ex: Uddin)" class="p-3 border rounded-xl bg-slate-50 text-sm">
+            <div class="relative">
+                <span class="absolute right-3 top-3 text-slate-400 text-sm font-mono">@gmail.com</span>
+                <input type="text" name="email_prefix" required placeholder="Email Prefix (ex: rahim2026)" class="w-full p-3 border rounded-xl bg-slate-50 text-sm font-mono pr-24">
+            </div>
+            <input type="text" name="password" required placeholder="Password" class="p-3 border rounded-xl bg-slate-50 text-sm font-mono">
+            <input type="number" step="0.01" name="reward" required placeholder="Reward (৳)" value="5" class="p-3 border rounded-xl bg-slate-50 text-sm">
+            <button type="submit" class="bg-[#0F172A] text-white p-3 rounded-xl font-bold shadow-lg hover:bg-[#4F46E5] transition">পাবলিশ করুন</button>
+        </form>
+    </div>
+
+    <!-- 2. PENDING REVIEWS -->
+    <h3 class="font-black text-slate-800 text-sm mt-8 mb-4"><i class="fa-solid fa-check-to-slot text-teal-500"></i> চেক করুন (Pending)</h3>
+    <div class="grid md:grid-cols-2 gap-4">
+        {% for task in pending_tasks %}
+        <div class="clean-card p-5 relative overflow-hidden">
+            <div class="flex justify-between items-start mb-3">
+                <span class="text-[10px] bg-indigo-50 text-[#4F46E5] px-2 py-1 rounded font-bold">{{ task.profiles.email }}</span>
+                <span class="text-sm font-black text-emerald-600">৳{{ task.reward }}</span>
+            </div>
+            
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 font-mono text-xs space-y-1 mb-4">
+                <p class="text-slate-800">Email: {{ task.email_prefix }}@gmail.com</p>
+                <p class="text-slate-800">Pass: {{ task.password }}</p>
+                <p class="text-slate-500 mt-1">Name: {{ task.first_name }} {{ task.last_name }}</p>
+            </div>
+
+            <div class="flex gap-2">
+                <a href="/admin/gmails/action/reject/{{ task.id }}" onclick="return confirm('রিজেক্ট করলে কাজটি আবার Available হয়ে যাবে। নিশ্চিত?')" class="flex-1 bg-red-50 text-red-600 text-center py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition">❌ Reject</a>
+                <a href="/admin/gmails/action/approve/{{ task.id }}" class="flex-1 bg-emerald-500 text-white text-center py-2 rounded-xl text-xs font-bold hover:bg-emerald-600 shadow-md transition">✅ Approve & Pay</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-span-2 text-center py-10 clean-card border-dashed">
+            <p class="text-slate-400 text-sm font-medium">কোনো কাজ পেন্ডিং নেই।</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
