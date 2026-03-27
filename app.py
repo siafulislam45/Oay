@@ -438,7 +438,8 @@ def danger_zone():
             return redirect(url_for('danger_zone'))
 
     return render_template('danger_zone.html', user_count=user_count)
-    @app.route('/admin/drive/manage', methods=['GET', 'POST'])
+
+@app.route('/admin/drive/manage', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_drive_manage():
