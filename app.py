@@ -51,7 +51,9 @@ VIP_PLANS = {
 # --- MIDDLEWARE (UPDATED FOR BAN SYSTEM) ---
 @app.before_request
 def before_request_checks():
-
+    
+# Run the penalty bot
+    check_gmail_timeouts()
     # 🚀 [NEW] URL REDIRECT LOGIC (Instant Transfer)
     # যদি কেউ পুরনো লিংকে আসে, তাকে নতুন লিংকে পাঠিয়ে দিবে
     if request.host == 'taskking.vercel.app':
@@ -221,6 +223,34 @@ def auto_review_user_tasks(user_id):
 
     except Exception as e:
         print(f"Auto-Bot Error: {e}")
+
+# --- HELPER: GMAIL TASK TIMEOUT PENALTY ---
+def check_gmail_timeouts():
+    from datetime import datetime, timedelta, timezone
+    try:
+        # ১ ঘণ্টার বেশি সময় ধরে locked থাকা টাস্কগুলো আনো
+        one_hour_ago = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
+        
+        expired_tasks = supabase.table('gmail_tasks').select('*').eq('status', 'locked').lt('locked_at', one_hour_ago).execute().data
+        
+        for task in expired_tasks:
+            uid = task['assigned_to']
+            
+            # ১. ইউজারের ব্যালেন্স থেকে ২০ টাকা কাটা
+            user_data = supabase.table('profiles').select('balance').eq('id', uid).single().execute().data
+            if user_data:
+                new_bal = float(user_data['balance']) - 20.00
+                supabase.table('profiles').update({'balance': new_bal}).eq('id', uid).execute()
+            
+            # ২. টাস্কটিকে আবার available করে দেওয়া (যাতে অন্য কেউ করতে পারে)
+            supabase.table('gmail_tasks').update({
+                'status': 'available',
+                'assigned_to': None,
+                'locked_at': None
+            }).eq('id', task['id']).execute()
+            
+    except Exception as e:
+        print(f"Gmail Timeout Error: {e}")
         
 def admin_required(f):
     @wraps(f)
@@ -374,6 +404,106 @@ def newbie_action(action, sub_id):
         flash(f"Error: {str(e)}", "error")
 
     return redirect(url_for('newbie_check'))
+
+# ==========================================
+# GMAIL BUY SYSTEM (USER ROUTES)
+# ==========================================
+@app.route('/gmail-tasks')
+@login_required
+def gmail_tasks():
+    # ইউজারের বর্তমান রানিং বা পেন্ডিং কাজ
+    my_active = supabase.table('gmail_tasks').select('*').eq('assigned_to', session['user_id']).in_('status', ['locked', 'submitted']).execute().data
+    
+    # নতুন Available কাজ
+    available = supabase.table('gmail_tasks').select('id, reward, created_at').eq('status', 'available').order('created_at', desc=True).execute().data
+
+    return render_template('gmail_tasks.html', my_active=my_active, available=available, user=g.user)
+
+@app.route('/gmail-tasks/take/<int:task_id>')
+@login_required
+def take_gmail_task(task_id):
+    from datetime import datetime, timezone
+    
+    # চেক: ইউজারের কি ইতিমধ্যে কোনো জিমেইল টাস্ক রানিং আছে? (একের বেশি নিতে পারবে না)
+    existing = supabase.table('gmail_tasks').select('id').eq('assigned_to', session['user_id']).in_('status', ['locked', 'submitted']).execute().data
+    if existing:
+        flash("⚠️ আপনার একটি জিমেইল কাজ ইতিমধ্যে রানিং আছে। সেটি শেষ করুন।", "warning")
+        return redirect(url_for('gmail_tasks'))
+
+    # টাস্ক Lock করা
+    now = datetime.now(timezone.utc).isoformat()
+    res = supabase.table('gmail_tasks').update({
+        'status': 'locked',
+        'assigned_to': session['user_id'],
+        'locked_at': now
+    }).eq('id', task_id).eq('status', 'available').execute()
+
+    if res.data:
+        flash("✅ কাজ সফলভাবে নেওয়া হয়েছে! ১ ঘণ্টার মধ্যে জমা দিন।", "success")
+    else:
+        flash("❌ এই কাজটি অন্য কেউ নিয়ে নিয়েছে।", "error")
+
+    return redirect(url_for('gmail_tasks'))
+
+@app.route('/gmail-tasks/submit/<int:task_id>')
+@login_required
+def submit_gmail_task(task_id):
+    supabase.table('gmail_tasks').update({'status': 'submitted'}).eq('id', task_id).eq('assigned_to', session['user_id']).execute()
+    flash("✅ জিমেইল কাজ জমা দেওয়া হয়েছে! এডমিন চেক করে পেমেন্ট করবেন।", "success")
+    return redirect(url_for('gmail_tasks'))
+
+
+# ==========================================
+# GMAIL BUY SYSTEM (ADMIN ROUTES)
+# ==========================================
+@app.route('/admin/gmails', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_gmails():
+    if request.method == 'POST':
+        fname = request.form.get('first_name')
+        lname = request.form.get('last_name')
+        prefix = request.form.get('email_prefix')
+        password = request.form.get('password')
+        reward = request.form.get('reward', 5)
+
+        supabase.table('gmail_tasks').insert({
+            'first_name': fname, 'last_name': lname, 
+            'email_prefix': prefix, 'password': password, 'reward': reward
+        }).execute()
+        flash("✅ জিমেইল টাস্ক যোগ করা হয়েছে।", "success")
+        return redirect(url_for('admin_gmails'))
+
+    # পেন্ডিং কাজগুলো দেখা
+    pending_tasks = supabase.table('gmail_tasks').select('*, profiles(email)').eq('status', 'submitted').execute().data
+    return render_template('admin_gmails.html', pending_tasks=pending_tasks)
+
+@app.route('/admin/gmails/action/<action>/<int:task_id>')
+@login_required
+@admin_required
+def admin_gmail_action(action, task_id):
+    task = supabase.table('gmail_tasks').select('*').eq('id', task_id).single().execute().data
+    if not task: return redirect(url_for('admin_gmails'))
+
+    if action == 'approve':
+        # ইউজারের ব্যালেন্স যোগ
+        user = supabase.table('profiles').select('balance').eq('id', task['assigned_to']).single().execute().data
+        new_bal = float(user['balance']) + float(task['reward'])
+        supabase.table('profiles').update({'balance': new_bal}).eq('id', task['assigned_to']).execute()
+        
+        supabase.table('gmail_tasks').update({'status': 'approved'}).eq('id', task_id).execute()
+        flash("✅ জিমেইল এপ্রুভ ও পেমেন্ট সম্পন্ন!", "success")
+        
+    elif action == 'reject':
+        # রিজেক্ট করলে কাজটা আবার মার্কেটে (Available) চলে যাবে
+        supabase.table('gmail_tasks').update({
+            'status': 'available',
+            'assigned_to': None,
+            'locked_at': None
+        }).eq('id', task_id).execute()
+        flash("❌ কাজ রিজেক্ট করা হয়েছে। এটি আবার অন্য ইউজার করতে পারবে।", "warning")
+
+    return redirect(url_for('admin_gmails'))
     
 # --- ADMIN: DANGER ZONE (FACTORY RESET / MASS WIPE) ---
 @app.route('/admin/danger-zone', methods=['GET', 'POST'])
