@@ -373,84 +373,68 @@ def newbie_action(action, sub_id):
         flash(f"Error: {str(e)}", "error")
 
     return redirect(url_for('newbie_check'))
-# --- ADMIN: DANGER ZONE (MASS CLEANUP & HISTORY WIPE) ---
+    
+# --- ADMIN: DANGER ZONE (MASS CLEANUP & HISTORY WIPE) ---# --- ADMIN: DANGER ZONE (FACTORY RESET / MASS WIPE) ---
 @app.route('/admin/danger-zone', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def danger_zone():
-    from datetime import datetime, timedelta
-    users_to_delete =[]
-
-    # GET Request: ইনএক্টিভ ইউজার খোঁজার জন্য (আগের লজিক)
+    # ১. কতজন সাধারণ ইউজার আছে তার কাউন্ট বের করা
     try:
-        fifteen_days_ago = (datetime.utcnow() - timedelta(days=15)).isoformat()
-        query = supabase.table('profiles').select('id, email, created_at, balance') \
-                .eq('is_active', False) \
-                .lt('balance', 15) \
-                .lte('created_at', fifteen_days_ago)
-        res = query.execute()
-        users_to_delete = res.data
-    except Exception as e:
-        print(f"Danger Zone Error: {e}")
+        res = supabase.table('profiles').select('id', count='exact', head=True).neq('role', 'admin').execute()
+        user_count = res.count if res.count else 0
+    except:
+        user_count = 0
 
-    # POST Request: ডিলিট একশনগুলো হ্যান্ডেল করা
     if request.method == 'POST':
         action = request.form.get('action')
         
-        # একশন ১: ইনএক্টিভ ইউজার ডিলিট
-        if action == 'delete_all' and users_to_delete:
-            deleted_count = 0
+        # FACTORY RESET ACTION
+        if action == 'factory_reset':
             try:
-                for u in users_to_delete:
-                    uid = u['id']
-                    supabase.table('profiles').update({'referred_by': None}).eq('referred_by', uid).execute()
-                    supabase.table('withdrawals').delete().eq('user_id', uid).execute()
-                    supabase.table('submissions').delete().eq('user_id', uid).execute()
-                    supabase.table('special_submissions').delete().eq('user_id', uid).execute()
-                    supabase.table('activation_requests').delete().eq('user_id', uid).execute()
-                    supabase.table('vip_requests').delete().eq('user_id', uid).execute()
-                    supabase.table('user_vips').delete().eq('user_id', uid).execute()
-                    
-                    supabase.table('profiles').delete().eq('id', uid).execute()
-                    deleted_count += 1
-                    
-                flash(f"⚠️ {deleted_count} টি ইনএক্টিভ একাউন্ট মুছে ফেলা হয়েছে!", "success")
-            except Exception as e:
-                flash("ডিলিট করার সময় এরর হয়েছে।", "error")
-            return redirect(url_for('danger_zone'))
-
-        # একশন ২: [NEW] সকল হিস্টোরি মুছে ফেলা (এডমিন বাদে)
-        elif action == 'clear_history':
-            try:
-                # ১. এডমিন ছাড়া বাকি সব ইউজারের আইডি আনা
+                # ২. এডমিন বাদে বাকি সব ইউজারের আইডি আনা
                 non_admins = supabase.table('profiles').select('id').neq('role', 'admin').execute().data
+                
+                if not non_admins:
+                    flash("⚠️ ডিলিট করার মতো কোনো সাধারণ ইউজার নেই।", "warning")
+                    return redirect(url_for('danger_zone'))
+                    
                 non_admin_ids = [u['id'] for u in non_admins]
 
-                if not non_admin_ids:
-                    flash("কোনো সাধারণ ইউজার পাওয়া যায়নি।", "warning")
-                    return redirect(url_for('danger_zone'))
-
-                # ২. একসাথে বেশি ডাটা ডিলিট করলে এরর আসতে পারে, তাই ১০০ টা করে ভাগ করা (Chunking)
+                # ৩. চাংকিং (Chunking) - ১০০ টা করে ডিলিট করা যাতে API ক্র্যাশ না করে
                 def chunk_list(lst, n):
                     for i in range(0, len(lst), n):
                         yield lst[i:i + n]
 
-                # ৩. সব হিস্টোরি টেবিল ক্লিয়ার করা
                 for chunk in chunk_list(non_admin_ids, 100):
+                    # A. Foreign Key সমস্যা এড়াতে referred_by ফাঁকা করা
+                    supabase.table('profiles').update({'referred_by': None}).in_('referred_by', chunk).execute()
+                    
+                    # B. ইউজারের সমস্ত এক্টিভিটি ডিলিট করা
                     supabase.table('submissions').delete().in_('user_id', chunk).execute()
                     supabase.table('special_submissions').delete().in_('user_id', chunk).execute()
                     supabase.table('withdrawals').delete().in_('user_id', chunk).execute()
                     supabase.table('activation_requests').delete().in_('user_id', chunk).execute()
                     supabase.table('vip_requests').delete().in_('user_id', chunk).execute()
+                    supabase.table('user_vips').delete().in_('user_id', chunk).execute()
+                    
+                    # ড্রাইভ অর্ডার টেবিল থাকলে সেটাও ক্লিয়ার করা
+                    try:
+                        supabase.table('drive_orders').delete().in_('user_id', chunk).execute()
+                    except: pass
+                    
+                    # C. সবশেষে প্রোফাইল ডিলিট করা
+                    supabase.table('profiles').delete().in_('id', chunk).execute()
 
-                flash("🧹 সকল সাধারণ ইউজারের টাস্ক, উইথড্র, এক্টিভেশন এবং VIP রিকোয়েস্ট হিস্টোরি ক্লিয়ার করা হয়েছে!", "success")
+                flash("🚨 সিস্টেম ফ্যাক্টরি রিসেট সম্পন্ন হয়েছে! এডমিন বাদে সব ডাটা ক্লিন।", "success")
+                
             except Exception as e:
-                print(f"Clear History Error: {e}")
-                flash("হিস্টোরি মুছতে সমস্যা হয়েছে।", "error")
+                print(f"Factory Reset Error: {e}")
+                flash(f"রিসেট করতে সমস্যা হয়েছে: {str(e)}", "error")
             
             return redirect(url_for('danger_zone'))
 
-    return render_template('danger_zone.html', users=users_to_delete)
+    return render_template('danger_zone.html', user_count=user_count)
 @app.route('/admin/drive/manage', methods=['GET', 'POST'])
 @login_required
 @admin_required
