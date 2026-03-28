@@ -13,6 +13,7 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     }
 
+    /* VIP & Regular Theme Cards */
     .hero-regular { background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); }
     .hero-vip {
         background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%);
@@ -20,6 +21,7 @@
         box-shadow: 0 10px 30px -10px rgba(234, 179, 8, 0.3);
     }
 
+    /* Shimmer Light Effect for Card */
     .shimmer { position: relative; overflow: hidden; }
     .shimmer::before {
         content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%;
@@ -28,6 +30,7 @@
     }
     @keyframes shimmer { 100% { left: 200%; } }
 
+    /* New Item Slide Down Animation */
     .slide-down-item { animation: slideDownFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes slideDownFade {
         from { opacity: 0; transform: translateY(-20px); max-height: 0; padding-top: 0; padding-bottom: 0; margin-bottom: 0; }
@@ -35,7 +38,7 @@
     }
 </style>
 
-<!-- ================= DAILY PROMO POPUP (TUTORIAL FOCUS) ================= -->
+<!-- ================= DAILY PROMO POPUP (GMAIL, TUTORIAL, SUPPORT) ================= -->
 <div id="dailyPromoPopup" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
     <!-- Backdrop Blur -->
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closePromoPopup()"></div>
@@ -43,38 +46,42 @@
     <!-- Popup Card -->
     <div class="relative bg-white rounded-[32px] p-6 md:p-8 max-w-sm w-full shadow-2xl text-center overflow-hidden transform scale-95 opacity-0 transition-all duration-300 border border-slate-100" id="promoPopupCard">
         
+        <!-- Close Button -->
         <button onclick="closePromoPopup()" class="absolute top-4 right-4 h-8 w-8 bg-slate-100 rounded-full text-slate-500 hover:bg-red-50 hover:text-red-500 transition flex items-center justify-center z-20 shadow-sm">
             <i class="fa-solid fa-xmark"></i>
         </button>
 
         <!-- Decorative Backgrounds -->
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-rose-500 to-pink-500"></div>
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-rose-500 rounded-full mix-blend-multiply filter blur-2xl opacity-10"></div>
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#4F46E5] to-[#E2136E]"></div>
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-blue-500 rounded-full mix-blend-multiply filter blur-2xl opacity-10"></div>
+        <div class="absolute -left-10 bottom-10 w-32 h-32 bg-pink-500 rounded-full mix-blend-multiply filter blur-2xl opacity-10"></div>
 
-        <!-- YouTube Icon (Bouncing) -->
-        <div class="mx-auto h-20 w-20 bg-rose-50 rounded-[20px] flex items-center justify-center mb-5 shadow-inner border border-rose-100 transform -rotate-3">
-            <i class="fa-brands fa-youtube text-5xl text-rose-500 animate-pulse"></i>
+        <!-- Gmail Icon (Bouncing) -->
+        <div class="mx-auto h-20 w-20 bg-indigo-50 rounded-[20px] flex items-center justify-center mb-5 shadow-inner border border-indigo-100 transform rotate-3">
+            <i class="fa-brands fa-google text-4xl text-[#4F46E5] animate-pulse"></i>
         </div>
 
-        <span class="bg-indigo-50 text-[#4F46E5] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border border-indigo-100 mb-3 inline-block shadow-sm">Must Watch</span>
-        <h2 class="text-2xl font-black text-slate-800 mb-2 tracking-tight">কাজ বুঝতে সমস্যা?</h2>
+        <span class="bg-red-50 text-red-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border border-red-100 mb-3 inline-block shadow-sm">High Paying Task</span>
+        <h2 class="text-2xl font-black text-slate-800 mb-2 tracking-tight">বেশি আয় করতে চান?</h2>
         <p class="text-sm text-slate-500 mb-6 leading-relaxed font-medium">
-            সঠিক নিয়মে কাজ না করলে পেমেন্ট বাতিল হতে পারে! তাই কাজ শুরু করার আগে আমাদের <b>টিউটোরিয়াল ভিডিওটি</b> সম্পূর্ণ দেখুন।
+            আমাদের <b>জিমেইল (Gmail)</b> কাজগুলো করুন! এগুলো সবচেয়ে সহজ এবং পেমেন্টও বেশি। কাজ না বুঝলে ভিডিও দেখে নিন।
         </p>
 
         <!-- Action Buttons -->
         <div class="space-y-3 relative z-10">
-            <!-- Main CTA (Tutorial) -->
-            <a href="/tutorial" onclick="setPromoSeen()" class="block w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white py-3.5 rounded-2xl font-black text-sm shadow-lg shadow-rose-200 hover:scale-[1.02] active:scale-95 transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-circle-play text-lg"></i> <span>ভিডিও টিউটোরিয়াল দেখুন</span>
+            <!-- Main CTA -->
+            <a href="/gmail-tasks" onclick="setPromoSeen()" class="block w-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white py-3.5 rounded-2xl font-black text-sm shadow-lg shadow-indigo-200 hover:scale-[1.02] active:scale-95 transition flex items-center justify-center gap-2">
+                <span>জিমেইল কাজ শুরু করুন</span> <i class="fa-solid fa-arrow-right"></i>
             </a>
             
             <div class="grid grid-cols-2 gap-3">
-                <a href="/tasks" onclick="setPromoSeen()" class="bg-indigo-50 text-indigo-600 border border-indigo-100 py-3 rounded-2xl text-xs font-bold hover:bg-indigo-100 transition flex items-center justify-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-list-check"></i> টাস্ক করুন
+                <!-- Tutorial -->
+                <a href="/tutorial" onclick="setPromoSeen()" class="bg-rose-50 text-rose-600 border border-rose-100 py-3 rounded-2xl text-xs font-bold hover:bg-rose-100 transition flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fa-brands fa-youtube text-lg"></i> টিউটোরিয়াল
                 </a>
+                <!-- Support -->
                 <a href="https://wa.me/qr/B52RK6CSXGUTL1" target="_blank" onclick="setPromoSeen()" class="bg-emerald-50 text-emerald-600 border border-emerald-100 py-3 rounded-2xl text-xs font-bold hover:bg-emerald-100 transition flex items-center justify-center gap-2 shadow-sm">
-                    <i class="fa-brands fa-whatsapp"></i> সাপোর্ট
+                    <i class="fa-brands fa-whatsapp text-lg"></i> সাপোর্ট
                 </a>
             </div>
         </div>
@@ -143,7 +150,7 @@
     </div>
     {% endif %}
 
-    <!-- 2. DYNAMIC WALLET CARD -->
+    <!-- 2. DYNAMIC WALLET CARD (With Shimmer Effect) -->
     <div class="{% if user.current_level > 0 %} hero-vip {% else %} hero-regular {% endif %} rounded-[32px] p-6 text-white relative group overflow-hidden shimmer">
         <div class="absolute top-0 right-0 w-48 h-48 bg-white opacity-5 rounded-full blur-3xl -mr-16 -mt-16 transition duration-700"></div>
         <div class="relative z-10">
@@ -186,41 +193,86 @@
                 <a href="/income" class="flex-1 bg-white/10 backdrop-blur-md border border-white/20 py-2.5 rounded-xl text-xs font-bold text-center hover:bg-white hover:text-[#0A2540] transition flex items-center justify-center gap-1">
                     <i class="fa-solid fa-chart-pie"></i> আমার আয়
                 </a>
-                {% if user.current_level > 0 %}
-                    <a href="/vip" class="flex-1 bg-gradient-to-r from-yellow-400 to-yellow-600 text-slate-900 py-2.5 rounded-xl text-xs font-bold text-center shadow-lg hover:scale-105 transition flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-hand-holding-dollar"></i> প্রফিট নিন
-                    </a>
-                {% else %}
-                    <a href="/tasks" class="flex-1 bg-white text-[#4F46E5] py-2.5 rounded-xl text-xs font-bold text-center shadow-lg hover:scale-105 transition flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-play"></i> টাস্ক করুন
-                    </a>
-                {% endif %}
+                <a href="/withdraw" class="flex-1 bg-gradient-to-r from-emerald-400 to-teal-500 text-white py-2.5 rounded-xl text-xs font-bold text-center shadow-lg hover:scale-105 transition flex items-center justify-center gap-1 border border-emerald-300">
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i> উইথড্র
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- 3. APP INSTALL BANNER -->
-    <div id="appDownloadSection" class="hidden bg-slate-900 rounded-[24px] p-4 shadow-xl relative overflow-hidden group border border-slate-700 mt-2">
-        <div class="absolute right-0 top-0 opacity-5 text-8xl transform translate-x-4 -translate-y-4 group-hover:scale-110 transition duration-700">
-            <i class="fa-brands fa-google-play"></i>
+    <!-- 3. EARNING HUB (4 Main Ways to Earn) -->
+    <div class="pt-2">
+        <h3 class="font-black text-slate-800 px-1 text-sm flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-bolt text-yellow-500"></i> ইনকাম জোন (Earning Hub)
+        </h3>
+        
+        <div class="grid grid-cols-2 gap-4">
+            
+            <!-- Micro Tasks -->
+            <a href="/tasks" class="earn-card bg-gradient-to-br from-indigo-50 to-white p-5 rounded-[24px] relative overflow-hidden group border border-slate-100 shadow-sm hover:shadow-md transition">
+                <div class="absolute right-0 top-0 opacity-5 text-6xl transform translate-x-2 -translate-y-2"><i class="fa-brands fa-youtube"></i></div>
+                <div class="h-12 w-12 bg-[#4F46E5] text-white rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-indigo-200 mb-3 group-hover:scale-110 transition">
+                    <i class="fa-solid fa-play"></i>
+                </div>
+                <h4 class="font-bold text-slate-800 text-sm">মাইক্রো টাস্ক</h4>
+                <p class="text-[10px] text-slate-500 mt-1 leading-tight">ভিডিও ও লাইকের কাজ</p>
+            </a>
+
+            <!-- Gmail Farm -->
+            <a href="/gmail-tasks" class="earn-card bg-gradient-to-br from-rose-50 to-white p-5 rounded-[24px] relative overflow-hidden group border border-slate-100 shadow-sm hover:shadow-md transition">
+                <div class="absolute right-0 top-0 opacity-5 text-6xl transform translate-x-2 -translate-y-2"><i class="fa-brands fa-google"></i></div>
+                <div class="absolute top-2 right-2 bg-red-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse uppercase tracking-wider">High Pay</div>
+                
+                <div class="h-12 w-12 bg-[#E2136E] text-white rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-rose-200 mb-3 group-hover:scale-110 transition">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                </div>
+                <h4 class="font-bold text-slate-800 text-sm">জিমেইল ফার্ম</h4>
+                <p class="text-[10px] text-slate-500 mt-1 leading-tight">জিমেইল খুলে পেমেন্ট নিন</p>
+            </a>
+
+            <!-- Special Task -->
+            <a href="/special-task" class="earn-card bg-gradient-to-br from-sky-50 to-white p-5 rounded-[24px] relative overflow-hidden group border border-slate-100 shadow-sm hover:shadow-md transition">
+                <div class="absolute right-0 top-0 opacity-5 text-6xl transform translate-x-2 -translate-y-2"><i class="fa-brands fa-telegram"></i></div>
+                <div class="h-12 w-12 bg-sky-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-sky-200 mb-3 group-hover:scale-110 transition">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+                <h4 class="font-bold text-slate-800 text-sm">স্পেশাল অফার</h4>
+                <p class="text-[10px] text-slate-500 mt-1 leading-tight">বট স্টার্ট ও এয়ারড্রপ বোনাস</p>
+            </a>
+
+            <!-- Lucky Spin -->
+            <a href="/spin" class="earn-card bg-gradient-to-br from-orange-50 to-white p-5 rounded-[24px] relative overflow-hidden group border border-slate-100 shadow-sm hover:shadow-md transition">
+                <div class="absolute right-0 top-0 opacity-5 text-6xl transform translate-x-2 -translate-y-2"><i class="fa-solid fa-dharmachakra"></i></div>
+                <div class="h-12 w-12 bg-orange-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-orange-200 mb-3 group-hover:rotate-180 transition duration-700">
+                    <i class="fa-solid fa-dharmachakra"></i>
+                </div>
+                <h4 class="font-bold text-slate-800 text-sm">লাকি স্পিন</h4>
+                <p class="text-[10px] text-slate-500 mt-1 leading-tight">প্রতিদিন চাকা ঘুরিয়ে আয়</p>
+            </a>
+
         </div>
+    </div>
+
+    <!-- 4. APP INSTALL BANNER (Hidden by Default, Controlled via JS) -->
+    <div id="appDownloadSection" class="hidden bg-slate-900 rounded-[24px] p-4 shadow-xl relative overflow-hidden group border border-slate-700 mt-4">
+        <div class="absolute right-0 top-0 opacity-5 text-6xl transform translate-x-2 -translate-y-2"><i class="fa-brands fa-google-play"></i></div>
         <div class="flex items-center justify-between relative z-10">
-            <div class="flex items-center gap-4">
-                <div class="h-12 w-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-white text-2xl border border-white/10 shadow-inner animate-bounce">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center text-white text-xl border border-white/10">
                     <i class="fa-solid fa-mobile-screen"></i>
                 </div>
                 <div>
                     <h3 class="font-bold text-white text-sm">Pay-R অ্যাপ নামিয়ে নিন</h3>
-                    <p class="text-[10px] text-slate-400 mt-0.5">হোমস্ক্রিন থেকে এক ক্লিকে কাজ করুন</p>
+                    <p class="text-[9px] text-slate-400 mt-0.5">হোমস্ক্রিন থেকে এক ক্লিকে কাজ করুন</p>
                 </div>
             </div>
-            <button id="manualInstallBtn" class="bg-gradient-to-r from-[#4F46E5] to-[#E2136E] text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg hover:shadow-pink-500/40 active:scale-95 transition flex items-center gap-1.5 border border-white/20">
+            <button id="manualInstallBtn" class="bg-[#4F46E5] text-white px-4 py-2 rounded-lg text-xs font-bold shadow-lg hover:bg-indigo-600 transition flex items-center gap-1.5">
                 <i class="fa-solid fa-download"></i> Install
             </button>
         </div>
     </div>
 
-    <!-- 4. NOTICE MARQUEE -->
+    <!-- 5. NOTICE MARQUEE -->
     {% if settings.notice_text %}
     <a href="/notice" class="block bg-orange-50/50 border border-orange-100 p-1.5 rounded-2xl flex items-center overflow-hidden hover:bg-orange-50 transition mt-4">
         <div class="bg-orange-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-bold flex-shrink-0 mr-3 flex items-center gap-1.5 shadow-sm">
@@ -236,7 +288,7 @@
     </a>
     {% endif %}
 
-    <!-- 5. DAILY CHECK-IN -->
+    <!-- 6. DAILY CHECK-IN -->
     {% if user.last_checkin != today_date %}
     <div class="bg-white p-6 rounded-[30px] shadow-sm border border-slate-100 mt-4">
         <div class="flex justify-between items-center mb-4">
@@ -273,23 +325,33 @@
     </div>
     {% endif %}
 
-    <!-- 6. MAIN MENU GRID -->
-    <div class="mt-6">
-        <h3 class="font-bold text-slate-700 px-2 text-sm mb-3">সার্ভিসসমূহ</h3>
+    <!-- 7. OTHER SERVICES (Mini Menu) -->
+    <div class="mt-4">
+        <h3 class="font-black text-slate-800 px-1 text-sm flex items-center gap-2 mb-3">
+            <i class="fa-solid fa-bars-staggered text-emerald-500"></i> অন্যান্য সার্ভিস
+        </h3>
         <div class="grid grid-cols-4 gap-3">
-            <a href="/tasks" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition"><div class="h-10 w-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-brands fa-youtube"></i></div><span class="text-[10px] font-bold text-slate-600">টাস্ক</span></a>
-            <a href="/tutorial" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition"><div class="h-10 w-10 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-play"></i></div><span class="text-[10px] font-bold text-slate-600">টিউটোরিয়াল</span></a>
-            <a href="/withdraw" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition"><div class="h-10 w-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-money-bill-transfer"></i></div><span class="text-[10px] font-bold text-slate-600">উইথড্র</span></a>
-            <a href="/vip" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition"><div class="h-10 w-10 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-crown"></i></div><span class="text-[10px] font-bold text-slate-600">VIP প্যাক</span></a>
-            
-            <a href="/proofs" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition"><div class="h-10 w-10 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-receipt"></i></div><span class="text-[10px] font-bold text-slate-600">প্রুফ</span></a>
-            <a href="/referrals" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition"><div class="h-10 w-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div><span class="text-[10px] font-bold text-slate-600">রেফার</span></a>
-            <a href="/spin" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition"><div class="h-10 w-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-dharmachakra"></i></div><span class="text-[10px] font-bold text-slate-600">লাকি স্পিন</span></a>
-            <a href="https://wa.me/qr/B52RK6CSXGUTL1" target="_blank" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition"><div class="h-10 w-10 bg-emerald-50 text-emerald-500 rounded-xl flex items-center justify-center text-lg"><i class="fa-brands fa-whatsapp"></i></div><span class="text-[10px] font-bold text-slate-600">সাপোর্ট</span></a>
+            <a href="/vip" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition">
+                <div class="h-10 w-10 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-crown"></i></div>
+                <span class="text-[10px] font-bold text-slate-600">VIP প্যাক</span>
+            </a>
+            <a href="/drive" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition relative">
+                <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full animate-ping"></span>
+                <div class="h-10 w-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-wifi"></i></div>
+                <span class="text-[10px] font-bold text-slate-600">ড্রাইভ অফার</span>
+            </a>
+            <a href="/referrals" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition">
+                <div class="h-10 w-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
+                <span class="text-[10px] font-bold text-slate-600">রেফারেল</span>
+            </a>
+            <a href="/history" class="glass-box p-3 rounded-[20px] flex flex-col items-center gap-2 hover:-translate-y-1 transition">
+                <div class="h-10 w-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <span class="text-[10px] font-bold text-slate-600">হিস্টোরি</span>
+            </a>
         </div>
     </div>
 
-    <!-- 7. LIVE PAYOUTS & LEADERBOARD -->
+    <!-- 8. LIVE PAYOUTS & LEADERBOARD -->
     <div class="grid md:grid-cols-2 gap-5 mt-4">
         <!-- Live Payouts -->
         <div class="glass-box p-6 rounded-[30px] overflow-hidden h-64 flex flex-col border border-slate-100">
@@ -344,7 +406,7 @@
         </div>
     </div>
 
-    <!-- 8. PLATFORM AGE -->
+    <!-- 9. PLATFORM AGE -->
     <div class="bg-white rounded-[30px] p-6 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col justify-center mt-4">
         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 text-center">
             <i class="fa-solid fa-server text-emerald-500 mr-1"></i> System Running
@@ -357,186 +419,179 @@
 
 </div>
 
-<!-- ================= SCRIPTS ================= -->
+<!-- SCRIPTS -->
 <script>
-    // Safe Wrapper (IIFE) to prevent variable collision with layout.html
-    (function() {
-        
-        // 1. POPUP LOGIC (Tutorial Focus)
+    // ===============================================
+    // 1. DAILY PROMO POPUP LOGIC
+    // ===============================================
+    document.addEventListener("DOMContentLoaded", () => {
         const promoPopup = document.getElementById('dailyPromoPopup');
         if(promoPopup) {
             const todayDate = new Date().toISOString().split('T')[0];
-            const lastSeenDate = localStorage.getItem('payr_daily_tutorial');
+            const lastSeenDate = localStorage.getItem('payr_daily_promo');
             
             if(lastSeenDate !== todayDate) {
                 setTimeout(() => {
                     promoPopup.classList.remove('hidden');
                     const card = document.getElementById('promoPopupCard');
-                    if(card) {
-                        card.classList.remove('scale-95', 'opacity-0');
-                        card.classList.add('scale-100', 'opacity-100');
-                    }
-                }, 1500);
+                    card.classList.remove('scale-95', 'opacity-0');
+                    card.classList.add('scale-100', 'opacity-100');
+                }, 1500); // 1.5 seconds delay before showing popup
             }
         }
+    });
 
-        // Expose functions globally for onclick handlers
-        window.closePromoPopup = function() {
-            const promoPopup = document.getElementById('dailyPromoPopup');
-            const card = document.getElementById('promoPopupCard');
-            if(card) {
-                card.classList.remove('scale-100', 'opacity-100');
-                card.classList.add('scale-95', 'opacity-0');
-            }
-            setTimeout(() => {
-                if(promoPopup) promoPopup.classList.add('hidden');
-                const todayDate = new Date().toISOString().split('T')[0];
-                localStorage.setItem('payr_daily_tutorial', todayDate);
-            }, 300);
-        };
-
-        window.setPromoSeen = function() {
+    function closePromoPopup() {
+        const promoPopup = document.getElementById('dailyPromoPopup');
+        const card = document.getElementById('promoPopupCard');
+        
+        card.classList.remove('scale-100', 'opacity-100');
+        card.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            promoPopup.classList.add('hidden');
             const todayDate = new Date().toISOString().split('T')[0];
-            localStorage.setItem('payr_daily_tutorial', todayDate);
-        };
+            localStorage.setItem('payr_daily_promo', todayDate);
+        }, 300);
+    }
 
-        // 2. PWA APP INSTALL LOGIC
-        const appDownloadSection = document.getElementById('appDownloadSection');
-        const manualInstallBtn = document.getElementById('manualInstallBtn');
+    function setPromoSeen() {
+        const todayDate = new Date().toISOString().split('T')[0];
+        localStorage.setItem('payr_daily_promo', todayDate);
+    }
 
-        // Using layout's deferredPrompt if exists
-        window.addEventListener('beforeinstallprompt', (e) => {
-            if (appDownloadSection) appDownloadSection.classList.remove('hidden');
-        });
+    // ===============================================
+    // 2. PWA APP INSTALL LOGIC
+    // ===============================================
+    let deferredPrompt;
+    const appDownloadSection = document.getElementById('appDownloadSection');
+    const manualInstallBtn = document.getElementById('manualInstallBtn');
 
-        if (manualInstallBtn) {
-            manualInstallBtn.addEventListener('click', async () => {
-                if (window.deferredPrompt) {
-                    window.deferredPrompt.prompt();
-                    const { outcome } = await window.deferredPrompt.userChoice;
-                    window.deferredPrompt = null;
-                    if (appDownloadSection) appDownloadSection.classList.add('hidden');
-                }
-            });
-        }
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (appDownloadSection) appDownloadSection.classList.remove('hidden');
+    });
 
-        window.addEventListener('appinstalled', () => {
-            if (appDownloadSection) appDownloadSection.classList.add('hidden');
-        });
-
-        // 3. REALISTIC LIVE PAYOUTS LOGIC
-        const payoutContainer = document.getElementById('payoutContainer');
-        const methods =['bKash', 'Nagad', 'Rocket'];
-        const prefixes =['017', '019', '018', '016', '013', '015'];
-        let payoutCount = 0;
-
-        function generateRealisticAmount() {
-            return Math.floor(Math.random() * (90 - 25) + 25) * 10; 
-        }
-
-        function addPayout() {
-            if(!payoutContainer) return;
-            
-            if(payoutCount === 0) {
-                const loader = document.getElementById('payoutLoader');
-                if(loader) loader.remove();
+    if (manualInstallBtn) {
+        manualInstallBtn.addEventListener('click', async () => {
+            if (deferredPrompt !== null) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                if (appDownloadSection) appDownloadSection.classList.add('hidden');
             }
+        });
+    }
 
-            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-            const lastTwo = Math.floor(1000 + Math.random() * 9000).toString().slice(-4);
-            const number = `${prefix}****${lastTwo}`;
-            const amount = generateRealisticAmount();
-            const method = methods[Math.floor(Math.random() * methods.length)];
-            
-            let iconClass = 'bg-pink-50 text-pink-600 border-pink-100';
-            if(method === 'Nagad') iconClass = 'bg-orange-50 text-orange-600 border-orange-100';
-            if(method === 'Rocket') iconClass = 'bg-purple-50 text-purple-600 border-purple-100';
+    window.addEventListener('appinstalled', () => {
+        if (appDownloadSection) appDownloadSection.classList.add('hidden');
+        deferredPrompt = null;
+    });
 
-            const div = document.createElement('div');
-            div.className = "flex items-center justify-between p-3 rounded-2xl bg-white border border-slate-100 slide-down-item shadow-sm mb-3";
-            div.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="h-8 w-8 ${iconClass} border rounded-xl flex items-center justify-center text-[10px] shadow-sm">
-                        <i class="fa-solid fa-wallet"></i>
-                    </div>
-                    <div>
-                        <p class="text-[11px] text-slate-700 font-bold font-mono tracking-wider">${number}</p>
-                        <p class="text-[9px] text-slate-400 mt-0.5">Just now via ${method}</p>
-                    </div>
+    // ===============================================
+    // 3. REALISTIC LIVE PAYOUTS LOGIC
+    // ===============================================
+    const payoutContainer = document.getElementById('payoutContainer');
+    const methods =['bKash', 'Nagad', 'Rocket'];
+    const prefixes =['017', '019', '018', '016', '013', '015'];
+    let payoutCount = 0;
+
+    function generateRealisticAmount() {
+        return Math.floor(Math.random() * (90 - 25) + 25) * 10; 
+    }
+
+    function addPayout() {
+        if(payoutCount === 0) {
+            const loader = document.getElementById('payoutLoader');
+            if(loader) loader.remove();
+        }
+
+        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const lastTwo = Math.floor(1000 + Math.random() * 9000).toString().slice(-4);
+        const number = `${prefix}****${lastTwo}`;
+        const amount = generateRealisticAmount();
+        const method = methods[Math.floor(Math.random() * methods.length)];
+        
+        let iconClass = 'bg-pink-50 text-pink-600 border-pink-100';
+        if(method === 'Nagad') iconClass = 'bg-orange-50 text-orange-600 border-orange-100';
+        if(method === 'Rocket') iconClass = 'bg-purple-50 text-purple-600 border-purple-100';
+
+        const div = document.createElement('div');
+        div.className = "flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 slide-down-item shadow-sm mb-3";
+        div.innerHTML = `
+            <div class="flex items-center gap-3">
+                <div class="h-8 w-8 ${iconClass} border rounded-xl flex items-center justify-center text-[10px] shadow-sm">
+                    <i class="fa-solid fa-wallet"></i>
                 </div>
-                <span class="text-xs font-black text-emerald-600 font-mono bg-green-50 px-2.5 py-1 rounded-lg border border-green-100 shadow-sm">
-                    -৳${amount}
-                </span>
+                <div>
+                    <p class="text-[11px] text-slate-700 font-bold font-mono tracking-wider">${number}</p>
+                    <p class="text-[9px] text-slate-400 mt-0.5">Just now via ${method}</p>
+                </div>
+            </div>
+            <span class="text-xs font-black text-emerald-600 font-mono bg-white px-2.5 py-1 rounded-lg border border-slate-100 shadow-sm">
+                -৳${amount}
+            </span>
+        `;
+
+        payoutContainer.insertBefore(div, payoutContainer.firstChild);
+        payoutCount++;
+
+        if (payoutContainer.children.length > 3) {
+            payoutContainer.removeChild(payoutContainer.lastElementChild);
+        }
+
+        let nextInterval = Math.floor(Math.random() * (15000 - 5000) + 5000); 
+        if (Math.random() < 0.15) {
+            nextInterval = Math.floor(Math.random() * (30000 - 20000) + 20000);
+        }
+        
+        setTimeout(addPayout, nextInterval);
+    }
+    setTimeout(addPayout, 2000);
+
+    // ===============================================
+    // 4. SITE AGE COUNTER
+    // ===============================================
+    function updateSiteAge() {
+        const startDate = new Date(2025, 11, 19).getTime(); // Dec 19, 2025
+        const now = new Date().getTime();
+        const diff = now - startDate;
+
+        if (diff > 0) {
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = `
+                <div class="bg-slate-50 px-3 py-2 rounded-xl min-w-[55px] border border-slate-100 text-center shadow-sm">
+                    <span class="block text-xl font-black text-[#4F46E5] font-mono">${days}</span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Days</span>
+                </div>
+                <div class="bg-slate-50 px-3 py-2 rounded-xl min-w-[55px] border border-slate-100 text-center shadow-sm">
+                    <span class="block text-xl font-black text-[#4F46E5] font-mono">${hours}</span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Hrs</span>
+                </div>
+                <div class="bg-slate-50 px-3 py-2 rounded-xl min-w-[55px] border border-slate-100 text-center shadow-sm">
+                    <span class="block text-xl font-black text-[#4F46E5] font-mono">${minutes}</span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Min</span>
+                </div>
+                <div class="bg-slate-50 px-3 py-2 rounded-xl min-w-[55px] border border-slate-100 text-center shadow-sm">
+                    <span class="block text-xl font-black text-rose-500 font-mono">${seconds}</span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Sec</span>
+                </div>
             `;
-
-            payoutContainer.insertBefore(div, payoutContainer.firstChild);
-            payoutCount++;
-
-            if (payoutContainer.children.length > 3) {
-                payoutContainer.removeChild(payoutContainer.lastElementChild);
-            }
-
-            let nextInterval = Math.floor(Math.random() * (15000 - 5000) + 5000); 
-            if (Math.random() < 0.15) {
-                nextInterval = Math.floor(Math.random() * (30000 - 20000) + 20000);
-            }
-            
-            setTimeout(addPayout, nextInterval);
+        } else {
+            document.getElementById("countdown").innerHTML = '<span class="text-sm font-bold text-slate-500 bg-slate-50 px-6 py-3 rounded-xl border border-slate-100">Launching Soon!</span>';
         }
-        setTimeout(addPayout, 2000);
+    }
+    setInterval(updateSiteAge, 1000);
+    updateSiteAge();
 
-        // 4. SITE AGE COUNTER
-        function updateSiteAge() {
-            const startDate = new Date(2025, 11, 19).getTime(); // Dec 19, 2025
-            const now = new Date().getTime();
-            const diff = now - startDate;
-
-            const countdownEl = document.getElementById("countdown");
-            if(!countdownEl) return;
-
-            if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                countdownEl.innerHTML = `
-                    <div class="bg-indigo-50/50 px-3 py-2 rounded-xl min-w-[55px] border border-indigo-100 text-center shadow-sm">
-                        <span class="block text-xl font-black text-[#4F46E5] font-mono">${days}</span>
-                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Days</span>
-                    </div>
-                    <div class="bg-indigo-50/50 px-3 py-2 rounded-xl min-w-[55px] border border-indigo-100 text-center shadow-sm">
-                        <span class="block text-xl font-black text-[#4F46E5] font-mono">${hours}</span>
-                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Hrs</span>
-                    </div>
-                    <div class="bg-indigo-50/50 px-3 py-2 rounded-xl min-w-[55px] border border-indigo-100 text-center shadow-sm">
-                        <span class="block text-xl font-black text-[#4F46E5] font-mono">${minutes}</span>
-                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Min</span>
-                    </div>
-                    <div class="bg-indigo-50/50 px-3 py-2 rounded-xl min-w-[55px] border border-indigo-100 text-center shadow-sm">
-                        <span class="block text-xl font-black text-rose-500 font-mono">${seconds}</span>
-                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Sec</span>
-                    </div>
-                `;
-            } else {
-                countdownEl.innerHTML = '<span class="text-sm font-bold text-slate-500 bg-slate-50 px-6 py-3 rounded-xl border border-slate-100">Launching Soon!</span>';
-            }
-        }
-        setInterval(updateSiteAge, 1000);
-        updateSiteAge();
-
-        // 5. GREETING
-        const hour = new Date().getHours();
-        const greetElement = document.getElementById("greeting");
-        if(greetElement) {
-            if (hour < 12) greetElement.innerText = "GOOD MORNING";
-            else if (hour < 18) greetElement.innerText = "GOOD AFTERNOON";
-            else greetElement.innerText = "GOOD EVENING";
-        }
-
-    })(); // End of IIFE
-
-    // Global Balance Reveal (Outside IIFE to be accessible inline)
+    // ===============================================
+    // 5. BALANCE REVEAL & GREETING
+    // ===============================================
     function toggleBalance() {
         const balance = document.getElementById("balanceText");
         const icon = document.getElementById("eyeIcon");
@@ -548,6 +603,13 @@
             icon.classList.replace("fa-eye", "fa-eye-slash");
         }
     }
+
+    const hour = new Date().getHours();
+    const greetElement = document.getElementById("greeting");
+    if (hour < 12) greetElement.innerText = "GOOD MORNING";
+    else if (hour < 18) greetElement.innerText = "GOOD AFTERNOON";
+    else greetElement.innerText = "GOOD EVENING";
+
 </script>
 
 {% endblock %}
