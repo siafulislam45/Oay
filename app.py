@@ -47,67 +47,6 @@ VIP_PLANS = {
     4: {'name': 'Pro', 'price': 1000, 'daily_profit': 60, 'days': 60, 'min_withdraw': 200},
     5: {'name': 'Elite', 'price': 5000, 'daily_profit': 350, 'days': 90, 'min_withdraw': 200}
 }
-
-# --- MIDDLEWARE (UPDATED FOR BAN SYSTEM) ---
-@app.before_request
-def before_request_checks():
-    
-# Run the penalty bot
-    check_gmail_timeouts()
-    # 🚀 [NEW] URL REDIRECT LOGIC (Instant Transfer)
-    # যদি কেউ পুরনো লিংকে আসে, তাকে নতুন লিংকে পাঠিয়ে দিবে
-    if request.host == 'taskking.vercel.app':
-        return redirect('https://kaikor.vercel.app/', code=301)
-        
-    # ১. সেটিংস লোড
-    try:
-        response = supabase.table('site_settings').select('*').eq('id', 1).single().execute()
-        g.settings = response.data
-    except:
-        g.settings = {'maintenance_mode': False, 'activation_required': False, 'notice_text': ''}
-
-    # ২. ইউজার লোড
-    g.user = None
-    if 'user_id' in session:
-        try:
-            user_resp = supabase.table('profiles').select('*').eq('id', session['user_id']).single().execute()
-            g.user = user_resp.data
-            
-            # --- [NEW] BAN CHECK LOGIC ---
-            if g.user.get('is_banned'):
-                # এই পেজগুলো ব্যান থাকলেও এক্সেস করা যাবে (Logout & Static files)
-                allowed_while_banned = ['static', 'logout']
-                
-                if request.endpoint not in allowed_while_banned:
-                    # অন্য সব পেজের বদলে ব্যান পেজ দেখাবে
-                    return render_template('banned.html', user=g.user)
-
-            # Last Active Update
-            if request.endpoint in ['dashboard', 'tasks', 'account', 'history']:
-                try:
-                    from datetime import datetime
-                    supabase.table('profiles').update({'last_login': datetime.now().isoformat()}).eq('id', session['user_id']).execute()
-                except: pass
-
-        except Exception as e:
-            print(f"User Fetch Error: {e}")
-
-    # ৩. মেইনটেনেন্স মোড
-    if g.settings.get('maintenance_mode'):
-        allowed_public = ['static', 'login', 'logout', 'admin_login']
-        if request.endpoint in allowed_public:
-            return
-        if g.user and g.user.get('role') == 'admin':
-            return
-        return render_template('maintenance.html')
-
-    # ৪. এক্টিভেশন চেক
-    if g.settings.get('activation_required'):
-        if g.user and not g.user.get('is_active') and g.user.get('role') != 'admin':
-            restricted_pages = ['tasks', 'submit_task', 'withdraw']
-            if request.endpoint in restricted_pages:
-                flash("⚠️ এই সুবিধা পেতে একাউন্ট ভেরিফাই করুন!", "error")
-                return redirect(url_for('activate_account'))
 # -------------------------------------------------------------------
 # 3. HELPER DECORATORS
 # -------------------------------------------------------------------
@@ -168,6 +107,7 @@ def smart_imgbb_upload(image_file):
 
     except Exception as e:
         return None, f"Upload processing error: {str(e)}"
+        
 # ==========================================
 # 🤖 AI AUTO-BOT (SMART & SECURE SYSTEM)
 # ==========================================
@@ -223,6 +163,7 @@ def auto_review_user_tasks(user_id):
 
     except Exception as e:
         print(f"Auto-Bot Error: {e}")
+        
 
 # --- HELPER: GMAIL TASK TIMEOUT PENALTY ---
 def check_gmail_timeouts():
@@ -294,6 +235,71 @@ def fatema_admin_required(f):
         flash("⛔ আপনার এই পেজে প্রবেশ করার অনুমতি নেই!", "error")
         return redirect(url_for('dashboard'))
     return decorated_function
+
+    
+# --- MIDDLEWARE (UPDATED FOR BAN SYSTEM) ---
+@app.before_request
+def before_request_checks():
+    
+# Run the penalty bot
+    check_gmail_timeouts()
+    # 🚀 [NEW] URL REDIRECT LOGIC (Instant Transfer)
+    # যদি কেউ পুরনো লিংকে আসে, তাকে নতুন লিংকে পাঠিয়ে দিবে
+    if request.host == 'taskking.vercel.app':
+        return redirect('https://kaikor.vercel.app/', code=301)
+        
+    # ১. সেটিংস লোড
+    try:
+        response = supabase.table('site_settings').select('*').eq('id', 1).single().execute()
+        g.settings = response.data
+    except:
+        g.settings = {'maintenance_mode': False, 'activation_required': False, 'notice_text': ''}
+
+    # ২. ইউজার লোড
+    g.user = None
+    if 'user_id' in session:
+        try:
+            user_resp = supabase.table('profiles').select('*').eq('id', session['user_id']).single().execute()
+            g.user = user_resp.data
+            
+            # --- [NEW] BAN CHECK LOGIC ---
+            if g.user.get('is_banned'):
+                # এই পেজগুলো ব্যান থাকলেও এক্সেস করা যাবে (Logout & Static files)
+                allowed_while_banned = ['static', 'logout']
+                
+                if request.endpoint not in allowed_while_banned:
+                    # অন্য সব পেজের বদলে ব্যান পেজ দেখাবে
+                    return render_template('banned.html', user=g.user)
+
+            # Last Active Update
+            if request.endpoint in ['dashboard', 'tasks', 'account', 'history']:
+                try:
+                    from datetime import datetime
+                    supabase.table('profiles').update({'last_login': datetime.now().isoformat()}).eq('id', session['user_id']).execute()
+                except: pass
+
+        except Exception as e:
+            print(f"User Fetch Error: {e}")
+
+    # ৩. মেইনটেনেন্স মোড
+    if g.settings.get('maintenance_mode'):
+        allowed_public = ['static', 'login', 'logout', 'admin_login']
+        if request.endpoint in allowed_public:
+            return
+        if g.user and g.user.get('role') == 'admin':
+            return
+        return render_template('maintenance.html')
+
+    # ৪. এক্টিভেশন চেক
+    if g.settings.get('activation_required'):
+        if g.user and not g.user.get('is_active') and g.user.get('role') != 'admin':
+            restricted_pages = ['tasks', 'submit_task', 'withdraw']
+            if request.endpoint in restricted_pages:
+                flash("⚠️ এই সুবিধা পেতে একাউন্ট ভেরিফাই করুন!", "error")
+                return redirect(url_for('activate_account'))
+
+
+
 # -------------------------------------------------------------------
 # 4. ROUTES
 # -------------------------------------------------------------------
