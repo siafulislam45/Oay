@@ -2,34 +2,106 @@
 {% block content %}
 
 <style>
-    /* Premium Animations */
-    .fade-up { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(15px); }
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
     
-    .task-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    .task-card:hover { transform: translateY(-4px); box-shadow: 0 15px 30px -5px rgba(15, 23, 42, 0.08); }
+    .task-card { transition: all 0.3s ease; }
+    .task-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.15); }
     .task-card:active { transform: scale(0.98); }
 </style>
 
-<div class="max-w-2xl mx-auto space-y-6 fade-up pb-32 pt-4">
+<div class="max-w-xl mx-auto space-y-6 fade-up pb-32 pt-4">
 
     <!-- 1. HEADER SECTION -->
-    <div class="flex items-center justify-between px-2 mb-6">
-        <div>
-            <h2 class="text-3xl font-black text-slate-900 tracking-tight">Micro Tasks</h2>
-            <p class="text-[11px] text-slate-500 font-bold tracking-micro uppercase mt-1">Complete & Earn</p>
+    <div class="flex items-center justify-between px-2 mb-2">
+        <div class="flex items-center gap-3">
+            <a href="/dashboard" class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-slate-600 shadow-sm hover:text-[#4F46E5] transition border border-slate-100">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2 class="text-xl font-bold text-slate-800">অ্যাক্টিভ টাস্ক</h2>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Earn Money Daily</p>
+            </div>
         </div>
-        <div class="bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg text-xs font-black shadow-sm border border-emerald-200 flex items-center gap-2">
-            <i class="fa-solid fa-list-ul"></i> {{ tasks|length }} Available
+        <div class="bg-indigo-50 text-[#4F46E5] px-3 py-1.5 rounded-xl text-xs font-bold border border-indigo-100 shadow-sm flex items-center gap-1">
+            <i class="fa-solid fa-list-ul"></i> {{ tasks|length }}
         </div>
     </div>
-    
 
-    <!-- 3. NORMAL TASK LIST -->
+    <!-- 2. GMAIL TASK PROMO (PINNED) -->
+    <div class="bg-gradient-to-r from-rose-500 to-[#E2136E] p-1 rounded-3xl shadow-xl relative overflow-hidden group">
+        <!-- Shine Animation -->
+        <div class="absolute top-0 left-[-100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 animate-[shimmer_3s_infinite]"></div>
+        
+        <div class="absolute top-0 right-0 bg-yellow-400 text-[#0A2540] text-[10px] font-bold px-4 py-1 rounded-bl-xl z-10 flex items-center gap-1 shadow-sm">
+            <i class="fa-solid fa-fire animate-pulse"></i> HIGH PAYING
+        </div>
+        
+        <div class="bg-white rounded-[24px] p-5 relative z-10">
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-4">
+                    <div class="h-14 w-14 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-rose-100">
+                        <i class="fa-brands fa-google"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base leading-tight">জিমেইল খুলুন, টাকা নিন!</h3>
+                        <p class="text-[11px] text-slate-500 mt-0.5">সবচেয়ে সহজ কাজ, পেমেন্ট ইনস্ট্যান্ট।</p>
+                        <span class="inline-flex mt-2 items-center gap-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-md border border-emerald-100">
+                            <i class="fa-solid fa-bolt"></i> Fast Approve
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="/gmail-tasks" class="mt-4 block w-full bg-gradient-to-r from-rose-500 to-[#E2136E] text-white text-center px-6 py-3.5 rounded-xl text-sm font-bold shadow-lg shadow-rose-200 hover:scale-[1.02] transition">
+                জিমেইল কাজগুলো দেখুন <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- 3. SPECIAL PINNED TASK (Conditionally Shown) -->
+    {% if show_special %}
+    <div class="bg-gradient-to-r from-[#0A2540] to-[#4F46E5] p-1 rounded-3xl shadow-lg relative overflow-hidden group">
+        <div class="absolute top-0 right-0 bg-yellow-400 text-[#0A2540] text-[10px] font-bold px-4 py-1 rounded-bl-xl z-10 flex items-center gap-1 shadow-sm">
+            <i class="fa-solid fa-star"></i> SPECIAL
+        </div>
+        
+        <div class="bg-white rounded-[24px] p-5 relative z-10">
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-4">
+                    <div class="h-14 w-14 bg-gradient-to-br from-purple-100 to-indigo-100 text-[#4F46E5] rounded-2xl flex items-center justify-center text-2xl shadow-inner border border-indigo-50">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base leading-tight">{{ special_task.title }}</h3>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                ৳ {{ special_task.reward }}
+                            </span>
+                            
+                            <!-- Rejected Badge -->
+                            {% if special_rejected %}
+                            <span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 animate-pulse">
+                                <i class="fa-solid fa-xmark"></i> Rejected, Try Again!
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="/special-task" class="mt-4 block w-full bg-[#0A2540] text-white text-center px-6 py-3 rounded-xl text-sm font-bold hover:bg-[#4F46E5] transition shadow-lg">
+                {{ 'আবার জমা দিন' if special_rejected else 'এখনই করুন' }} <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 4. NORMAL TASK LIST -->
     <div class="space-y-4 relative">
         {% for task in tasks %}
         
-        <!-- Logic for Category Icons & Colors -->
+        <!-- Logic for Category Icons -->
         {% set icon_bg = 'bg-slate-50 text-slate-600 border-slate-100' %}
         {% set icon_class = 'fa-solid fa-globe' %}
         
@@ -40,84 +112,69 @@
             {% set icon_bg = 'bg-blue-50 text-blue-600 border-blue-100' %}
             {% set icon_class = 'fa-brands fa-facebook' %}
         {% elif 'TikTok' in task.category %}
-            {% set icon_bg = 'bg-slate-900 text-white border-slate-800' %}
+            {% set icon_bg = 'bg-slate-800 text-white border-slate-700' %}
             {% set icon_class = 'fa-brands fa-tiktok' %}
         {% elif 'Telegram' in task.category %}
             {% set icon_bg = 'bg-sky-50 text-sky-500 border-sky-100' %}
             {% set icon_class = 'fa-brands fa-telegram' %}
         {% endif %}
 
-        <div class="task-card clean-card p-6 relative overflow-hidden group">
+        <div class="task-card bg-white p-5 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden group">
             
-            <!-- Rejected Indicator Line -->
+            <!-- Rejected Overlay Border -->
             {% if task.is_rejected %}
-            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500"></div>
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-red-500"></div>
             {% else %}
-            <!-- Normal Hover Line -->
-            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-transparent group-hover:bg-emerald-400 transition-colors duration-300"></div>
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-transparent group-hover:bg-[#4F46E5] transition-colors duration-300"></div>
             {% endif %}
 
-            <!-- Oversized Watermark Number -->
-            <div class="absolute right-4 -bottom-6 text-[80px] font-black text-slate-50 pointer-events-none select-none leading-none z-0 group-hover:scale-110 transition duration-500">
-                {% if loop.index < 10 %}0{% endif %}{{ loop.index }}
-            </div>
-
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div class="flex items-start justify-between gap-4 pl-2">
                 
                 <!-- Left: Icon & Info -->
-                <div class="flex gap-4 items-start w-full">
-                    <div class="h-14 w-14 rounded-[20px] flex items-center justify-center text-2xl shadow-sm border {{ icon_bg }} flex-shrink-0">
+                <div class="flex gap-4 w-full">
+                    <div class="h-12 w-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm border {{ icon_bg }} flex-shrink-0">
                         <i class="{{ icon_class }}"></i>
                     </div>
-                    
                     <div class="flex-grow pr-2">
-                        <h3 class="font-bold text-slate-900 text-lg leading-tight mb-1">{{ task.title }}</h3>
+                        <h3 class="font-bold text-slate-800 text-sm line-clamp-1 mb-0.5">{{ task.title }}</h3>
                         
-                        <!-- Badges Row -->
-                        <div class="flex flex-wrap items-center gap-1.5 mt-2">
-                            <!-- Category Badge -->
-                            <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-2.5 py-1 rounded-md uppercase tracking-wider border border-slate-200">
+                        <!-- Badges & Rejection Notice -->
+                        <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                            <span class="text-[9px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">
                                 {{ task.category }}
                             </span>
-                            
-                            <!-- Dynamic Task Type Badges -->
-                            {% if task.task_type == 'screenshot' %}
-                                <span class="text-[9px] font-black bg-teal-50 text-teal-600 px-2.5 py-1 rounded-md uppercase tracking-wider border border-teal-100 flex items-center gap-1">
+                            {% if task.task_type == 'screenshot' or task.task_type == 'fb_post' %}
+                                <span class="text-[9px] font-bold bg-purple-50 text-purple-600 px-2 py-0.5 rounded border border-purple-100 flex items-center gap-1">
                                     <i class="fa-solid fa-camera"></i> Proof Req
-                                </span>
-                            {% elif task.task_type == 'fb_post' %}
-                                <span class="text-[9px] font-black bg-blue-50 text-blue-600 px-2.5 py-1 rounded-md uppercase tracking-wider border border-blue-100 flex items-center gap-1">
-                                    <i class="fa-solid fa-share-nodes"></i> Post & Share
                                 </span>
                             {% endif %}
                         </div>
 
-                        <!-- Description or Rejection Notice -->
+                        <!-- If Rejected, show reason or notice -->
                         {% if task.is_rejected %}
-                            <p class="text-[10px] text-red-600 font-bold mt-2.5 bg-red-50 px-2.5 py-1 rounded-md inline-flex items-center gap-1.5 border border-red-100">
+                            <p class="text-[10px] text-red-500 font-bold mt-2 bg-red-50 px-2 py-1 rounded inline-block border border-red-100">
                                 <i class="fa-solid fa-triangle-exclamation"></i> প্রুফ বাতিল হয়েছে! আবার চেষ্টা করুন।
                             </p>
                         {% else %}
-                            <p class="text-xs text-slate-500 mt-2 line-clamp-1 font-medium">{{ task.description }}</p>
+                            <p class="text-[11px] text-slate-400 mt-1.5 line-clamp-1">{{ task.description }}</p>
                         {% endif %}
                     </div>
                 </div>
 
-                <!-- Right: Reward & Action -->
-                <div class="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto mt-2 md:mt-0 gap-3 border-t md:border-t-0 border-slate-100 pt-4 md:pt-0">
-                    <span class="text-xl font-black text-slate-900 font-mono tracking-tight">
-                        ৳{{ task.reward }}
+                <!-- Right: Reward & Button -->
+                <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                    <span class="text-sm font-bold text-emerald-600 font-mono bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-100">
+                        +৳{{ task.reward }}
                     </span>
                     
-                    {% if task.task_type in ['screenshot', 'fb_post'] %}
-                        <!-- Requires Submission Button -->
-                        <a href="/task/submit/{{ task.id }}" class="btn-emerald text-white px-6 py-2.5 rounded-xl text-xs font-bold w-full md:w-auto text-center shadow-lg {{ 'ring-2 ring-red-400 shadow-red-200/50' if task.is_rejected else 'shadow-emerald-500/30' }}">
-                            {{ 'Retry Task' if task.is_rejected else 'Start Task' }}
+                    {% if task.task_type == 'screenshot' or task.task_type == 'fb_post' %}
+                        <a href="/task/submit/{{ task.id }}" class="h-9 px-4 rounded-xl flex items-center justify-center text-xs font-bold shadow-md transition
+                            {{ 'bg-red-50 text-red-600 hover:bg-red-500 hover:text-white border border-red-200' if task.is_rejected else 'bg-[#4F46E5] text-white hover:bg-indigo-700' }}">
+                            {{ 'Retry' if task.is_rejected else 'Start' }}
                         </a>
                     {% else %}
-                        <!-- Direct Link Visit Button -->
-                        <a href="{{ task.link }}" target="_blank" class="bg-slate-900 text-white px-6 py-2.5 rounded-xl text-xs font-bold w-full md:w-auto text-center hover:bg-slate-800 transition shadow-lg shadow-slate-900/20">
-                            Visit Link
+                        <a href="{{ task.link }}" target="_blank" class="h-9 px-4 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-bold shadow-sm hover:bg-slate-200 transition">
+                            Visit
                         </a>
                     {% endif %}
                 </div>
@@ -126,14 +183,14 @@
         </div>
         {% else %}
         <!-- Empty State -->
-        <div class="text-center py-20 bg-white rounded-[32px] border border-slate-100 shadow-sm">
-            <div class="h-20 w-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl text-slate-300">
-                <i class="fa-solid fa-check-double"></i>
+        <div class="text-center py-16 bg-white rounded-3xl border-2 border-dashed border-slate-200 shadow-sm">
+            <div class="h-20 w-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl text-slate-300">
+                <i class="fa-solid fa-mug-hot"></i>
             </div>
-            <h3 class="text-base font-bold text-slate-800">All Caught Up!</h3>
-            <p class="text-xs text-slate-500 mt-1 font-medium">নতুন কাজের জন্য কিছুক্ষণ অপেক্ষা করুন</p>
-            <button onclick="location.reload()" class="mt-6 text-xs font-bold text-emerald-600 bg-emerald-50 px-6 py-3 rounded-full border border-emerald-100 hover:bg-emerald-100 transition shadow-sm flex items-center gap-2 mx-auto">
-                <i class="fa-solid fa-rotate-right"></i> পেজ রিফ্রেশ করুন
+            <h3 class="text-base font-bold text-slate-700">সব কাজ শেষ!</h3>
+            <p class="text-xs text-slate-400 mt-1">নতুন কাজের জন্য কিছুক্ষণ অপেক্ষা করুন</p>
+            <button onclick="location.reload()" class="mt-4 text-xs font-bold text-[#4F46E5] bg-indigo-50 px-5 py-2.5 rounded-full hover:bg-indigo-100 transition shadow-sm">
+                <i class="fa-solid fa-rotate-right mr-1"></i> পেজ রিফ্রেশ করুন
             </button>
         </div>
         {% endfor %}
