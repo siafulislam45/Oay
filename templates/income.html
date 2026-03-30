@@ -2,174 +2,174 @@
 {% block content %}
 
 <style>
-    /* AI Page Transitions */
-    .reveal-income { animation: revealIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-    @keyframes revealIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Quantum Financial Cards */
-    .income-node-card {
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(139, 92, 246, 0.15);
-        border-radius: 28px;
-        position: relative;
-        overflow: hidden;
+    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    
+    .clean-card {
+        background: #ffffff;
+        border-radius: 24px;
+        border: 1px solid rgba(15, 23, 42, 0.05);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
     }
-
-    .neon-border-violet { border-color: rgba(139, 92, 246, 0.4); box-shadow: 0 0 20px rgba(139, 92, 246, 0.1); }
-    .neon-border-amber { border-color: rgba(245, 158, 11, 0.4); box-shadow: 0 0 20px rgba(245, 158, 11, 0.1); }
-
-    /* Progress Bar for Data */
-    .data-progress {
-        height: 4px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 2px;
-        overflow: hidden;
+    
+    /* Subtle pulsing glow for pending stats */
+    .glow-orange {
+        box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+        animation: pulseOrange 2s infinite;
     }
-    .progress-fill { height: 100%; border-radius: 2px; transition: width 1s ease-in-out; }
-
-    .btn-action-primary {
-        background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
-        box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
+    @keyframes pulseOrange {
+        0%, 100% { box-shadow: 0 0 10px rgba(249, 115, 22, 0.1); }
+        50% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.3); }
     }
 </style>
 
-<div class="max-w-md mx-auto space-y-6 reveal-income pb-32 pt-4 px-2">
+<div class="max-w-2xl mx-auto space-y-6 fade-up pb-32 pt-4 px-2">
 
-    <!-- 1. HEADER WITH BACK NAVIGATION -->
-    <div class="flex justify-between items-center px-1">
-        <div class="flex items-center gap-4">
-            <a href="/dashboard" class="h-11 w-11 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white transition-all">
-                <i class="fa-solid fa-chevron-left"></i>
+    <!-- 1. HEADER -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+            <a href="/dashboard" class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-slate-600 shadow-sm border border-slate-100 hover:text-emerald-600 transition">
+                <i class="fa-solid fa-arrow-left"></i>
             </a>
             <div>
-                <h2 class="text-xl font-black text-white tracking-tight uppercase">আমার আয়</h2>
-                <p class="text-[10px] font-black text-violet-500 uppercase tracking-[2px]">Financial Nodes</p>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight">আমার আয়</h2>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Financial Summary</p>
             </div>
         </div>
-        <div class="h-11 w-11 bg-violet-600/10 text-violet-400 rounded-2xl flex items-center justify-center border border-violet-600/20 shadow-lg shadow-violet-500/10">
-            <i class="fa-solid fa-chart-line text-lg"></i>
+        <div class="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-sm border border-emerald-100">
+            <i class="fa-solid fa-chart-pie"></i>
         </div>
     </div>
 
-    <!-- 2. MAIN WALLET NODES (Dual Display) -->
+    <!-- 2. MAIN BALANCES (Dual Card Layout) -->
     <div class="grid grid-cols-2 gap-4">
-        <!-- Main Wallet -->
-        <div class="income-node-card p-6 bg-gradient-to-br from-indigo-950/40 to-slate-950/80 neon-border-violet">
-            <div class="absolute -right-6 -top-6 w-20 h-20 bg-violet-600/10 rounded-full blur-2xl"></div>
-            <div class="relative z-10">
-                <div class="h-9 w-9 bg-violet-600/10 rounded-xl flex items-center justify-center mb-4 border border-violet-500/20">
-                    <i class="fa-solid fa-wallet text-violet-400 text-sm"></i>
-                </div>
-                <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest mb-1">Main Balance</p>
-                <h3 class="text-2xl font-black text-white font-mono tracking-tighter">৳{{ main_bal }}</h3>
-            </div>
-        </div>
-
-        <!-- VIP Wallet -->
-        <div class="income-node-card p-6 bg-gradient-to-br from-amber-950/40 to-slate-950/80 neon-border-amber">
-            <div class="absolute -right-6 -top-6 w-20 h-20 bg-amber-500/10 rounded-full blur-2xl"></div>
-            <div class="relative z-10">
-                <div class="h-9 w-9 bg-amber-500/10 rounded-xl flex items-center justify-center mb-4 border border-amber-500/20">
-                    <i class="fa-solid fa-crown text-amber-500 text-sm"></i>
-                </div>
-                <p class="text-[9px] text-amber-600 uppercase font-black tracking-widest mb-1">VIP Balance</p>
-                <h3 class="text-2xl font-black text-amber-500 font-mono tracking-tighter">৳{{ vip_bal }}</h3>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. REAL-TIME DATA ANALYSIS (Today's Status) -->
-    <div class="income-node-card p-7">
-        <div class="flex items-center gap-3 mb-6">
-            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]"></div>
-            <h3 class="font-black text-white text-[10px] uppercase tracking-[3px]">রিয়েল-টাইম স্ট্যাটাস</h3>
-        </div>
-
-        <div class="grid grid-cols-2 gap-6 relative">
-            <div class="absolute left-1/2 top-0 bottom-0 w-px bg-white/5 -translate-x-1/2"></div>
-            
-            <div class="space-y-4">
-                <div>
-                    <p class="text-[9px] text-slate-500 font-black uppercase tracking-wider mb-2">Approved Today</p>
-                    <p class="text-2xl font-black text-emerald-400 font-mono tracking-tighter">+৳{{ today_income }}</p>
-                </div>
-                <div class="data-progress w-full">
-                    <div class="progress-fill bg-emerald-500 shadow-[0_0_10px_#10b981]" style="width: 100%"></div>
-                </div>
-            </div>
-
-            <div class="space-y-4 pl-4">
-                <div>
-                    <p class="text-[9px] text-slate-500 font-black uppercase tracking-wider mb-2">Pending Escrow</p>
-                    <p class="text-2xl font-black text-amber-500 font-mono tracking-tighter">৳{{ pending_income }}</p>
-                </div>
-                <div class="data-progress w-full">
-                    <div class="progress-fill bg-amber-500 shadow-[0_0_10px_#f59e0b] animate-pulse" style="width: 60%"></div>
-                </div>
-            </div>
-        </div>
         
-        <p class="text-[8px] text-slate-600 mt-6 font-mono uppercase tracking-tighter">Verification engine active • Last sync: Just Now</p>
+        <!-- Main Wallet Card -->
+        <div class="bg-gradient-to-br from-[#0A2540] to-[#4F46E5] p-5 md:p-6 rounded-[28px] text-white relative overflow-hidden shadow-xl shadow-indigo-500/20">
+            <!-- Decor -->
+            <div class="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full blur-2xl -mr-6 -mt-6"></div>
+            <div class="absolute bottom-0 left-0 w-20 h-20 bg-emerald-400 opacity-20 rounded-full blur-2xl -ml-6 -mb-6"></div>
+            
+            <div class="relative z-10 flex flex-col h-full justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-10 w-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10 shadow-inner">
+                        <i class="fa-solid fa-wallet text-sm"></i>
+                    </div>
+                    <span class="bg-white/10 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border border-white/5 backdrop-blur-sm">Active</span>
+                </div>
+                <div>
+                    <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-widest mb-1">Main Balance</p>
+                    <h3 class="text-2xl md:text-3xl font-black font-mono tracking-tight">৳ {{ main_bal }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIP Wallet Card -->
+        <div class="bg-gradient-to-br from-amber-500 to-orange-600 p-5 md:p-6 rounded-[28px] text-white relative overflow-hidden shadow-xl shadow-orange-500/20">
+            <!-- Decor -->
+            <div class="absolute top-0 right-0 w-24 h-24 bg-white opacity-20 rounded-full blur-2xl -mr-6 -mt-6"></div>
+            <div class="absolute bottom-0 left-0 w-20 h-20 bg-yellow-300 opacity-30 rounded-full blur-2xl -ml-6 -mb-6"></div>
+            
+            <div class="relative z-10 flex flex-col h-full justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-10 w-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10 shadow-inner text-yellow-100">
+                        <i class="fa-solid fa-crown text-sm"></i>
+                    </div>
+                    {% if user.current_level > 0 %}
+                    <span class="bg-yellow-400/30 text-yellow-50 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border border-yellow-400/50 backdrop-blur-sm">Lvl {{ user.current_level }}</span>
+                    {% else %}
+                    <span class="bg-white/10 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border border-white/10 backdrop-blur-sm">Locked</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <p class="text-[10px] text-orange-100 uppercase font-bold tracking-widest mb-1">VIP Balance</p>
+                    <h3 class="text-2xl md:text-3xl font-black font-mono tracking-tight">৳ {{ vip_bal }}</h3>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- 4. LIFETIME ANALYTICS (Withdraw & Ref) -->
+    <!-- 3. DAILY INCOME STATS (Today & Pending) -->
+    <div class="clean-card p-6 border-l-[6px] border-emerald-500 relative overflow-hidden group">
+        <div class="absolute top-0 right-0 p-4 opacity-5 text-6xl text-emerald-500 transform group-hover:scale-110 transition duration-500"><i class="fa-solid fa-bolt"></i></div>
+        
+        <h3 class="font-black text-slate-800 text-sm mb-5 flex items-center gap-2 relative z-10">
+            <i class="fa-solid fa-bolt text-yellow-500"></i> আজকের স্ট্যাটাস
+        </h3>
+
+        <div class="grid grid-cols-2 gap-4 relative z-10">
+            <!-- Today Approved -->
+            <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="h-6 w-6 bg-emerald-200 text-emerald-700 rounded-full flex items-center justify-center text-[10px]"><i class="fa-solid fa-check"></i></div>
+                    <p class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider">Today's Income</p>
+                </div>
+                <p class="text-2xl font-black text-emerald-600 font-mono tracking-tight">+৳ {{ today_income }}</p>
+                <p class="text-[9px] text-emerald-500 mt-1 font-medium">Approved Today</p>
+            </div>
+            
+            <!-- Pending -->
+            <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 glow-orange">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="h-6 w-6 bg-orange-200 text-orange-700 rounded-full flex items-center justify-center text-[10px]"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <p class="text-[10px] text-orange-700 font-bold uppercase tracking-wider">Pending Income</p>
+                </div>
+                <p class="text-2xl font-black text-orange-600 font-mono tracking-tight">৳ {{ pending_income }}</p>
+                <p class="text-[9px] text-orange-500 mt-1 font-medium flex items-center gap-1">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Waiting for Review
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. LIFETIME RECORDS (Withdraw & Referrals) -->
     <div class="grid grid-cols-2 gap-4">
+        
         <!-- Total Withdraw -->
-        <div class="income-node-card p-5 border-white/5 flex flex-col justify-between h-32">
-            <div class="flex justify-between items-start">
-                <div class="h-10 w-10 bg-rose-500/10 text-rose-500 rounded-2xl flex items-center justify-center border border-rose-500/20">
-                    <i class="fa-solid fa-cloud-arrow-down"></i>
+        <div class="clean-card p-5 flex flex-col justify-between group hover:border-indigo-200 transition">
+            <div class="flex items-start justify-between mb-4">
+                <div class="h-10 w-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg shadow-sm group-hover:scale-110 transition">
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
                 </div>
-                <span class="text-[8px] bg-white/5 text-slate-500 px-2 py-1 rounded-md font-black tracking-widest uppercase">Payout</span>
+                <span class="text-[9px] bg-slate-100 text-slate-500 px-2 py-1 rounded-md font-bold uppercase tracking-widest border border-slate-200">
+                    Lifetime
+                </span>
             </div>
             <div>
-                <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">Total Withdrawn</p>
-                <h3 class="text-xl font-black text-white font-mono tracking-tighter">৳{{ total_withdraw }}</h3>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Total Withdrawn</p>
+                <h3 class="text-xl font-black text-slate-800 font-mono tracking-tight">৳ {{ total_withdraw }}</h3>
             </div>
         </div>
 
-        <!-- Total Team -->
-        <div class="income-node-card p-5 border-white/5 flex flex-col justify-between h-32">
-            <div class="flex justify-between items-start">
-                <div class="h-10 w-10 bg-sky-500/10 text-sky-400 rounded-2xl flex items-center justify-center border border-sky-500/20">
-                    <i class="fa-solid fa-network-wired"></i>
+        <!-- Total Referrals -->
+        <div class="clean-card p-5 flex flex-col justify-between group hover:border-blue-200 transition">
+            <div class="flex items-start justify-between mb-4">
+                <div class="h-10 w-10 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center text-lg shadow-sm group-hover:scale-110 transition">
+                    <i class="fa-solid fa-users"></i>
                 </div>
-                <span class="text-[8px] bg-white/5 text-slate-500 px-2 py-1 rounded-md font-black tracking-widest uppercase">Network</span>
+                <span class="text-[9px] bg-slate-100 text-slate-500 px-2 py-1 rounded-md font-bold uppercase tracking-widest border border-slate-200">
+                    Team
+                </span>
             </div>
             <div>
-                <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">Total Referrals</p>
-                <h3 class="text-xl font-black text-white font-mono tracking-tighter">{{ ref_count }} Nodes</h3>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Total Referrals</p>
+                <h3 class="text-xl font-black text-slate-800 font-mono tracking-tight">{{ ref_count }} Users</h3>
             </div>
         </div>
+
     </div>
 
-    <!-- 5. EXECUTION BUTTONS -->
-    <div class="grid grid-cols-2 gap-4 mt-4">
-        <a href="/withdraw" class="btn-action-primary py-5 rounded-2xl text-white font-black text-xs uppercase tracking-[3px] text-center shadow-xl active:scale-95 transition-all">
-            উইথড্র করুন
+    <!-- 5. QUICK ACTIONS -->
+    <div class="flex gap-3 pt-2">
+        <a href="/withdraw" class="flex-1 btn-emerald text-white py-4 rounded-2xl text-sm font-black uppercase tracking-wider text-center shadow-lg flex items-center justify-center gap-2">
+            <i class="fa-solid fa-money-bill-transfer"></i> উইথড্র করুন
         </a>
-        <a href="/history" class="bg-white/5 border border-white/10 text-white py-5 rounded-2xl text-xs font-black uppercase tracking-[3px] text-center hover:bg-white/10 active:scale-95 transition-all">
-            হিস্টোরি
+        <a href="/history" class="flex-1 bg-white text-slate-700 border border-slate-200 py-4 rounded-2xl text-sm font-black uppercase tracking-wider text-center shadow-sm hover:bg-slate-50 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left"></i> হিস্টোরি দেখুন
         </a>
-    </div>
-
-    <!-- Security Tagline -->
-    <div class="text-center opacity-30 mt-4">
-        <p class="text-[9px] font-mono text-slate-500 tracking-tighter uppercase">Quantum Ledger System v3.1 • End-to-End Secure</p>
     </div>
 
 </div>
-
-<script>
-    // Animation for progress bars on load
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            document.querySelectorAll('.progress-fill').forEach(el => {
-                // Keep the width as defined in the style
-            });
-        }, 300);
-    });
-</script>
 
 {% endblock %}
